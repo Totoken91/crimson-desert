@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Désert Cramoisi — GDD v0.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #080506;
+  --bg2:      #100b0a;
+  --bg3:      #160e0c;
+  --crimson:  #8C1C1C;
+  --crimson-l:#BE372D;
+  --rust:     #6B2416;
+  --bone:     #C6B29B;
+  --bone-dim: #8A7A6A;
+  --ash:      #3A3230;
+  --ash-l:    #5A4E4A;
+  --pale:     #E8DDD0;
+  --purple:   #3E2848;
+  --purple-l: #7A4FA0;
+  --text:     #C6B29B;
+  --text-dim: #7A6E66;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ── Grain overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}
+
+/* ══════════════════════════
+   LAYOUT
+══════════════════════════ */
+.wrapper {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+nav {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--bg2);
+  border-right: 1px solid var(--ash);
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+nav::-webkit-scrollbar { width: 3px; }
+nav::-webkit-scrollbar-track { background: transparent; }
+nav::-webkit-scrollbar-thumb { background: var(--crimson); }
+
+.nav-brand {
+  padding: 0 28px 32px;
+  border-bottom: 1px solid var(--ash);
+  margin-bottom: 24px;
+}
+
+.nav-brand .title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.nav-brand .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+.nav-section {
+  padding: 0 16px;
+  margin-bottom: 4px;
+}
+
+.nav-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: var(--ash-l);
+  text-transform: uppercase;
+  padding: 12px 12px 6px;
+}
+
+nav a {
+  display: block;
+  padding: 7px 12px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  border-left: 2px solid transparent;
+}
+
+nav a:hover {
+  color: var(--bone);
+  background: rgba(140,28,28,0.08);
+  border-left-color: var(--crimson);
+}
+
+nav a.active {
+  color: var(--crimson-l);
+  border-left-color: var(--crimson-l);
+  background: rgba(140,28,28,0.1);
+}
+
+nav a.sub-link {
+  font-size: 12.5px;
+  padding-left: 24px;
+  color: var(--ash-l);
+}
+
+nav a.sub-link:hover { color: var(--text-dim); }
+
+/* ── MAIN CONTENT ── */
+main {
+  padding: 0;
+  max-width: 860px;
+}
+
+/* ══════════════════════════
+   HERO
+══════════════════════════ */
+.hero {
+  padding: 100px 80px 80px;
+  border-bottom: 1px solid var(--ash);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(140,28,28,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  color: var(--pale);
+  text-shadow: 0 0 80px rgba(140,28,28,0.4);
+  margin-bottom: 16px;
+}
+
+.hero h1 span { color: var(--crimson-l); }
+
+.hero-desc {
+  font-size: 19px;
+  font-style: italic;
+  color: var(--bone-dim);
+  max-width: 560px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 5px 12px;
+  border: 1px solid var(--ash);
+  border-radius: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.tag.red { border-color: var(--crimson); color: var(--crimson-l); background: rgba(140,28,28,0.08); }
+
+/* ══════════════════════════
+   SECTIONS
+══════════════════════════ */
+section {
+  padding: 72px 80px;
+  border-bottom: 1px solid var(--ash);
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+section h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--pale);
+  margin-bottom: 40px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--ash);
+  letter-spacing: 0.05em;
+}
+
+section h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--crimson-l);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 36px 0 14px;
+}
+
+p { margin-bottom: 16px; color: var(--text); }
+
+/* ══════════════════════════
+   COMPOSANTS
+══════════════════════════ */
+
+/* Piliers */
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ash);
+  border: 1px solid var(--ash);
+  margin-bottom: 40px;
+}
+
+.pillar {
+  background: var(--bg2);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+
+.pillar:hover { background: var(--bg3); }
+
+.pillar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.pillar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--bone);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.pillar p { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+
+/* Callout */
+.callout {
+  border-left: 3px solid var(--crimson);
+  background: rgba(140,28,28,0.06);
+  padding: 20px 24px;
+  margin: 28px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.callout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.callout p { margin: 0; font-style: italic; font-size: 16px; color: var(--bone-dim); }
+
+/* Liste */
+ul.styled { list-style: none; padding: 0; margin-bottom: 20px; }
+ul.styled li {
+  padding: 8px 0 8px 20px;
+  position: relative;
+  font-size: 16px;
+  color: var(--text);
+  border-bottom: 1px solid rgba(58,50,48,0.4);
+}
+ul.styled li:last-child { border-bottom: none; }
+ul.styled li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--crimson);
+  font-weight: 400;
+}
+ul.styled li strong {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+/* Recettes */
+.recipe-grid { display: grid; gap: 20px; margin: 20px 0; }
+
+.recipe-card {
+  background: var(--bg2);
+  border: 1px solid var(--ash);
+  border-top: 2px solid var(--crimson);
+  padding: 28px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.recipe-card:hover {
+  border-color: var(--crimson-l);
+  background: var(--bg3);
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.recipe-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--pale);
+  letter-spacing: 0.05em;
+}
+
+.recipe-tier {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--crimson);
+  color: var(--crimson-l);
+  white-space: nowrap;
+}
+
+.recipe-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.ing {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.ing.d { border-color: rgba(224,75,74,0.4); color: #C05555; background: rgba(224,75,74,0.05); }
+.ing.s { border-color: rgba(127,119,221,0.4); color: #9A8FD4; background: rgba(127,119,221,0.05); }
+.ing.o { border-color: rgba(239,159,39,0.4); color: #B8821A; background: rgba(239,159,39,0.05); }
+
+.recipe-effect { font-size: 15px; color: var(--text-dim); line-height: 1.55; margin-bottom: 12px; }
+
+.recipe-cost {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--crimson-l);
+  padding-top: 12px;
+  border-top: 1px solid var(--ash);
+}
+
+/* Tableau */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14.5px;
+}
+
+.data-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--crimson-l);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--crimson);
+  background: rgba(140,28,28,0.08);
+}
+
+.data-table td {
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(58,50,48,0.5);
+  color: var(--text);
+  vertical-align: top;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(140,28,28,0.04); }
+
+/* Fins */
+.endings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--ash); margin: 24px 0; }
+
+.ending {
+  background: var(--bg2);
+  padding: 28px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+
+.ending:hover { background: var(--bg3); }
+
+.ending::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.ending.dissolution::before { background: var(--bone-dim); }
+.ending.repetition::before { background: var(--crimson-l); }
+.ending.rupture::before { background: var(--purple-l); }
+
+.ending-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--pale);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.ending p { font-size: 13.5px; color: var(--text-dim); margin: 0; font-style: italic; line-height: 1.5; }
+
+/* Zones */
+.zones { display: grid; gap: 1px; background: var(--ash); margin: 20px 0; }
+
+.zone {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  background: var(--bg2);
+  transition: background 0.2s;
+}
+
+.zone:hover { background: var(--bg3); }
+
+.zone-id {
+  padding: 24px 20px;
+  border-right: 1px solid var(--ash);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.zone-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.zone-name {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--pale);
+  letter-spacing: 0.05em;
+}
+
+.zone-content { padding: 24px 24px; font-size: 14.5px; color: var(--text-dim); line-height: 1.6; }
+
+/* Roadmap */
+.roadmap { display: grid; gap: 1px; background: var(--ash); margin: 20px 0; }
+
+.roadmap-row {
+  display: grid;
+  grid-template-columns: 120px 180px 1fr;
+  background: var(--bg2);
+  transition: background 0.2s;
+}
+
+.roadmap-row:hover { background: var(--bg3); }
+
+.roadmap-row > div {
+  padding: 18px 20px;
+  border-right: 1px solid var(--ash);
+  font-size: 14px;
+}
+
+.roadmap-row > div:last-child { border-right: none; }
+
+.roadmap-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--crimson-l);
+  letter-spacing: 0.1em;
+}
+
+.roadmap-obj { color: var(--bone); font-weight: 600; font-size: 14px; }
+.roadmap-del { color: var(--text-dim); font-size: 13.5px; }
+
+/* Système craft */
+.craft-system {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  align-items: center;
+  gap: 0;
+  margin: 24px 0;
+  background: var(--bg2);
+  border: 1px solid var(--ash);
+  padding: 32px;
+}
+
+.craft-col { }
+.craft-arrow { text-align: center; color: var(--crimson); font-size: 24px; }
+.craft-col-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.craft-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(58,50,48,0.3);
+  font-size: 14px;
+}
+
+.craft-item:last-child { border-bottom: none; }
+
+.craft-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-d { background: #C05555; }
+.dot-s { background: #9A8FD4; }
+.dot-o { background: #B8821A; }
+.dot-out { background: var(--crimson-l); }
+
+/* Palette visuelle */
+.palette-row { display: flex; gap: 0; margin: 20px 0; height: 60px; border-radius: 3px; overflow: hidden; }
+.palette-swatch { flex: 1; position: relative; cursor: default; transition: flex 0.3s; }
+.palette-swatch:hover { flex: 2; }
+.palette-swatch span {
+  position: absolute;
+  bottom: 6px; left: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.palette-swatch:hover span { opacity: 1; }
+
+/* Stack technique */
+.stack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+
+.stack-item {
+  background: var(--bg2);
+  border: 1px solid var(--ash);
+  padding: 16px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stack-icon {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--crimson);
+  padding: 4px 6px;
+  border: 1px solid var(--crimson);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stack-name { font-size: 14px; color: var(--bone); font-weight: 600; margin-bottom: 2px; }
+.stack-desc { font-size: 12.5px; color: var(--text-dim); }
+
+/* Footer */
+footer {
+  padding: 40px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+@media (max-width: 900px) {
+  .wrapper { grid-template-columns: 1fr; }
+  nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; padding: 20px; }
+  .hero, section { padding: 40px 28px; }
+  .pillars { grid-template-columns: 1fr; }
+  .endings { grid-template-columns: 1fr; }
+  .craft-system { grid-template-columns: 1fr; }
+  .craft-arrow { transform: rotate(90deg); }
+  footer { flex-direction: column; gap: 8px; padding: 28px; }
+  .roadmap-row { grid-template-columns: 1fr; }
+  .zone { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+<!-- ══════ NAV ══════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="title">Désert Cramoisi</div>
+    <div class="sub">GDD v0.1 — 2025</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Document</div>
+    <a href="#vision">01 — Vision</a>
+    <a href="#gameplay" class="sub-link">Gameplay</a>
+    <a href="#craft" class="sub-link">Système de craft</a>
+    <a href="#recettes" class="sub-link">Recettes</a>
+    <a href="#narration">02 — Narration</a>
+    <a href="#fins" class="sub-link">Les trois fins</a>
+    <a href="#artdirection">03 — Direction artistique</a>
+    <a href="#monde">04 — Le monde</a>
+    <a href="#zones" class="sub-link">Zones</a>
+    <a href="#entites" class="sub-link">Entités</a>
+    <a href="#tech">05 — Technique</a>
+    <a href="#roadmap">06 — Roadmap</a>
+  </div>
+</nav>
+
+<!-- ══════ MAIN ══════ -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Game Design Document · v0.1</div>
+    <h1>Désert<br><span>Cramoisi</span></h1>
+    <p class="hero-desc">Un RPG de puzzle-crafting sans combat où la douleur est une ressource, le sacrifice une mécanique, et le monde entier une mémoire fracturée.</p>
+    <div class="hero-tags">
+      <span class="tag red">Horreur alchimique</span>
+      <span class="tag red">Puzzle crafting</span>
+      <span class="tag">Pixel art 64px</span>
+      <span class="tag">Godot 4</span>
+      <span class="tag">Solo dev</span>
+      <span class="tag">Sans combat</span>
+    </div>
+  </div>
+
+  <!-- ══ 1. VISION ══ -->
+  <section id="vision">
+    <div class="section-number">01</div>
+    <h2>Vision du jeu</h2>
+
+    <p>Un désert de sable cramoisi sans horizon clair. Un personnage sans mémoire ni identité. Une table d'alchimie noire dont les règles ne s'expliquent jamais. Le joueur apprend en ratant, souffre pour progresser, et reconstruit qui il était à travers ce qu'il choisit de crafter.</p>
+
+    <div class="callout">
+      <div class="callout-label">Question narrative centrale</div>
+      <p>Tu n'es pas arrivé dans ce désert. Tu l'as créé. Le monde autour de toi est le reflet de ta propre psyché fracturée — et chaque recette craftée est un souvenir récupéré.</p>
+    </div>
+
+    <h3>Piliers de design</h3>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-label">Exploration</div>
+        <div class="pillar-title">Découverte par expérimentation</div>
+        <p>Aucun tutoriel. Les recettes s'apprennent en ratant. Le monde ne s'excuse pas.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Ressource</div>
+        <div class="pillar-title">Coût moral, pas statistique</div>
+        <p>Chaque craft prélève quelque chose d'irréversible — une perception, un souvenir, une sensation.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Ambiance</div>
+        <div class="pillar-title">Cauchemar lucide</div>
+        <p>Le monde obéit à une logique interne cohérente, mais elle ne s'explique jamais à voix haute.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Narration</div>
+        <div class="pillar-title">Identité émergente</div>
+        <p>Ce que tu crées révèle qui tu étais, sans que le jeu le dise explicitement.</p>
+      </div>
+    </div>
+
+    <h3>Références</h3>
+    <ul class="styled">
+      <li><strong>Fear &amp; Hunger</strong> — organique, brutal, monde sans pitié ni explication</li>
+      <li><strong>I Have No Mouth But I Must Scream</strong> — absurde cruel, déshumanisation, logique opaque</li>
+      <li><strong>Disco Elysium</strong> — narration par objets et fragments, identité reconstruite par le jeu</li>
+      <li><strong>Kenshi</strong> — monde indifférent, règles apprises par la souffrance répétée</li>
+    </ul>
+  </section>
+
+  <!-- ══ GAMEPLAY ══ -->
+  <section id="gameplay">
+    <div class="section-number">01.1</div>
+    <h2>Gameplay</h2>
+
+    <p>Sans combat, le gameplay repose sur trois actions qui s'alimentent mutuellement :</p>
+
+    <ul class="styled">
+      <li><strong>Explorer</strong> — traverser les zones du désert, collecter des ressources, observer les entités et les règles du monde</li>
+      <li><strong>Crafter</strong> — combiner des ressources à la table d'alchimie pour créer des objets ou déclencher des rituels</li>
+      <li><strong>Lire</strong> — interpréter les fragments de lore révélés par les objets craftés pour progresser dans la narration</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Design note</div>
+      <p>Les recettes ratées ne sont pas neutres. Un mauvais mélange produit toujours quelque chose — parfois dangereux, parfois révélateur. L'échec est une mécanique de jeu à part entière.</p>
+    </div>
+  </section>
+
+  <!-- ══ CRAFT ══ -->
+  <section id="craft">
+    <div class="section-number">01.2</div>
+    <h2>Système de craft</h2>
+
+    <p>Tout le système repose sur trois types de ressources fondamentales. La tension centrale du jeu vient de leur nature : l'une prélève sur soi, les deux autres prélèvent sur le monde.</p>
+
+    <div class="craft-system">
+      <div class="craft-col">
+        <div class="craft-col-title">Sources</div>
+        <div class="craft-item"><div class="craft-dot dot-d"></div><span>Douleur — soi-même</span></div>
+        <div class="craft-item"><div class="craft-dot dot-s"></div><span>Essence — sacrifice d'entités</span></div>
+        <div class="craft-item"><div class="craft-dot dot-o"></div><span>Organes — prélevés sur créatures</span></div>
+      </div>
+      <div class="craft-arrow">→</div>
+      <div class="craft-col">
+        <div class="craft-col-title">Produits</div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Armes &amp; outils rituels</span></div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Mutations corporelles</span></div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Fragments de mémoire</span></div>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Ressource</th>
+          <th>Source</th>
+          <th>Nature du coût</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Douleur</td>
+          <td>Se blesser soi-même</td>
+          <td>Points de vie permanents, altérations sensorielles</td>
+        </tr>
+        <tr>
+          <td>Essence</td>
+          <td>Sacrifier des entités ou PNJ</td>
+          <td>Hantise cyclique des entités sacrifiées</td>
+        </tr>
+        <tr>
+          <td>Organes</td>
+          <td>Prélevés sur créatures ou soi</td>
+          <td>Pertes fonctionnelles irréversibles selon l'organe</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Table d'alchimie</h3>
+    <ul class="styled">
+      <li>3 à 5 slots d'ingrédients disposés librement par le joueur</li>
+      <li>Un slot résultat qui révèle le produit ou une réaction d'échec</li>
+      <li>Aucune indication sur les recettes — tout s'apprend par essai-erreur ou par lore trouvé dans le monde</li>
+      <li>Les échecs produisent toujours quelque chose — jamais un résultat vide</li>
+    </ul>
+  </section>
+
+  <!-- ══ RECETTES ══ -->
+  <section id="recettes">
+    <div class="section-number">01.3</div>
+    <h2>Recettes alchimiques</h2>
+
+    <h3>Tier I — Chair &amp; survie</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Suaire de peau</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing s">Essence ×1</span>
+          <span class="ing o">Peau tannée ×1</span>
+        </div>
+        <div class="recipe-effect">Armure légère faite de la peau d'une créature sacrifiée. Absorbe une fraction de la douleur des coups en essence stockée.</div>
+        <div class="recipe-cost">Coût rituel : le souvenir du visage de la créature te hante pendant 3 cycles de jeu.</div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Lien de nerf</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">Douleur ×3</span>
+          <span class="ing o">Tendon ×2</span>
+        </div>
+        <div class="recipe-effect">Corde rituelle faite de tendons. Permet de lier deux éléments du monde — une porte, une entité, un souvenir.</div>
+        <div class="recipe-cost">Coût rituel : mobilité réduite de 20% de façon permanente après chaque utilisation.</div>
+      </div>
+    </div>
+
+    <h3>Tier II — Rituel &amp; mutation</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Oeil de substitution</div>
+          <div class="recipe-tier">Tier II</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">Douleur ×5</span>
+          <span class="ing s">Essence ×2</span>
+          <span class="ing o">Globe oculaire ×1</span>
+        </div>
+        <div class="recipe-effect">Greffe qui remplace un oeil du joueur. Permet de voir les lignes de flux du monde — les règles invisibles qui structurent le désert.</div>
+        <div class="recipe-cost">Coût rituel : perte définitive de la perception de la couleur rouge. Le monde devient légèrement plus étranger.</div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Coeur reliquaire</div>
+          <div class="recipe-tier">Tier II</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing s">Essence ×4</span>
+          <span class="ing o">Coeur intact ×1</span>
+        </div>
+        <div class="recipe-effect">Remplace le coeur du joueur par un réservoir d'essence. Peut être brisé pour libérer tout le contenu en explosion rituelle.</div>
+        <div class="recipe-cost">Coût rituel : tu ne ressens plus la peur. Et la peur te protégeait de certaines choses.</div>
+      </div>
+    </div>
+
+    <h3>Tier III — Connaissance &amp; mémoire</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Encre de mémoire</div>
+          <div class="recipe-tier">Tier III</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">Douleur ×8</span>
+          <span class="ing s">Essence ×3</span>
+          <span class="ing o">Cerveau partiel ×1</span>
+        </div>
+        <div class="recipe-effect">Liquide rituel. Versé sur une surface du monde, révèle un fragment de la mémoire perdue du joueur — gravé dans le désert comme une cicatrice.</div>
+        <div class="recipe-cost">Coût rituel : chaque utilisation efface un détail de la mémoire actuelle — un nom, une texture, une direction.</div>
+      </div>
+
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Sceau de dissolution</div>
+          <div class="recipe-tier">Tier III</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">Douleur ×10</span>
+          <span class="ing s">Essence ×6</span>
+          <span class="ing o">Os calciné ×1</span>
+        </div>
+        <div class="recipe-effect">Rituel qui efface une entité du monde — créature, lieu, ou règle locale. Ce qui existait ne laisse pas de trace.</div>
+        <div class="recipe-cost">Coût rituel : une partie de toi disparaît également. Le jeu ne dit pas laquelle.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 2. NARRATION ══ -->
+  <section id="narration">
+    <div class="section-number">02</div>
+    <h2>Narration</h2>
+
+    <p>Le joueur se réveille dans le désert cramoisi sans identité ni souvenir. En explorant et en craftant, il découvre progressivement qu'il est l'origine de ce monde : le désert est la projection de sa propre psyché fracturée par un rituel poussé trop loin.</p>
+
+    <h3>Structure en trois actes</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Acte</th><th>Nom</th><th>Ce qui se passe</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>I</td>
+          <td>Éveil</td>
+          <td>Découverte de la table d'alchimie, premières règles apprises par observation, premier fragment de mémoire déclenché</td>
+        </tr>
+        <tr>
+          <td>II</td>
+          <td>Reconnaissance</td>
+          <td>Les crafts Tier II altèrent la perception du monde, les fragments forment des motifs, le joueur comprend que les entités lui sont liées</td>
+        </tr>
+        <tr>
+          <td>III</td>
+          <td>Dissolution</td>
+          <td>Les crafts Tier III révèlent la vérité sur l'origine du désert, le joueur arrive à l'une des trois fins selon ses habitudes</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ FINS ══ -->
+  <section id="fins">
+    <div class="section-number">02.1</div>
+    <h2>Les trois fins</h2>
+
+    <p>Les fins ne sont jamais annoncées. Le joueur y arrive par ses habitudes de craft — ce qu'il a préféré prélever sur lui-même ou sur les autres.</p>
+
+    <div class="endings">
+      <div class="ending dissolution">
+        <div class="ending-name">Dissolution</div>
+        <p>Le joueur continue à puiser en lui jusqu'à disparaître dans le monde qu'il a créé. Fin ambiguë, presque paisible.</p>
+      </div>
+      <div class="ending repetition">
+        <div class="ending-name">Répétition</div>
+        <p>Le joueur retrouve tous ses souvenirs, comprend ce qu'il a fait — et recommence. Le cycle est la vérité du monde.</p>
+      </div>
+      <div class="ending rupture">
+        <div class="ending-name">Rupture</div>
+        <p>Le joueur trouve le rituel inverse, défait ce qu'il a construit. Le monde s'effondre. On ne sait pas s'il survit.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Mécanique de tracking</div>
+      <p>Le jeu observe en silence le ratio douleur/sacrifice de chaque craft. C'est cet historique — jamais affiché, jamais verbalisé — qui détermine la fin accessible.</p>
+    </div>
+  </section>
+
+  <!-- ══ 3. DIRECTION ARTISTIQUE ══ -->
+  <section id="artdirection">
+    <div class="section-number">03</div>
+    <h2>Direction artistique</h2>
+
+    <h3>Palette principale</h3>
+
+    <div class="palette-row">
+      <div class="palette-swatch" style="background:#080506"><span style="color:#8A7A6A">#080506<br>nuit</span></div>
+      <div class="palette-swatch" style="background:#3A3230"><span style="color:#C6B29B">#3A3230<br>cendre</span></div>
+      <div class="palette-swatch" style="background:#6B2416"><span style="color:#C6B29B">#6B2416<br>rouille</span></div>
+      <div class="palette-swatch" style="background:#8C1C1C"><span style="color:#E8DDD0">#8C1C1C<br>sang</span></div>
+      <div class="palette-swatch" style="background:#BE372D"><span style="color:#E8DDD0">#BE372D<br>rituel</span></div>
+      <div class="palette-swatch" style="background:#3E2848"><span style="color:#C6B29B">#3E2848<br>magie</span></div>
+      <div class="palette-swatch" style="background:#C6B29B"><span style="color:#3A3230">#C6B29B<br>os</span></div>
+    </div>
+
+    <h3>Règles graphiques</h3>
+    <ul class="styled">
+      <li><strong>Pixel art 64px+</strong> — assets minimum 64×64, personnages 32×64. Lisibilité avant détail.</li>
+      <li><strong>Animations 4–8 frames</strong> — tout est lent, lourd, organique. Rien ne s'anime vite.</li>
+      <li><strong>Contraste dur</strong> — transitions nettes lumière/ombre, pas de dégradés doux.</li>
+      <li><strong>UI organique</strong> — interfaces comme des parchemins tachés, jamais un HUD propre et géométrique.</li>
+      <li><strong>Lumière interne</strong> — toute lumière vient de rituels ou de plaies. Jamais du soleil direct.</li>
+      <li><strong>Couleur signature</strong> — chaque objet alchimique a une teinte fixe. L'or n'existe pas ici.</li>
+    </ul>
+
+    <h3>Son et musique</h3>
+    <ul class="styled">
+      <li>Ambiance sonore désertique — vent, sable, silence organique</li>
+      <li>La table d'alchimie produit des sons corporels — os, fluides, souffle</li>
+      <li>Musique absente ou quasi-absente — quelques drones lents lors des crafts Tier III uniquement</li>
+      <li>Les entités du désert ne parlent pas — elles émettent des fréquences</li>
+    </ul>
+  </section>
+
+  <!-- ══ 4. MONDE ══ -->
+  <section id="monde">
+    <div class="section-number">04</div>
+    <h2>Le monde</h2>
+
+    <p>Un désert de sable rouge-sang, sans horizon clair, sans soleil visible. La lumière existe mais sans source identifiable. La gravité fonctionne, mais pas toujours dans le même sens. Les règles du monde sont cohérentes entre elles — ce sont les règles d'un inconscient, pas d'une physique.</p>
+  </section>
+
+  <!-- ══ ZONES ══ -->
+  <section id="zones">
+    <div class="section-number">04.1</div>
+    <h2>Zones</h2>
+
+    <div class="zones">
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Zone 01</div>
+          <div class="zone-name">Les Dunes plates</div>
+        </div>
+        <div class="zone-content">Zone de départ. Sable cramoisi à perte de vue, ressources basiques, table d'alchimie initiale. Aucun danger immédiat — juste le silence et les règles à apprendre.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Zone 02</div>
+          <div class="zone-name">Les Ossements</div>
+        </div>
+        <div class="zone-content">Architecture d'os et de pierre. Ressources Tier II, entités mi-humaines, premières règles contre-intuitives du monde. Accès après un craft Tier I spécifique.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Zone 03</div>
+          <div class="zone-name">Le Coeur</div>
+        </div>
+        <div class="zone-content">Zone centrale, accès par rituel uniquement. Recettes Tier III et trois fins du jeu. Le lieu où la vérité sur le désert devient lisible.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ ENTITÉS ══ -->
+  <section id="entites">
+    <div class="section-number">04.2</div>
+    <h2>Entités</h2>
+
+    <p>Les entités du désert ne sont pas des ennemis. Elles ne peuvent pas être vaincues par la force. Certaines peuvent être sacrifiées — au coût d'être hantées par ce qu'elles étaient.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Type</th><th>Comportement</th><th>Interaction</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Entités-fantômes</td>
+          <td>Fragments de mémoire incarnés, errent sans but apparent</td>
+          <td>Réagissent à l'Encre de mémoire — révèlent des lore fragments</td>
+        </tr>
+        <tr>
+          <td>Gardiens d'os</td>
+          <td>Immobiles, silencieux, bloquent des passages</td>
+          <td>Se déplacent si certains crafts sont accomplis en leur présence</td>
+        </tr>
+        <tr>
+          <td>Les Dissous</td>
+          <td>Entités en train de disparaître — semi-transparentes</td>
+          <td>Source d'essence facile mais instable — risque de contamination</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ 5. TECHNIQUE ══ -->
+  <section id="tech">
+    <div class="section-number">05</div>
+    <h2>Technique</h2>
+
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-icon">01</div>
+        <div>
+          <div class="stack-name">Godot 4 — GDScript</div>
+          <div class="stack-desc">Moteur principal. Léger, open source, bien documenté pour solo dev.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">02</div>
+        <div>
+          <div class="stack-name">Aseprite</div>
+          <div class="stack-desc">Création des assets pixel art 64px. Animations et tilesets.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">03</div>
+        <div>
+          <div class="stack-name">Audacity + samples libres</div>
+          <div class="stack-desc">Sound design — sons corporels, ambiances désert, drones.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">04</div>
+        <div>
+          <div class="stack-name">Git + GitHub</div>
+          <div class="stack-desc">Versioning et sauvegarde du projet.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Systèmes à implémenter</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Priorité</th><th>Système</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MVP</td><td>Inventaire</td><td>Stockage et affichage des 3 types de ressources</td></tr>
+        <tr><td>MVP</td><td>Table d'alchimie</td><td>Interface drag &amp; drop avec slots et résultat</td></tr>
+        <tr><td>MVP</td><td>Système de recettes</td><td>Hashmap ingrédients → résultat, gestion des échecs</td></tr>
+        <tr><td>MVP</td><td>Scène de base</td><td>Une zone de désert explorable</td></tr>
+        <tr><td>Phase 2</td><td>Coûts irréversibles</td><td>Tracking des altérations permanentes du joueur</td></tr>
+        <tr><td>Phase 2</td><td>Système de fins</td><td>Tracking silencieux du ratio douleur/sacrifice</td></tr>
+        <tr><td>Phase 3</td><td>Son &amp; UI finale</td><td>Ambiances, polish, build distribuable</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ 6. ROADMAP ══ -->
+  <section id="roadmap">
+    <div class="section-number">06</div>
+    <h2>Roadmap</h2>
+
+    <div class="roadmap">
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 0</div>
+        <div class="roadmap-obj">Setup &amp; prototype</div>
+        <div class="roadmap-del">Godot installé, scène vide, table de craft fonctionnelle sans visuel</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 1</div>
+        <div class="roadmap-obj">MVP jouable</div>
+        <div class="roadmap-del">1 zone, 6 recettes, inventaire complet, premier fragment lore</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 2</div>
+        <div class="roadmap-obj">Contenu core</div>
+        <div class="roadmap-del">3 zones, 12 recettes, système de fins, altérations joueur permanentes</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 3</div>
+        <div class="roadmap-obj">Finition</div>
+        <div class="roadmap-del">Son, UI finale, 3 fins implémentées, polish, build distribuable</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Scope MVP</div>
+      <p>Une zone, 6 recettes, 3 fragments narratifs, 1 fin possible. L'objectif est de valider que le système alchimique est fun et que l'ambiance fonctionne avant d'élargir le contenu.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>DÉSERT CRAMOISI — GDD v0.1</span>
+    <span>Document vivant — à mettre à jour à chaque itération majeure</span>
+  </footer>
+
+</main>
+</div>
+
+<script>
+// Active nav link on scroll
+const sections = document.querySelectorAll('section, .hero');
+const navLinks = document.querySelectorAll('nav a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = entry.target.id;
+      const active = document.querySelector(`nav a[href="#${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+sections.forEach(s => { if (s.id) observer.observe(s); });
+</script>
+
+</body>
+</html>
