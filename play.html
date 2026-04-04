@@ -80,8 +80,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 
 /* ── HOTSPOT OVERLAY (HTML on top of PixiJS) ── */
 #hotspot-layer { position:absolute; inset:0; z-index:10; }
-.hotspot { position:absolute; background:rgba(140,28,28,0.06); border:1px dashed rgba(190,55,45,0.25); cursor:none; padding:0; border-radius:2px; }
-.hotspot:hover { background:rgba(140,28,28,0.15); border-color:rgba(190,55,45,0.45); }
+.hotspot { position:absolute; background:transparent; border:1px dashed rgba(190,55,45,0.25); cursor:none; padding:0; border-radius:2px; }
+.hotspot:hover { background:rgba(140,28,28,0.1); border-color:rgba(190,55,45,0.45); }
+.hotspot.zoom-hs { border:none; background:transparent; }
+.hotspot.zoom-hs:hover { background:rgba(140,28,28,0.08); }
 .exit-zone { position:absolute; z-index:6; cursor:none; background:transparent; border:none; padding:0; }
 .exit-zone:not(.locked):hover { background:rgba(190,55,45,0.06); }
 
@@ -253,13 +255,135 @@ app.view.style.zIndex = '0';
 
 let sceneSprite = null;
 
-function setupPixiScene(imagePath) {
+function setupPixiScene(imagePath, sceneId) {
   if (sceneSprite) { app.stage.removeChild(sceneSprite); sceneSprite.destroy(); }
-  const tex = PIXI.Texture.from(imagePath);
-  sceneSprite = new PIXI.Sprite(tex);
-  sceneSprite.width = 960;
-  sceneSprite.height = 720;
-  app.stage.addChildAt(sceneSprite, 0);
+
+  const img = new Image();
+  img.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = 960; c.height = 720;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, 960, 720);
+
+    // Draw scene elements on top
+    if (sceneId === 'scene-01') {
+      drawRocherOnScene(ctx);
+      drawTraceOnScene(ctx);
+      drawAlchemyCircleOnScene(ctx);
+    }
+
+    const tex = PIXI.Texture.from(c);
+    sceneSprite = new PIXI.Sprite(tex);
+    sceneSprite.width = 960; sceneSprite.height = 720;
+    app.stage.addChildAt(sceneSprite, 0);
+  };
+  img.src = imagePath;
+}
+
+// ── Rock on scene (small, at hotspot position) ──
+function drawRocherOnScene(ctx) {
+  const ox = 960 * 0.20, oy = 720 * 0.45; // hotspot origin
+  const w = 960 * 0.18, h = 720 * 0.25;
+  ctx.save();
+  ctx.translate(ox, oy);
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(w*0.5, h*0.9, w*0.4, h*0.08, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.fill();
+  // Rock body — irregular shape
+  ctx.beginPath();
+  ctx.moveTo(w*0.15, h*0.85);
+  ctx.bezierCurveTo(w*0.05, h*0.55, w*0.2, h*0.2, w*0.4, h*0.1);
+  ctx.bezierCurveTo(w*0.55, h*0.05, w*0.75, h*0.15, w*0.85, h*0.35);
+  ctx.bezierCurveTo(w*0.95, h*0.55, w*0.88, h*0.75, w*0.82, h*0.85);
+  ctx.closePath();
+  ctx.fillStyle = '#1e1412';
+  ctx.fill();
+  // Lighter face
+  ctx.beginPath();
+  ctx.moveTo(w*0.25, h*0.7);
+  ctx.bezierCurveTo(w*0.2, h*0.4, w*0.35, h*0.2, w*0.5, h*0.15);
+  ctx.bezierCurveTo(w*0.6, h*0.12, w*0.7, h*0.2, w*0.72, h*0.35);
+  ctx.lineTo(w*0.65, h*0.7);
+  ctx.closePath();
+  ctx.fillStyle = '#2a1c18';
+  ctx.fill();
+  // Edge highlight
+  ctx.beginPath();
+  ctx.moveTo(w*0.3, h*0.35);
+  ctx.bezierCurveTo(w*0.4, h*0.15, w*0.6, h*0.12, w*0.7, h*0.25);
+  ctx.strokeStyle = '#3a2c24';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // Crack
+  ctx.beginPath();
+  ctx.moveTo(w*0.5, h*0.25); ctx.lineTo(w*0.48, h*0.45); ctx.lineTo(w*0.52, h*0.6);
+  ctx.strokeStyle = '#0c0806';
+  ctx.lineWidth = 0.8;
+  ctx.stroke();
+  ctx.restore();
+}
+
+// ── Body trace on scene (silhouette in sand) ──
+function drawTraceOnScene(ctx) {
+  const ox = 960 * 0.45, oy = 720 * 0.65;
+  const w = 960 * 0.25, h = 720 * 0.15;
+  ctx.save();
+  ctx.translate(ox + w*0.5, oy + h*0.5);
+  ctx.globalAlpha = 0.25;
+  // Lying figure — simple silhouette pressed into sand
+  ctx.fillStyle = '#0a0504';
+  // Head
+  ctx.beginPath();
+  ctx.ellipse(-w*0.35, 0, h*0.25, h*0.22, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Torso
+  ctx.beginPath();
+  ctx.ellipse(-w*0.1, 0, h*0.55, h*0.3, 0.05, 0, Math.PI*2);
+  ctx.fill();
+  // Legs
+  ctx.beginPath();
+  ctx.ellipse(w*0.25, -h*0.08, h*0.45, h*0.15, -0.1, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(w*0.25, h*0.12, h*0.45, h*0.15, 0.1, 0, Math.PI*2);
+  ctx.fill();
+  // Arms
+  ctx.beginPath();
+  ctx.ellipse(-w*0.15, -h*0.35, h*0.35, h*0.1, -0.3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(-w*0.1, h*0.35, h*0.3, h*0.1, 0.2, 0, Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+// ── Alchemy circle on scene ──
+function drawAlchemyCircleOnScene(ctx) {
+  const cx = 960 * 0.75, cy = 720 * 0.76;
+  ctx.save();
+  ctx.globalAlpha = 0.2;
+  ctx.strokeStyle = '#8C1C1C';
+  ctx.lineWidth = 1;
+  // Outer circle
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, 35, 20, 0.1, 0, Math.PI*2);
+  ctx.stroke();
+  // Inner circle
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, 18, 10, -0.05, 0, Math.PI*2);
+  ctx.stroke();
+  // Cross lines
+  ctx.beginPath();
+  ctx.moveTo(cx-30, cy); ctx.lineTo(cx+30, cy);
+  ctx.moveTo(cx, cy-18); ctx.lineTo(cx, cy+18);
+  ctx.strokeStyle = '#6B2416';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.restore();
 }
 
 // ══════════════════════════════════════
@@ -593,7 +717,7 @@ function transitionToScene(tid){const ov=document.createElement('canvas');ov.sty
 // ══════════════════════════════════════
 function loadScene(sceneId){
   const scene=SCENES[sceneId];if(!scene)return;state.currentScene=sceneId;activeAlchemyPoint=false;
-  setupPixiScene(scene.bg);
+  setupPixiScene(scene.bg, sceneId);
   hotspotLayer.querySelectorAll('.hotspot,.exit-zone').forEach(e=>e.remove());
   scene.hotspots.forEach(hs=>{const key=sceneId+':'+hs.id;
     if(hs.collectible&&hs.type==='souffle'&&state.souffleCollected[key])return;
@@ -607,7 +731,7 @@ function loadScene(sceneId){
   updateResourceUI();updateVitalityUI();updateRecipeUI();saveState();
 }
 const SCENE_W=960,SCENE_H=720;
-function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
+function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot'+(hs.type==='zoom'?' zoom-hs':'');el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
 function handleHotspotClick(hs,el,sceneId){if(hs.type==='zoom'&&hs.zoomScene){enterZoom(hs.zoomScene);return}if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
