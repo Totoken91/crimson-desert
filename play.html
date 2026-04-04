@@ -343,7 +343,7 @@ function setupPixiScene(imagePath) {
     displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
     app.stage.addChild(displacementSprite);
     displacementFilter = new PIXI.DisplacementFilter(displacementSprite);
-    displacementFilter.scale.set(4);
+    displacementFilter.scale.set(0);
   }
 
   // Organic GLSL filter
@@ -354,7 +354,8 @@ function setupPixiScene(imagePath) {
     });
   }
 
-  sceneSprite.filters = [displacementFilter, organicFilter];
+  // Filters applied by ticker only when damaged
+  sceneSprite.filters = [];
 
   // Resize handler
   const onResize = () => {
@@ -435,18 +436,35 @@ function drawPortrait() {
 }
 
 app.ticker.add((delta) => {
-  pixiTime += delta * 0.01;
-  if (displacementSprite) {
-    displacementSprite.x += 0.3;
-    displacementSprite.y += 0.2;
-    // Scale displacement with vitality loss
-    const vitalityRatio = state ? state.vitality / state.vitalityMax : 1;
-    const baseScale = 3 + (1 - vitalityRatio) * 12;
-    displacementFilter.scale.set(baseScale);
+  if (!sceneSprite || !state) return;
+
+  // Full life = no filters, crisp image, zero GPU cost
+  const damaged = state.vitality < state.vitalityMax;
+
+  if (!damaged) {
+    if (sceneSprite.filters && sceneSprite.filters.length > 0) sceneSprite.filters = [];
+    return;
   }
+
+  // Enable filters only when damaged
+  if (!sceneSprite.filters || sceneSprite.filters.length === 0) {
+    sceneSprite.filters = [displacementFilter, organicFilter];
+  }
+
+  pixiTime += delta * 0.01;
+
+  // Displacement scales with vitality loss
+  if (displacementSprite) {
+    displacementSprite.x += 0.2;
+    displacementSprite.y += 0.15;
+    const vitalityRatio = state.vitality / state.vitalityMax;
+    displacementFilter.scale.set((1 - vitalityRatio) * 15);
+  }
+
+  // GLSL uniforms
   if (organicFilter) {
     organicFilter.uniforms.uTime = pixiTime;
-    organicFilter.uniforms.uPain = state ? state.painLevel : 0;
+    organicFilter.uniforms.uPain = state.painLevel;
   }
 });
 
