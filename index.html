@@ -1022,7 +1022,7 @@ footer {
     <h3>Boucle de jeu</h3>
     <ul class="styled">
       <li><strong>Inspecter</strong> — clic sur des zones de la photo traitée → fragment narratif cryptique. Le texte parle du joueur, jamais de l'objet.</li>
-      <li><strong>Collecter</strong> — certaines inspections donnent une ressource (Douleur, Essence, Organique).</li>
+      <li><strong>Collecter</strong> — certaines inspections donnent une ressource (Douleur, Souffle, Organique).</li>
       <li><strong>Combiner</strong> — sur un point d'alchimie intégré à la scène (cercle de cendre, autel, fissure), combiner les ressources pour crafter.</li>
       <li><strong>Progresser</strong> — les crafts débloquent la suite : nouvelle scène, fragment de mémoire révélé, passage ouvert.</li>
     </ul>
@@ -1043,7 +1043,7 @@ footer {
             <span class="val" style="color:#E24B4A">03</span>
           </div>
           <div class="mockup-resource">
-            <span class="label" style="color:#7F77DD">E:</span>
+            <span class="label" style="color:#7F77DD">S:</span>
             <span class="val" style="color:#7F77DD">01</span>
           </div>
           <div class="mockup-resource">
@@ -1070,11 +1070,11 @@ footer {
           <div class="mockup-panel-title">alchimie</div>
           <div class="mockup-recipe">
             <div class="mockup-recipe-name">> Lanterne d'os</div>
-            <div class="mockup-recipe-cost">&nbsp; D2 E1</div>
+            <div class="mockup-recipe-cost">&nbsp; D2 S1</div>
           </div>
           <div class="mockup-recipe">
             <div class="mockup-recipe-name">> Tuile memoire</div>
-            <div class="mockup-recipe-cost">&nbsp; D3 E2</div>
+            <div class="mockup-recipe-cost">&nbsp; D3 S2</div>
           </div>
           <div class="mockup-recipe" style="opacity:0.3">
             <div class="mockup-recipe-name">> Lien de nerf</div>
@@ -1110,7 +1110,7 @@ footer {
       </thead>
       <tbody>
         <tr><td>Douleur</td><td style="font-family:'JetBrains Mono',monospace;color:#E24B4A">D</td><td><span style="color:#E24B4A">&#9679;</span> #E24B4A</td><td>Inspecter objets dangereux (lames, braises, os)</td></tr>
-        <tr><td>Essence</td><td style="font-family:'JetBrains Mono',monospace;color:#7F77DD">E</td><td><span style="color:#7F77DD">&#9679;</span> #7F77DD</td><td>Interagir avec entités, fragments de mémoire</td></tr>
+        <tr><td>Souffle</td><td style="font-family:'JetBrains Mono',monospace;color:#7F77DD">E</td><td><span style="color:#7F77DD">&#9679;</span> #7F77DD</td><td>Interagir avec entités, fragments de mémoire</td></tr>
         <tr><td>Organique</td><td style="font-family:'JetBrains Mono',monospace;color:#EF9F27">O</td><td><span style="color:#EF9F27">&#9679;</span> #EF9F27</td><td>Restes dans le désert, prélèvements</td></tr>
       </tbody>
     </table>
@@ -1149,7 +1149,7 @@ footer {
       <p>« Ça se détache facilement. Trop facilement. »<br>« Tu ne sais pas si c'était vivant. Tu le prends quand même. »<br>« Le désert te le donne. Ce n'est pas un cadeau. »</p>
     </div>
 
-    <h3>Essence (E) — traces de présences</h3>
+    <h3>Souffle (E) — traces de présences</h3>
 
     <p>Des anomalies visuelles dans la scène. Pas d'objet physique — des impossibilités.</p>
 
@@ -1164,7 +1164,7 @@ footer {
     <p><strong>Collecte :</strong> clic simple → l'anomalie se dissout (blur + fade, 0.4s) → <span style="color:#7F77DD">+1 E</span>. Certaines reviennent après 30s (ombres), d'autres sont définitives (cercles de cendre).</p>
 
     <div class="callout">
-      <div class="callout-label">Textes de collecte — Essence</div>
+      <div class="callout-label">Textes de collecte — Souffle</div>
       <p>« L'ombre disparaît quand tu la regardes trop longtemps. »<br>« Tu t'es souvenu de quelque chose. Tu ne sais plus quoi. »<br>« Il y avait quelqu'un ici. La chaleur garde la forme. »</p>
     </div>
 
@@ -1223,7 +1223,7 @@ footer {
       </thead>
       <tbody>
         <tr><td><span style="color:#EF9F27">Organique</span></td><td>Contraction (scale 1→0.6) + fade-out, 0.4s</td><td style="color:#EF9F27">+1</td></tr>
-        <tr><td><span style="color:#7F77DD">Essence</span></td><td>Dissolution (blur 0→4px) + fade-out, 0.4s</td><td style="color:#7F77DD">+1</td></tr>
+        <tr><td><span style="color:#7F77DD">Souffle</span></td><td>Dissolution (blur 0→4px) + fade-out, 0.4s</td><td style="color:#7F77DD">+1</td></tr>
         <tr><td><span style="color:#E24B4A">Douleur A</span></td><td>Flash rouge sur toute la scène, 0.3s</td><td style="color:#E24B4A">+1</td></tr>
         <tr><td><span style="color:#E24B4A">Douleur B</span></td><td>Vignette + shake progressifs pendant le maintien</td><td style="color:#E24B4A">+1 par palier</td></tr>
       </tbody>
@@ -1247,7 +1247,7 @@ footer {
         </div>
         <div class="recipe-ingredients">
           <span class="ing d">D ×2</span>
-          <span class="ing s">E ×1</span>
+          <span class="ing s">S ×1</span>
         </div>
         <div class="recipe-effect">Révèle les hotspots cachés pendant 3 inspections.</div>
         <div class="recipe-cost">Coût rituel : douleur sourde dans les mains, permanente.</div>
@@ -1259,7 +1259,7 @@ footer {
         </div>
         <div class="recipe-ingredients">
           <span class="ing d">D ×3</span>
-          <span class="ing s">E ×2</span>
+          <span class="ing s">S ×2</span>
         </div>
         <div class="recipe-effect">Déclenche un fragment narratif caché — inaccessible autrement.</div>
         <div class="recipe-cost">Coût rituel : un nom disparaît de la mémoire du joueur (label UI effacé).</div>
@@ -1270,7 +1270,7 @@ footer {
           <div class="recipe-tier">Tier I</div>
         </div>
         <div class="recipe-ingredients">
-          <span class="ing s">E ×1</span>
+          <span class="ing s">S ×1</span>
           <span class="ing o">O ×1</span>
         </div>
         <div class="recipe-effect">Le prochain craft ne coûte pas de Douleur.</div>
@@ -1300,7 +1300,7 @@ footer {
         </div>
         <div class="recipe-ingredients">
           <span class="ing d">D ×5</span>
-          <span class="ing s">E ×2</span>
+          <span class="ing s">S ×2</span>
           <span class="ing o">O ×1</span>
         </div>
         <div class="recipe-effect">Voir les lignes de flux du monde — les règles invisibles qui structurent le désert.</div>
@@ -1312,10 +1312,10 @@ footer {
           <div class="recipe-tier">Tier II</div>
         </div>
         <div class="recipe-ingredients">
-          <span class="ing s">E ×4</span>
+          <span class="ing s">S ×4</span>
           <span class="ing o">O ×1</span>
         </div>
-        <div class="recipe-effect">Réservoir d'essence — peut être brisé en explosion rituelle.</div>
+        <div class="recipe-effect">Réservoir de souffle — peut être brisé en explosion rituelle.</div>
         <div class="recipe-cost">Coût rituel : le joueur ne ressent plus la peur — certaines entités ne réagissent plus.</div>
       </div>
     </div>
@@ -1330,7 +1330,7 @@ footer {
         </div>
         <div class="recipe-ingredients">
           <span class="ing d">D ×8</span>
-          <span class="ing s">E ×3</span>
+          <span class="ing s">S ×3</span>
           <span class="ing o">O ×1</span>
         </div>
         <div class="recipe-effect">Révèle un fragment de mémoire perdue gravé dans le désert.</div>
@@ -1343,7 +1343,7 @@ footer {
         </div>
         <div class="recipe-ingredients">
           <span class="ing d">D ×10</span>
-          <span class="ing s">E ×6</span>
+          <span class="ing s">S ×6</span>
           <span class="ing o">O ×1</span>
         </div>
         <div class="recipe-effect">Efface une entité ou un lieu du monde. Irréversible.</div>
@@ -1541,7 +1541,7 @@ footer {
         <tr>
           <td>Les Dissous</td>
           <td>Entités en train de disparaître — semi-transparentes</td>
-          <td>Source d'essence facile mais instable — risque de contamination</td>
+          <td>Source de souffle facile mais instable — risque de contamination</td>
         </tr>
       </tbody>
     </table>
@@ -1599,7 +1599,7 @@ footer {
       <tbody>
         <tr><td>MVP</td><td>Moteur de scènes</td><td>Chargement photos, zones cliquables SVG, transitions</td></tr>
         <tr><td>MVP</td><td>Inspections</td><td>Clic → fragment narratif avec typewriter, progression par inspections</td></tr>
-        <tr><td>MVP</td><td>Ressources &amp; alchimie</td><td>Collecte D/E/O, points d'alchimie, combinaisons → résultat</td></tr>
+        <tr><td>MVP</td><td>Ressources &amp; alchimie</td><td>Collecte D/S/O, points d'alchimie, combinaisons → résultat</td></tr>
         <tr><td>MVP</td><td>Effets visuels</td><td>Scanlines, grain, vignette, dégradation CSS (<code>--pain-level</code>)</td></tr>
         <tr><td>Phase 2</td><td>Altérations irréversibles</td><td>Dégradation visuelle permanente selon les crafts, curseur altéré</td></tr>
         <tr><td>Phase 2</td><td>Système de fins</td><td>Tracking silencieux ratio douleur/sacrifice → fin accessible</td></tr>
