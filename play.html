@@ -374,10 +374,7 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 // RECIPES
 // ══════════════════════════════════════
 const RECIPES = [
-  {id:'lanterne-os',name:"Lanterne d'os",cost:{douleur:2,souffle:1,organique:0},effect:"Révèle les zones cachées.",sceneReaction:"Quelque chose dans le sable répond à la lumière. Tu vois ce que tu ne voyais pas.",mechanic:'reveal-hotspots'},
-  {id:'tuile-memoire',name:"Tuile de mémoire",cost:{douleur:3,souffle:2,organique:0},effect:"Grave un fragment dans le sable.",sceneReaction:"Tu n'es pas perdu. On ne perd pas ce qui a toujours été ici.",mechanic:'unlock-narrative'},
-  {id:'armure-peau',name:"Armure de peau",cost:{douleur:0,souffle:1,organique:1},effect:"Prochain craft sans Douleur.",sceneReaction:"Quelque chose enveloppe ce qui reste de toi.",mechanic:'pain-absorb'},
-  {id:'lien-nerf',name:"Lien de nerf",cost:{douleur:3,souffle:0,organique:2},effect:"Débloque le passage.",sceneReaction:"Le passage s'ouvre. Tu ne sais pas si c'est une bonne chose.",mechanic:'unlock-exit',targetExit:'exit-droite'},
+  {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:0,organique:0},effect:"Te protège du froid.",sceneReaction:"Quelque chose enveloppe ce qui reste de toi. Tu as moins froid.",mechanic:'pain-absorb'},
 ];
 
 // ══════════════════════════════════════
@@ -386,16 +383,10 @@ const RECIPES = [
 const SCENES = {
   'scene-01':{id:'scene-01',label:'Les Dunes plates',intro:"Tu étais là avant que le sable existe.",bg:'desert-bg-1.png',
     hotspots:[
-      {id:'hs-cercle',type:'souffle',x:38,y:62,w:16,h:10,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Le cercle a été tracé avec quelque chose qui brûlait encore.","Tu reconnais le tracé. Tu n'as jamais appris à tracer."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
-      {id:'hs-ombre',type:'souffle',x:12,y:38,w:18,h:28,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["L'ombre disparaît quand tu la regardes trop longtemps.","Il y avait quelqu'un ici. La chaleur garde la forme."],collectible:false,respawnDelay:30000,visible:true,unlockedBy:null},
-      {id:'hs-doigts',type:'organique',x:48,y:68,w:6,h:10,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Ça se détache facilement. Trop facilement.","Tu ne sais pas si c'était vivant. Tu le prends quand même."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
-      {id:'hs-couteau',type:'douleur',x:68,y:60,w:4,h:12,cursor:'hand',resource:{type:'douleur',amount:1},collectMode:'click',flashOnCollect:true,texts:["Tu appuies. Ça compte.","La douleur est une ressource comme les autres."],collectible:true,visible:true,unlockedBy:null},
-      {id:'hs-rocher',type:'douleur',x:28,y:58,w:14,h:20,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"La pierre ne ressent rien. Toi si."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. Pourquoi tu continues ?"},{ms:3000,resource:{type:'douleur',amount:1},text:"Tu pouvais t'arrêter. Tu ne l'as pas fait.",painDelta:0.05}],collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-alchimie',type:'alchimie',x:18,y:70,w:12,h:14,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-horizon',type:'inspect',x:0,y:25,w:100,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi.","Tu n'as pas de direction. Tu as une présence."],collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-fissure',type:'douleur',x:60,y:52,w:8,h:14,cursor:'eye',resource:{type:'douleur',amount:2},collectMode:'click',texts:["La fissure saigne. Pas de sang — quelque chose d'autre.","Tu aurais dû voir ça depuis le début."],collectible:true,visible:false,unlockedBy:'lanterne-os'},
-      {id:'hs-empreinte',type:'organique',x:22,y:76,w:12,h:8,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Une empreinte dans le sable. La forme est la tienne.","Tu étais là avant. Tu ne te souviens pas. Le sable, oui."],collectible:true,visible:false,unlockedBy:'tuile-memoire'},
-    ],exits:[{id:'exit-droite',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Quelque chose bloque ce passage.",unlockedBy:'lien-nerf'}]},
+      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:20,y:45,w:18,h:25,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:45,y:65,w:25,h:15,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-alchimie',type:'alchimie',x:70,y:70,w:10,h:12,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
+    ],exits:[{id:'exit-droite',targetScene:null,x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu as froid. Il faut que tu trouves un moyen de rester au chaud.",unlockedBy:null}]},
   'scene-02':{id:'scene-02',label:'Les Ossements',intro:"Tu as déjà été ici. Pas toi. Quelque chose de toi.",bg:'desert-house-bg.png',
     hotspots:[
       {id:'hs-kyste',type:'organique',x:55,y:45,w:8,h:10,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["Le kyste cède sous la pression.","Tu ne sais pas si c'était douloureux pour lui."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
@@ -404,6 +395,89 @@ const SCENES = {
       {id:'hs-alchimie-2',type:'alchimie',x:42,y:75,w:16,h:10,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
     ],exits:[{id:'exit-gauche',targetScene:'scene-01',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null}]},
 };
+
+// ══════════════════════════════════════
+// ZOOM SCENES
+// ══════════════════════════════════════
+let rocherBloodied = false;
+
+function drawRocher(ctx, w, h, bloodied) {
+  ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#1a0c0b';ctx.fillRect(0,h*0.7,w,h*0.3);
+  ctx.beginPath();ctx.moveTo(w*0.2,h*0.7);
+  ctx.bezierCurveTo(w*0.15,h*0.4,w*0.3,h*0.2,w*0.45,h*0.18);
+  ctx.bezierCurveTo(w*0.55,h*0.16,w*0.7,h*0.25,w*0.75,h*0.35);
+  ctx.bezierCurveTo(w*0.82,h*0.5,w*0.78,h*0.65,w*0.8,h*0.7);
+  ctx.closePath();ctx.fillStyle='#2a1a16';ctx.fill();
+  ctx.strokeStyle='#3a2a24';ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(w*0.3,h*0.45);
+  ctx.bezierCurveTo(w*0.4,h*0.28,w*0.55,h*0.22,w*0.65,h*0.3);
+  ctx.strokeStyle='#4a3a30';ctx.lineWidth=1;ctx.stroke();
+  ctx.beginPath();ctx.moveTo(w*0.45,h*0.35);ctx.lineTo(w*0.48,h*0.5);ctx.lineTo(w*0.44,h*0.6);
+  ctx.strokeStyle='#1a0c0b';ctx.lineWidth=1;ctx.stroke();
+  if(bloodied){for(let i=0;i<8;i++){const bx=w*0.3+Math.random()*w*0.4,by=h*0.25+Math.random()*h*0.3,br=5+Math.random()*15;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,'rgba(140,28,28,0.7)');g.addColorStop(1,'rgba(140,28,28,0)');ctx.fillStyle=g;ctx.fillRect(bx-br,by-br,br*2,br*2)}
+    ctx.beginPath();ctx.moveTo(w*0.5,h*0.3);ctx.bezierCurveTo(w*0.5,h*0.4,w*0.48,h*0.5,w*0.49,h*0.6);ctx.strokeStyle='#8C1C1C';ctx.lineWidth=2;ctx.stroke()}
+  const id=ctx.getImageData(0,0,w,h);for(let i=0;i<id.data.length;i+=4){const n=(Math.random()-0.5)*10;id.data[i]+=n;id.data[i+1]+=n;id.data[i+2]+=n}ctx.putImageData(id,0,0);
+}
+
+function drawTrace(ctx, w, h) {
+  ctx.fillStyle='#1a0c0b';ctx.fillRect(0,0,w,h);
+  const g=ctx.createRadialGradient(w*0.5,h*0.45,0,w*0.5,h*0.45,w*0.4);g.addColorStop(0,'#251210');g.addColorStop(1,'#1a0c0b');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  ctx.save();ctx.translate(w*0.5,h*0.45);ctx.scale(1.2,1);ctx.fillStyle='#100808';
+  ctx.beginPath();ctx.arc(0,-h*0.18,25,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(0,-h*0.02,40,70,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(-55,h*0.02,12,50,0.3,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(50,-h*0.01,12,45,-0.2,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(-18,h*0.18,14,55,0.05,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(18,h*0.19,14,55,-0.05,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+  const gl=ctx.createRadialGradient(w*0.5,h*0.45,50,w*0.5,h*0.45,180);gl.addColorStop(0,'rgba(140,28,28,0.04)');gl.addColorStop(1,'transparent');ctx.fillStyle=gl;ctx.fillRect(0,0,w,h);
+  const id=ctx.getImageData(0,0,w,h);for(let i=0;i<id.data.length;i+=4){const n=(Math.random()-0.5)*8;id.data[i]+=n;id.data[i+1]+=n;id.data[i+2]+=n}ctx.putImageData(id,0,0);
+}
+
+const ZOOM_SCENES = {
+  'rocher-zoom':{draw:drawRocher,introText:null,hotspots:[
+    {id:'hs-smash',x:25,y:20,w:50,h:45,cursor:'hand',action:'smash-head',texts:["Tu écrases ta tête contre la pierre. Le son est mat.","Le rocher ne bronche pas. Toi si."]},
+  ]},
+  'trace-zoom':{draw:drawTrace,introText:"Quelqu'un s'est allongé ici. La forme est encore tiède.",hotspots:[]},
+};
+
+let currentZoom = null;
+
+function enterZoom(zoomId){
+  const zoom=ZOOM_SCENES[zoomId];if(!zoom)return;currentZoom=zoomId;
+  const c=document.createElement('canvas');c.width=960;c.height=720;const ctx=c.getContext('2d');
+  if(zoomId==='rocher-zoom')zoom.draw(ctx,960,720,rocherBloodied);else zoom.draw(ctx,960,720);
+  const tex=PIXI.Texture.from(c);
+  if(sceneSprite){app.stage.removeChild(sceneSprite);sceneSprite.destroy()}
+  sceneSprite=new PIXI.Sprite(tex);sceneSprite.width=960;sceneSprite.height=720;app.stage.addChildAt(sceneSprite,0);
+  hotspotLayer.querySelectorAll('.hotspot,.exit-zone').forEach(e=>e.remove());
+  zoom.hotspots.forEach(hs=>{
+    const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;
+    el.style.cssText=`left:${hs.x/100*960}px;top:${hs.y/100*720}px;width:${hs.w/100*960}px;height:${hs.h/100*720}px`;
+    el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
+    el.addEventListener('mouseleave',()=>setCursor('default'));
+    el.addEventListener('click',()=>{
+      if(hs.action==='smash-head'){
+        const ok=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){rocherBloodied=true;flashPain();
+          const c2=document.createElement('canvas');c2.width=960;c2.height=720;
+          drawRocher(c2.getContext('2d'),960,720,true);sceneSprite.texture=PIXI.Texture.from(c2)}
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+      }
+    });
+    hotspotLayer.appendChild(el);
+  });
+  const ret=document.createElement('button');ret.className='exit-zone';
+  ret.style.cssText=`left:0;top:${720*0.8}px;width:960px;height:${720*0.2}px`;
+  ret.addEventListener('mouseenter',()=>setCursor('exit'));
+  ret.addEventListener('mouseleave',()=>setCursor('default'));
+  ret.addEventListener('click',()=>exitZoom());
+  hotspotLayer.appendChild(ret);
+  if(zoom.introText)setTimeout(()=>showDialogue(zoom.introText),300);
+}
+
+function exitZoom(){currentZoom=null;loadScene(state.currentScene)}
 
 // ══════════════════════════════════════
 // DOM REFS
@@ -534,8 +608,8 @@ function loadScene(sceneId){
 }
 const SCENE_W=960,SCENE_H=720;
 function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
-function handleHotspotClick(hs,el,sceneId){if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
-function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else{el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
+function handleHotspotClick(hs,el,sceneId){if(hs.type==='zoom'&&hs.zoomScene){enterZoom(hs.zoomScene);return}if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
+function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
 // RESET
 $('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));loadScene('scene-01')});
