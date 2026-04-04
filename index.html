@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Désert Cramoisi — GDD v1.0</title>
+<title>Désert Cramoisi — GDD v2.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -714,17 +714,21 @@ footer {
 <nav>
   <div class="nav-brand">
     <div class="title">Désert Cramoisi</div>
-    <div class="sub">GDD v1.0 — 2025</div>
+    <div class="sub">GDD v2.0 — 2025</div>
   </div>
 
   <div class="nav-section">
     <div class="nav-section-label">Document</div>
     <a href="#vision">01 — Vision</a>
-    <a href="#gameplay">02 — Comment on joue</a>
+    <a href="#gameplay">02 — Gameplay</a>
+    <a href="#craft" class="sub-link">Alchimie</a>
+    <a href="#recettes" class="sub-link">Recettes</a>
     <a href="#narration">03 — Narration</a>
+    <a href="#fins" class="sub-link">Les trois fins</a>
     <a href="#artdirection">04 — Direction artistique</a>
     <a href="#monde">05 — Le monde</a>
-    <a href="#tech">06 — Technique &amp; roadmap</a>
+    <a href="#entites" class="sub-link">Entités</a>
+    <a href="#tech">06 — Technique</a>
     <a href="#equipe">07 — Équipe</a>
   </div>
 </nav>
@@ -734,14 +738,15 @@ footer {
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">Game Design Document · v1.0</div>
+    <div class="hero-eyebrow">Game Design Document · v2.0</div>
     <h1>Désert<br><span>Cramoisi</span></h1>
-    <p class="hero-desc">Point &amp; click narratif. Tu te réveilles dans un désert cramoisi sans mémoire. Tu cliques. Le monde te parle — de toi, jamais de lui.</p>
+    <p class="hero-desc">Point &amp; click narratif d'horreur alchimique. Tu incarnes une anomalie — une entité sans identité ni souvenir — qui se réveille dans un désert de sable rouge-sang. Pas de combat. Pas de game over. Juste l'exploration, la collecte, et des choix irréversibles.</p>
     <div class="hero-tags">
       <span class="tag red">Point &amp; click</span>
-      <span class="tag red">Horreur narrative</span>
+      <span class="tag red">Horreur alchimique</span>
       <span class="tag red">Sans combat</span>
-      <span class="tag">Photos traitées + dessins</span>
+      <span class="tag">Photos bichrome</span>
+      <span class="tag">Alchimie rituelle</span>
       <span class="tag">HTML / CSS / JS</span>
       <span class="tag">Kenny + Alexandra</span>
     </div>
@@ -752,74 +757,230 @@ footer {
     <div class="section-number">01</div>
     <h2>Vision</h2>
 
-    <p>Un personnage sans mémoire se réveille dans un désert cramoisi. Devant lui : une image. Il clique. Un texte apparaît — court, cryptique, qui parle de lui. Il clique ailleurs. Quelque chose change. Pas le monde. Lui.</p>
-
-    <p>Le jeu ne donne aucune explication. Pas de tutoriel, pas de HUD, pas d'objectif affiché. Le joueur inspecte des scènes — des photos réelles traitées, corrompues, recouvertes de dessins — et reconstruit ce qu'il était, fragment par fragment, à travers ce que le monde lui dit de lui-même.</p>
+    <p>Le joueur incarne une anomalie — une entité sans identité ni souvenir — qui se réveille dans un désert de sable rouge-sang. En explorant des scènes construites à partir de photos réelles traitées (contraste extrême, grain lourd, palette bichrome noir/cramoisi), il découvre des fragments de sa propre mémoire. Le désert n'est pas un lieu — c'est la projection de sa psyché fracturée.</p>
 
     <div class="callout">
-      <div class="callout-label">Le malaise</div>
-      <p>Le texte sait que tu es là. Il s'adresse à toi. Il ne décrit pas ce que tu regardes — il te décrit, toi, en train de regarder.</p>
+      <div class="callout-label">Question narrative centrale</div>
+      <p>Tu n'es pas arrivé dans ce désert. Tu l'as créé.</p>
     </div>
+
+    <h3>Origine du projet</h3>
+    <p>Fusion de deux projets : <strong>Anomalie</strong> (approche visuelle et narrative — photos traitées, narration cryptique, point &amp; click, ambiance surréaliste inspirée de <em>I Live Under Your House</em>) et <strong>Désert Cramoisi</strong> (lore, direction artistique cramoisie, système d'alchimie rituelle).</p>
 
     <h3>Piliers</h3>
 
     <div class="pillars">
       <div class="pillar">
         <div class="pillar-label">Format</div>
-        <div class="pillar-title">Point &amp; click sur photos traitées</div>
-        <p>Chaque scène est une photo réelle post-traitée. Le joueur clique pour inspecter. Pas de HUD, pas d'inventaire. L'interface est le monde.</p>
+        <div class="pillar-title">Point &amp; click sur photos bichrome</div>
+        <p>Photos réelles traitées en bichrome noir/cramoisi. Hotspots invisibles, curseur contextuel. Pas de tutoriel. Le monde ne s'excuse pas.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Mécanique</div>
+        <div class="pillar-title">Alchimie rituelle intégrée</div>
+        <p>Collecte de ressources par inspection. Combinaison sur des points d'alchimie dans le décor. Chaque craft coûte quelque chose d'irréversible.</p>
       </div>
       <div class="pillar">
         <div class="pillar-label">Narration</div>
         <div class="pillar-title">Le texte parle de toi</div>
-        <p>Tu cliques sur un os — le texte te dit « Tu étais là avant que le sable existe. » Jamais de description d'objet. Toujours un miroir.</p>
+        <p>Fragments cryptiques à la deuxième personne. Le texte ne décrit jamais l'objet — il te décrit, toi, en train de regarder.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-label">Ambiance</div>
-        <div class="pillar-title">Cauchemar documentaire</div>
-        <p>Photos réelles corrompues — contraste extrême, grain, palette cramoisie, dessins par-dessus. Le réel rendu irréel.</p>
-      </div>
-      <div class="pillar">
-        <div class="pillar-label">Progression</div>
-        <div class="pillar-title">Comprendre par accumulation</div>
-        <p>Pas de quêtes, pas de puzzles classiques. Les fragments s'accumulent. Le joueur comprend progressivement ce qu'il est et ce qu'il a fait.</p>
+        <div class="pillar-label">Conséquences</div>
+        <div class="pillar-title">Choix irréversibles</div>
+        <p>Chaque craft altère le joueur de façon permanente — curseur plus lent, couleurs perdues, labels UI effacés. Pas de retour en arrière.</p>
       </div>
     </div>
 
     <h3>Références</h3>
     <ul class="styled">
-      <li><strong>I Live Under Your House</strong> — esthétique dégradée, ton surréaliste, malaise existentiel</li>
-      <li><strong>I Have No Mouth But I Must Scream</strong> — point &amp; click d'horreur, absurde cruel</li>
-      <li><strong>Disco Elysium</strong> — narration par fragments, identité reconstruite par le jeu</li>
-      <li><strong>Yume Nikki</strong> — exploration sans explication, progression par la découverte</li>
+      <li><strong>I Live Under Your House</strong> — esthétique dégradée, surréalisme, ambiance</li>
+      <li><strong>Fear &amp; Hunger</strong> — organique, brutal, monde sans explication</li>
+      <li><strong>I Have No Mouth But I Must Scream</strong> — absurde cruel, point &amp; click d'horreur</li>
+      <li><strong>Disco Elysium</strong> — narration par objets et fragments</li>
+      <li><strong>Yume Nikki</strong> — exploration sans explication</li>
     </ul>
   </section>
 
-  <!-- ══ 2. COMMENT ON JOUE ══ -->
+  <!-- ══ 2. GAMEPLAY ══ -->
   <section id="gameplay">
     <div class="section-number">02</div>
-    <h2>Comment on joue</h2>
-
-    <p>Chaque scène est une image plein écran. Le joueur clique sur des zones pour déclencher des fragments de texte. Certains clics changent quelque chose dans la scène — un détail se déplace, une zone s'ouvre, l'image se dégrade. En inspectant suffisamment, une nouvelle scène se débloque.</p>
+    <h2>Gameplay</h2>
 
     <h3>Boucle de jeu</h3>
     <ul class="styled">
-      <li><strong>Inspecter</strong> — cliquer sur une zone → fragment narratif. Le texte parle de toi.</li>
-      <li><strong>Observer</strong> — certains clics modifient la scène (un élément bouge, une couleur change, un dessin apparaît).</li>
-      <li><strong>Débloquer</strong> — après un certain nombre d'inspections, un passage s'ouvre vers la scène suivante.</li>
+      <li><strong>Inspecter</strong> — clic sur des zones de la photo traitée → fragment narratif cryptique. Le texte parle du joueur, jamais de l'objet.</li>
+      <li><strong>Collecter</strong> — certaines inspections donnent une ressource (Douleur, Essence, Organique).</li>
+      <li><strong>Combiner</strong> — sur un point d'alchimie intégré à la scène (cercle de cendre, autel, fissure), combiner les ressources pour crafter.</li>
+      <li><strong>Progresser</strong> — les crafts débloquent la suite : nouvelle scène, fragment de mémoire révélé, passage ouvert.</li>
     </ul>
 
-    <h3>Interface</h3>
-    <ul class="styled">
-      <li><strong>Curseur custom</strong> — change de forme au survol des zones interactives</li>
-      <li><strong>Boîte de dialogue</strong> — texte en bas de l'écran, police VT323, effet typewriter</li>
-      <li><strong>Pas de HUD</strong> — aucun compteur, aucune barre, aucun menu visible</li>
-      <li><strong>Pas d'inventaire</strong> — le joueur ne transporte rien, il accumule des fragments</li>
-    </ul>
+    <p><strong>Pas de tutoriel. Pas d'explication. Le monde ne s'excuse pas.</strong></p>
+
+    <h3>Interface — layout 4/3</h3>
+
+    <p>Le jeu est en format 4/3. La scène occupe le centre, les panneaux UI sont sur les côtés.</p>
 
     <div class="callout">
-      <div class="callout-label">Ce qu'on ne fait PAS</div>
-      <p>Pas de système de craft. Pas de ressources. Pas de puzzles combinatoires. Pas de combat. Pas de points de vie. Le joueur clique et lit. C'est tout. La complexité est dans le texte et dans ce que la scène lui montre de lui-même.</p>
+      <div class="callout-label">Layout</div>
+      <p>[GAUCHE 180px] Ressources D/E/O, police JetBrains Mono &nbsp;|&nbsp; [CENTRE] Scène 4/3 — photo traitée + hotspots SVG, boîte dialogue en bas (portrait 48×48 + texte typé) &nbsp;|&nbsp; [DROITE 180px] Recettes disponibles, bouton VOIR</p>
+    </div>
+
+    <ul class="styled">
+      <li><strong>Curseur contextuel</strong> — œil (inspection), main (collecte), flamme (alchimie)</li>
+      <li><strong>Hotspots invisibles</strong> — le curseur change au survol, pas de contour visible</li>
+      <li><strong>Bouton [VOIR]</strong> — révèle tous les hotspots pendant 3 secondes avec un contour dim</li>
+      <li><strong>2 variantes par texte</strong> — chaque hotspot a 2 fragments, alternés aléatoirement</li>
+      <li><strong>Hotspot collectible</strong> — disparaît après collecte, ne revient pas</li>
+      <li><strong>Persistance</strong> — état du jeu sauvé dans localStorage (ressources, inspections, crafts)</li>
+    </ul>
+  </section>
+
+  <!-- ══ ALCHIMIE ══ -->
+  <section id="craft">
+    <div class="section-number">02.1</div>
+    <h2>Système d'alchimie</h2>
+
+    <h3>Les 3 ressources</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Ressource</th><th>Code</th><th>Couleur</th><th>Comment la trouver</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Douleur</td><td style="font-family:'JetBrains Mono',monospace;color:#E24B4A">D</td><td><span style="color:#E24B4A">&#9679;</span> #E24B4A</td><td>Inspecter objets dangereux (lames, braises, os)</td></tr>
+        <tr><td>Essence</td><td style="font-family:'JetBrains Mono',monospace;color:#7F77DD">E</td><td><span style="color:#7F77DD">&#9679;</span> #7F77DD</td><td>Interagir avec entités, fragments de mémoire</td></tr>
+        <tr><td>Organique</td><td style="font-family:'JetBrains Mono',monospace;color:#EF9F27">O</td><td><span style="color:#EF9F27">&#9679;</span> #EF9F27</td><td>Restes dans le désert, prélèvements</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Points d'alchimie</h3>
+
+    <p>Intégrés aux scènes comme des éléments visuels (cercle de cendre, autel de pierre, fissure lumineuse). Le joueur clique dessus → panneau alchimie s'ouvre dans le panneau droit. Aucune indication sur les combinaisons — tout s'apprend par essai-erreur ou fragments de lore.</p>
+
+    <div class="callout">
+      <div class="callout-label">Recettes ratées</div>
+      <p>Pas neutres. Un mauvais mélange produit toujours quelque chose — texte narratif altéré, image dégradée, ou entité apparaissant.</p>
+    </div>
+  </section>
+
+  <!-- ══ RECETTES ══ -->
+  <section id="recettes">
+    <div class="section-number">02.2</div>
+    <h2>Recettes alchimiques</h2>
+
+    <h3>Tier I — MVP</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Lanterne d'os</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×2</span>
+          <span class="ing s">E ×1</span>
+        </div>
+        <div class="recipe-effect">Révèle les hotspots cachés pendant 3 inspections.</div>
+        <div class="recipe-cost">Coût rituel : douleur sourde dans les mains, permanente.</div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Tuile de mémoire</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×3</span>
+          <span class="ing s">E ×2</span>
+        </div>
+        <div class="recipe-effect">Déclenche un fragment narratif caché — inaccessible autrement.</div>
+        <div class="recipe-cost">Coût rituel : un nom disparaît de la mémoire du joueur (label UI effacé).</div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Armure de peau</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing s">E ×1</span>
+          <span class="ing o">O ×1</span>
+        </div>
+        <div class="recipe-effect">Le prochain craft ne coûte pas de Douleur.</div>
+        <div class="recipe-cost">Coût rituel : le visage de la créature hante les 3 scènes suivantes.</div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Lien de nerf</div>
+          <div class="recipe-tier">Tier I</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×3</span>
+          <span class="ing o">O ×2</span>
+        </div>
+        <div class="recipe-effect">Débloque le passage vers la scène suivante.</div>
+        <div class="recipe-cost">Coût rituel : mobilité réduite — curseur plus lent, permanent.</div>
+      </div>
+    </div>
+
+    <h3>Tier II — Phase 2</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Oeil de substitution</div>
+          <div class="recipe-tier">Tier II</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×5</span>
+          <span class="ing s">E ×2</span>
+          <span class="ing o">O ×1</span>
+        </div>
+        <div class="recipe-effect">Voir les lignes de flux du monde — les règles invisibles qui structurent le désert.</div>
+        <div class="recipe-cost">Coût rituel : perte de la perception du rouge — teinte image altérée définitivement.</div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Coeur reliquaire</div>
+          <div class="recipe-tier">Tier II</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing s">E ×4</span>
+          <span class="ing o">O ×1</span>
+        </div>
+        <div class="recipe-effect">Réservoir d'essence — peut être brisé en explosion rituelle.</div>
+        <div class="recipe-cost">Coût rituel : le joueur ne ressent plus la peur — certaines entités ne réagissent plus.</div>
+      </div>
+    </div>
+
+    <h3>Tier III — Phase 2</h3>
+
+    <div class="recipe-grid">
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Encre de mémoire</div>
+          <div class="recipe-tier">Tier III</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×8</span>
+          <span class="ing s">E ×3</span>
+          <span class="ing o">O ×1</span>
+        </div>
+        <div class="recipe-effect">Révèle un fragment de mémoire perdue gravé dans le désert.</div>
+        <div class="recipe-cost">Coût rituel : efface un détail de la mémoire en cours — un label UI disparaît.</div>
+      </div>
+      <div class="recipe-card">
+        <div class="recipe-header">
+          <div class="recipe-name">Sceau de dissolution</div>
+          <div class="recipe-tier">Tier III</div>
+        </div>
+        <div class="recipe-ingredients">
+          <span class="ing d">D ×10</span>
+          <span class="ing s">E ×6</span>
+          <span class="ing o">O ×1</span>
+        </div>
+        <div class="recipe-effect">Efface une entité ou un lieu du monde. Irréversible.</div>
+        <div class="recipe-cost">Coût rituel : une partie du joueur disparaît aussi. Le jeu ne dit pas laquelle.</div>
+      </div>
     </div>
   </section>
 
@@ -828,38 +989,64 @@ footer {
     <div class="section-number">03</div>
     <h2>Narration</h2>
 
-    <p>Le joueur se réveille dans le désert sans identité ni souvenir. Chaque inspection révèle un fragment de texte — court, cryptique, à la deuxième personne. Le texte ne décrit jamais l'objet inspecté. Il parle du joueur.</p>
-
-    <p>En accumulant les fragments, le joueur reconstitue progressivement ce qu'il est et pourquoi il est là. Il n'y a pas de twist final annoncé — la compréhension est graduelle, et chaque joueur la vit à son rythme.</p>
+    <p>Le joueur se réveille dans le désert sans identité ni souvenir. Chaque inspection déclenche un fragment court et cryptique — qui parle de lui, jamais de l'objet. En explorant et en craftant, il découvre qu'il est l'origine de ce monde : le désert est la projection de sa propre psyché fracturée.</p>
 
     <h3>Ton narratif</h3>
 
-    <p>Court. Cryptique. Jamais explicatif. Le texte pose des sensations, pas des réponses.</p>
+    <p>Court, jamais explicatif. Le texte pose des sensations, pas des réponses.</p>
 
     <div class="callout">
-      <div class="callout-label">Fragment — Sable</div>
-      <p>Le sable connaît leur poids par cœur. Pas le tien. Tu n'en as pas.</p>
-    </div>
-    <div class="callout">
-      <div class="callout-label">Fragment — Horizon</div>
-      <p>L'horizon ne recule pas. Il n'existe pas.</p>
-    </div>
-    <div class="callout">
-      <div class="callout-label">Fragment — Ombre</div>
+      <div class="callout-label">Fragment</div>
       <p>Tu étais là avant que le sable existe.</p>
     </div>
     <div class="callout">
-      <div class="callout-label">Fragment — Cercle</div>
-      <p>La cendre est encore tiède. Quelqu'un a brûlé quelque chose ici. Quelqu'un qui te ressemble.</p>
+      <div class="callout-label">Fragment</div>
+      <p>Ils t'appellent mirage. Tu t'appelles présence.</p>
     </div>
     <div class="callout">
-      <div class="callout-label">Fragment — Ciel</div>
-      <p>Il n'y a pas de soleil. La lumière vient de nulle part. Comme toi.</p>
+      <div class="callout-label">Fragment</div>
+      <p>Le désert connaît leur poids par cœur. Pas le tien. Tu n'en as pas.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment</div>
+      <p>Tu n'es pas perdu. On ne perd pas ce qui a toujours été ici.</p>
     </div>
 
-    <h3>Progression narrative</h3>
+    <h3>Structure en trois actes</h3>
 
-    <p>Le joueur ne « finit » pas l'histoire au sens classique. Plus il inspecte, plus les fragments deviennent directs, plus le malaise s'installe. La dernière scène ne donne pas de réponse — elle pose une dernière question.</p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Acte</th><th>Nom</th><th>Ce qui se passe</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>I</td><td>Éveil</td><td>Exploration des premières scènes, premier craft, premier fragment de mémoire.</td></tr>
+        <tr><td>II</td><td>Reconnaissance</td><td>Les crafts Tier II altèrent visuellement les scènes. Les entités lui sont liées.</td></tr>
+        <tr><td>III</td><td>Dissolution</td><td>Les crafts Tier III révèlent la vérité — une des trois fins selon les sacrifices.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ FINS ══ -->
+  <section id="fins">
+    <div class="section-number">03.1</div>
+    <h2>Les trois fins</h2>
+
+    <p>Les fins ne sont jamais annoncées. Le joueur y arrive par ses habitudes de craft — ce qu'il a préféré prélever sur lui-même ou sur les autres. Un tracker silencieux (jamais affiché) mesure le ratio douleur/sacrifice.</p>
+
+    <div class="endings">
+      <div class="ending dissolution">
+        <div class="ending-name">Dissolution</div>
+        <p>Le joueur continue à puiser en lui jusqu'à disparaître dans le monde qu'il a créé. Fin ambiguë, presque paisible.</p>
+      </div>
+      <div class="ending repetition">
+        <div class="ending-name">Répétition</div>
+        <p>Il retrouve tous ses souvenirs, comprend ce qu'il a fait — et recommence. Le cycle est la vérité du monde.</p>
+      </div>
+      <div class="ending rupture">
+        <div class="ending-name">Rupture</div>
+        <p>Il trouve le rituel inverse, défait ce qu'il a construit. Le monde s'effondre. On ne sait pas s'il survit.</p>
+      </div>
+    </div>
   </section>
 
   <!-- ══ 4. DIRECTION ARTISTIQUE ══ -->
@@ -867,45 +1054,56 @@ footer {
     <div class="section-number">04</div>
     <h2>Direction artistique</h2>
 
-    <h3>Palette</h3>
+    <h3>Palette UI</h3>
 
     <div class="palette-row">
       <div class="palette-swatch" style="background:#080506"><span style="color:#8A7A6A">#080506<br>nuit</span></div>
+      <div class="palette-swatch" style="background:#100b0a"><span style="color:#8A7A6A">#100b0a<br>surface</span></div>
       <div class="palette-swatch" style="background:#3A3230"><span style="color:#C6B29B">#3A3230<br>cendre</span></div>
       <div class="palette-swatch" style="background:#6B2416"><span style="color:#C6B29B">#6B2416<br>rouille</span></div>
       <div class="palette-swatch" style="background:#8C1C1C"><span style="color:#E8DDD0">#8C1C1C<br>sang</span></div>
       <div class="palette-swatch" style="background:#BE372D"><span style="color:#E8DDD0">#BE372D<br>rituel</span></div>
       <div class="palette-swatch" style="background:#3E2848"><span style="color:#C6B29B">#3E2848<br>magie</span></div>
+      <div class="palette-swatch" style="background:#7A4FA0"><span style="color:#E8DDD0">#7A4FA0<br>magie+</span></div>
       <div class="palette-swatch" style="background:#C6B29B"><span style="color:#3A3230">#C6B29B<br>os</span></div>
+      <div class="palette-swatch" style="background:#E8DDD0"><span style="color:#3A3230">#E8DDD0<br>pâle</span></div>
     </div>
+
+    <h3>Palette bichrome des scènes</h3>
+    <p>Les photos traitées utilisent exclusivement une progression de 16 tons du noir pur vers le cramoisi <code style="color:var(--crimson-l)">#8C1C1C</code>. Aucune autre couleur dans les images de scène.</p>
 
     <h3>Pipeline visuel</h3>
     <ul class="styled">
-      <li><strong>1. Photo brute</strong> — lieux réels (extérieurs désertiques, ruines, paysages arides, structures abandonnées)</li>
-      <li><strong>2. Traitement post</strong> — contraste extrême, grain lourd, teinte cramoisie/sépia</li>
-      <li><strong>3. Couche dessin</strong> — dessins superposés par Alexandra : silhouettes, annotations griffonnées, formes ambiguës</li>
-      <li><strong>4. Zones cliquables</strong> — couche SVG invisible par-dessus l'image traitée</li>
+      <li><strong>1. Photo brute</strong> — lieux réels (paysages désertiques, ruines, espaces abandonnés). Photos prises par Kenny + Alexandra.</li>
+      <li><strong>2. Traitement post</strong> — désaturation complète → contraste extrême → colorisation bichrome (noir + cramoisi). Grain lourd. GIMP puis pixelisation dans Aseprite avec palette custom.</li>
+      <li><strong>3. Couche dessin</strong> — dessins par-dessus : silhouettes d'entités, annotations griffonnées, cercles rituels, formes organiques ambiguës. Par Alexandra.</li>
+      <li><strong>4. Zones cliquables</strong> — couche SVG invisible par-dessus l'image traitée.</li>
     </ul>
 
-    <h3>Effets en jeu (CSS/JS)</h3>
+    <h3>Règles graphiques</h3>
     <ul class="styled">
-      <li><strong>Scanlines</strong> — subtiles, rappel d'un écran qui ne devrait pas exister</li>
-      <li><strong>Grain animé</strong> — texture organique en canvas, bouge lentement</li>
-      <li><strong>Vignette</strong> — bords sombres permanents, se resserrent avec la progression</li>
-      <li><strong>Dégradation</strong> — plus le joueur inspecte, plus l'image se détériore progressivement</li>
+      <li>Pas de pixel art — les scènes sont des photos traitées, pas des sprites</li>
+      <li>Contraste dur, transitions nettes lumière/ombre</li>
+      <li>UI organique — curseur contextuel (œil, main, flamme), boîte dialogue intégrée</li>
+      <li>Lumière interne — les sources semblent venir de rituels ou de plaies</li>
+      <li>Typographie : Cinzel (titres), Crimson Pro (narration), JetBrains Mono (UI/ressources)</li>
     </ul>
 
-    <h3>Typographie</h3>
+    <h3>Effets visuels (CSS/JS)</h3>
     <ul class="styled">
-      <li><strong>VT323</strong> — fragments narratifs, boîte de dialogue</li>
-      <li><strong>Press Start 2P</strong> — éléments d'interface rares</li>
+      <li><strong>Scanlines</strong> — <code>repeating-linear-gradient</code>, pointer-events none</li>
+      <li><strong>Grain animé</strong> — SVG fractalNoise sur <code>body::before</code>, opacity ~0.5</li>
+      <li><strong>Vignette radiale</strong> — se resserre quand <code>painLevel</code> augmente</li>
+      <li><strong>Variable <code>--pain-level</code></strong> (0.0 → 1.0) pilote : intensité vignette, saturation image, distorsion</li>
+      <li><strong>painLevel ≥ 0.8</strong> — la boîte dialogue affiche des caractères corrompus (glitches)</li>
     </ul>
 
     <h3>Son</h3>
     <ul class="styled">
       <li>Ambiance désertique — vent, sable, silence organique</li>
-      <li>Musique quasi-absente — drones lents et rares</li>
-      <li>Chaque clic produit un son différent selon la zone</li>
+      <li>L'alchimie produit des sons corporels — os, fluides, souffle</li>
+      <li>Musique quasi-absente — drones lents lors des crafts uniquement</li>
+      <li>Les entités émettent des fréquences — elles ne parlent jamais</li>
     </ul>
   </section>
 
@@ -914,78 +1112,114 @@ footer {
     <div class="section-number">05</div>
     <h2>Le monde</h2>
 
-    <p>Un désert de sable rouge-sang, sans horizon clair, sans soleil visible. La lumière existe mais sans source. Les règles du monde sont cohérentes entre elles — ce sont les règles d'un inconscient, pas d'une physique.</p>
+    <p>Un désert de sable rouge-sang, sans horizon clair, sans soleil visible. La lumière existe mais sans source identifiable. La gravité fonctionne, mais pas toujours dans le même sens. Les règles du monde sont cohérentes entre elles — ce sont les règles d'un inconscient, pas d'une physique.</p>
 
-    <p>Chaque scène est un lieu dans ce désert. Le joueur navigue de scène en scène en cliquant sur des passages qui se révèlent après suffisamment d'inspections.</p>
-
-    <h3>Scènes prévues</h3>
+    <h3>Scènes</h3>
 
     <div class="zones">
       <div class="zone">
         <div class="zone-id">
           <div class="zone-num">Scène 01</div>
-          <div class="zone-name">Les Dunes</div>
+          <div class="zone-name">Les Dunes plates</div>
         </div>
-        <div class="zone-content">Scène de départ. Sable cramoisi à perte de vue. Silence total. Les premiers fragments parlent du joueur sans qu'il comprenne pourquoi.</div>
+        <div class="zone-content">Scène de départ. Sable à perte de vue, premier point d'alchimie (cercle de cendre). Silence total.</div>
       </div>
       <div class="zone">
         <div class="zone-id">
           <div class="zone-num">Scène 02</div>
-          <div class="zone-name">Les Restes</div>
+          <div class="zone-name">Les Ossements</div>
         </div>
-        <div class="zone-content">Structures rocheuses, formes ambiguës dans le sable. Les fragments deviennent plus directs. Les dessins superposés bougent entre les inspections.</div>
+        <div class="zone-content">Structures rocheuses traitées pour ressembler à de l'os. Entités mi-humaines dessinées par-dessus. Accès après craft Tier I.</div>
       </div>
       <div class="zone">
         <div class="zone-id">
           <div class="zone-num">Scène 03</div>
-          <div class="zone-name">Le Centre</div>
+          <div class="zone-name">Le Cœur</div>
         </div>
-        <div class="zone-content">Image fortement dégradée. Le texte s'adresse au joueur sans détour. Dernière scène, dernière question.</div>
+        <div class="zone-content">Photo fortement dégradée, presque abstraite. Point d'alchimie central pour Tier III et les trois fins.</div>
       </div>
       <div class="zone">
         <div class="zone-id">
           <div class="zone-num">Scène ██</div>
           <div class="zone-name">█████</div>
         </div>
-        <div class="zone-content">Visible dans l'image dès le début mais inaccessible. Se débloque à la toute fin. On ne sait pas encore ce qu'elle contient.</div>
+        <div class="zone-content">Scène verrouillée depuis le début. Visible dans la navigation, inaccessible. Débloquée par craft Tier III spécifique.</div>
       </div>
     </div>
   </section>
 
-  <!-- ══ 6. TECHNIQUE & ROADMAP ══ -->
+  <!-- ══ ENTITÉS ══ -->
+  <section id="entites">
+    <div class="section-number">05.1</div>
+    <h2>Entités</h2>
+
+    <p>Les entités ne sont pas des ennemis. Elles ne peuvent pas être vaincues par la force. Certaines peuvent être sacrifiées — au coût d'être hantées.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Type</th><th>Comportement</th><th>Interaction</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Entités-fantômes</td>
+          <td>Fragments de mémoire incarnés, errent sans but</td>
+          <td>Réagissent à l'Encre de mémoire — révèlent des lore fragments</td>
+        </tr>
+        <tr>
+          <td>Gardiens d'os</td>
+          <td>Immobiles, silencieux, bloquent des passages</td>
+          <td>Se déplacent si certains crafts sont accomplis en leur présence</td>
+        </tr>
+        <tr>
+          <td>Les Dissous</td>
+          <td>Entités en train de disparaître — semi-transparentes</td>
+          <td>Source d'essence facile mais instable — risque de contamination</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══ 6. TECHNIQUE ══ -->
   <section id="tech">
     <div class="section-number">06</div>
-    <h2>Technique &amp; roadmap</h2>
+    <h2>Technique</h2>
 
     <div class="stack-grid">
       <div class="stack-item">
         <div class="stack-icon">01</div>
         <div>
           <div class="stack-name">HTML + CSS + JS vanilla</div>
-          <div class="stack-desc">Pas de framework. Le jeu tourne dans le navigateur.</div>
+          <div class="stack-desc">Pas de framework. Modules ES ou IIFE. Le jeu tourne dans le navigateur.</div>
         </div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">02</div>
         <div>
-          <div class="stack-name">Photos + SVG overlays</div>
-          <div class="stack-desc">Scènes = photos traitées + couches SVG pour les zones cliquables et les dessins.</div>
+          <div class="stack-name">GIMP + Aseprite</div>
+          <div class="stack-desc">Photos traitées : bichrome custom, pixelisation, palette 16 tons.</div>
         </div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">03</div>
         <div>
           <div class="stack-name">Audacity + samples libres</div>
-          <div class="stack-desc">Sound design — ambiances désert, sons d'interaction.</div>
+          <div class="stack-desc">Sons corporels, ambiances désert, drones.</div>
         </div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">04</div>
         <div>
           <div class="stack-name">Git + GitHub + Vercel</div>
-          <div class="stack-desc">Versioning, hébergement et déploiement continu.</div>
+          <div class="stack-desc">Versioning, hébergement, déploiement continu. Aussi itch.io.</div>
         </div>
       </div>
+    </div>
+
+    <h3>Architecture des fichiers</h3>
+
+    <div class="callout">
+      <div class="callout-label">Structure</div>
+      <p>index.html &nbsp;|&nbsp; style.css &nbsp;|&nbsp; main.js &nbsp;|&nbsp; engine/ (scene.js, inventory.js, narrative.js, state.js) &nbsp;|&nbsp; scenes/ (scene-01.js…) &nbsp;|&nbsp; assets/ (PNG bichrome)</p>
     </div>
 
     <h3>Systèmes à implémenter</h3>
@@ -995,12 +1229,13 @@ footer {
         <tr><th>Priorité</th><th>Système</th><th>Description</th></tr>
       </thead>
       <tbody>
-        <tr><td>MVP</td><td>Moteur de scènes</td><td>Chargement des photos, zones cliquables, transitions</td></tr>
+        <tr><td>MVP</td><td>Moteur de scènes</td><td>Chargement photos, zones cliquables SVG, transitions</td></tr>
         <tr><td>MVP</td><td>Inspections</td><td>Clic → fragment narratif avec typewriter, progression par inspections</td></tr>
-        <tr><td>MVP</td><td>Effets visuels</td><td>Scanlines, grain animé, vignette, curseur custom</td></tr>
-        <tr><td>Phase 2</td><td>Mutations de scène</td><td>Les inspections modifient la scène (éléments qui bougent, couleurs qui changent)</td></tr>
-        <tr><td>Phase 2</td><td>Dégradation</td><td>L'image se détériore progressivement avec le nombre d'inspections</td></tr>
-        <tr><td>Phase 3</td><td>Son &amp; polish</td><td>Ambiances, sons d'interaction, déploiement final</td></tr>
+        <tr><td>MVP</td><td>Ressources &amp; alchimie</td><td>Collecte D/E/O, points d'alchimie, combinaisons → résultat</td></tr>
+        <tr><td>MVP</td><td>Effets visuels</td><td>Scanlines, grain, vignette, dégradation CSS (<code>--pain-level</code>)</td></tr>
+        <tr><td>Phase 2</td><td>Altérations irréversibles</td><td>Dégradation visuelle permanente selon les crafts, curseur altéré</td></tr>
+        <tr><td>Phase 2</td><td>Système de fins</td><td>Tracking silencieux ratio douleur/sacrifice → fin accessible</td></tr>
+        <tr><td>Phase 3</td><td>Son &amp; polish</td><td>Ambiances, sons corporels, drones, déploiement</td></tr>
       </tbody>
     </table>
 
@@ -1009,29 +1244,24 @@ footer {
     <div class="roadmap">
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 0</div>
-        <div class="roadmap-obj">Prototype</div>
-        <div class="roadmap-del">1 scène CSS, hotspots, fragments, effets visuels de base — FAIT</div>
+        <div class="roadmap-obj">Setup &amp; prototype</div>
+        <div class="roadmap-del">Structure HTML/CSS/JS, 1 scène canvas placeholder, inspection + alchimie basiques</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 1</div>
-        <div class="roadmap-obj">MVP avec photos</div>
-        <div class="roadmap-del">1 scène photo traitée + dessins, 7+ fragments, transitions, son basique</div>
+        <div class="roadmap-obj">MVP jouable</div>
+        <div class="roadmap-del">Scène 01 complète avec vraie photo bichrome, 4 recettes Tier I, 3 fragments narratifs</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 2</div>
-        <div class="roadmap-obj">Jeu complet</div>
-        <div class="roadmap-del">3 scènes + scène verrouillée, mutations visuelles, dégradation, progression complète</div>
+        <div class="roadmap-obj">Contenu core</div>
+        <div class="roadmap-del">3 scènes + scène verrouillée, 10 recettes, entités, système de fins, altérations permanentes</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 3</div>
         <div class="roadmap-obj">Finition</div>
-        <div class="roadmap-del">Son, polish, déploiement Vercel + itch.io</div>
+        <div class="roadmap-del">Son, effets avancés, 3 fins, polish, déploiement Vercel + itch.io</div>
       </div>
-    </div>
-
-    <div class="callout">
-      <div class="callout-label">Scope MVP</div>
-      <p>Une scène photo complète avec dessins. 7 zones cliquables. Des fragments qui donnent envie de cliquer partout. Valider que le format marche — que le joueur ressent le malaise.</p>
     </div>
   </section>
 
@@ -1045,28 +1275,34 @@ footer {
         <tr><th>Tâche</th><th>Qui</th></tr>
       </thead>
       <tbody>
-        <tr><td>Photos (repérage, prises de vue)</td><td>Kenny + Alexandra</td></tr>
-        <tr><td>Traitement photo (contraste, grain, teinte)</td><td>Kenny + Alexandra</td></tr>
-        <tr><td>Dessins superposés</td><td>Alexandra</td></tr>
+        <tr><td>Photos (lieux, éclairage, repérage)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Traitement photo (bichrome, grain, pixelisation)</td><td>Kenny</td></tr>
+        <tr><td>Dessins superposés (entités, cercles rituels, annotations)</td><td>Alexandra</td></tr>
         <tr><td>Direction artistique</td><td>Alexandra</td></tr>
-        <tr><td>Textes narratifs (fragments)</td><td>Kenny + Alexandra</td></tr>
-        <tr><td>Développement (moteur web)</td><td>Kenny</td></tr>
+        <tr><td>Textes narratifs (fragments, lore)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Développement (moteur web, intégration, alchimie)</td><td>Kenny</td></tr>
         <tr><td>Sound design</td><td>Kenny</td></tr>
       </tbody>
     </table>
 
-    <h3>Assets à produire</h3>
+    <h3>Assets à créer</h3>
     <ul class="styled">
-      <li><strong>Photos brutes</strong> — 4 lieux minimum (déserts, ruines, structures)</li>
-      <li><strong>Photos traitées</strong> — 1 version post-traitée par scène</li>
-      <li><strong>Dessins</strong> — 1 couche minimum par scène</li>
-      <li><strong>Textes</strong> — 2 variantes par zone cliquable</li>
-      <li><strong>Sons</strong> — ambiances + sons d'interaction</li>
+      <li><strong>Photos brutes</strong> — min. 4 lieux (désert, ruines, structures, espace abstrait)</li>
+      <li><strong>Traitement bichrome</strong> — par scène (noir → cramoisi, 16 tons, pixelisé dans Aseprite)</li>
+      <li><strong>Couche dessin SVG</strong> — par scène (entités, cercles rituels, griffonnages)</li>
+      <li><strong>Textes d'inspection</strong> — 2 variantes par zone cliquable</li>
+      <li><strong>Textes d'intro</strong> — 1-2 phrases par scène</li>
+      <li><strong>Sons</strong> — ambiances désert + sons corporels pour l'alchimie</li>
     </ul>
+
+    <div class="callout">
+      <div class="callout-label">Note de conception</div>
+      <p>La photo donne l'ancrage dans le réel. Le traitement et les dessins détruisent ce réel. Le joueur navigue entre les deux — et ses actions alchimiques accélèrent la destruction.</p>
+    </div>
   </section>
 
   <footer>
-    <span>DÉSERT CRAMOISI — GDD v1.0</span>
+    <span>DÉSERT CRAMOISI — GDD v2.0</span>
     <span>Kenny + Alexandra</span>
   </footer>
 
