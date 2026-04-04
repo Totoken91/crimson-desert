@@ -252,129 +252,40 @@ app.view.style.height = '100%';
 app.view.style.zIndex = '0';
 
 let sceneSprite = null;
-let displacementSprite = null;
-let displacementFilter = null;
-let organicFilter = null;
-
-// Generate noise texture for displacement
-function createNoiseTexture(size) {
-  const canvas = document.createElement('canvas');
-  canvas.width = size; canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const img = ctx.createImageData(size, size);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() * 255;
-    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
-  }
-  ctx.putImageData(img, 0, 0);
-  return PIXI.Texture.from(canvas);
-}
-
-// Custom GLSL filter — FBM vignette + chromatic aberration
-const ORGANIC_FRAG = `
-precision mediump float;
-varying vec2 vTextureCoord;
-uniform sampler2D uSampler;
-uniform float uTime;
-uniform float uPain;
-
-float hash(vec2 p) {
-  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-}
-
-float noise(vec2 p) {
-  vec2 i = floor(p);
-  vec2 f = fract(p);
-  f = f * f * (3.0 - 2.0 * f);
-  float a = hash(i);
-  float b = hash(i + vec2(1.0, 0.0));
-  float c = hash(i + vec2(0.0, 1.0));
-  float d = hash(i + vec2(1.0, 1.0));
-  return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
-}
-
-float fbm(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  for (int i = 0; i < 4; i++) {
-    v += a * noise(p);
-    p *= 2.0;
-    a *= 0.5;
-  }
-  return v;
-}
-
-void main() {
-  vec2 uv = vTextureCoord;
-
-  // Chromatic aberration — scales with pain
-  float aberr = (1.0 + uPain * 4.0) / 512.0;
-  float r = texture2D(uSampler, uv + vec2(aberr, 0.0)).r;
-  float g = texture2D(uSampler, uv).g;
-  float b = texture2D(uSampler, uv - vec2(aberr, 0.0)).b;
-  vec4 col = vec4(r, g, b, 1.0);
-
-  // FBM pulse on dark areas — subtle crimson breathing
-  float n = fbm(uv * 4.0 + uTime * 0.08);
-  float lum = dot(col.rgb, vec3(0.299, 0.587, 0.114));
-  float darkPulse = (1.0 - lum) * n * 0.06;
-  col.r += darkPulse * 1.5;
-  col.g += darkPulse * 0.3;
-
-  // Organic vignette — noise-distorted
-  vec2 center = uv - 0.5;
-  float nVig = fbm(uv * 3.0 + uTime * 0.05);
-  float dist = length(center * vec2(1.1 + nVig * 0.15, 1.0 + nVig * 0.1));
-  float vig = smoothstep(0.35, 0.75, dist);
-  col.rgb *= 1.0 - vig * 0.7;
-
-  gl_FragColor = col;
-}
-`;
 
 function setupPixiScene(imagePath) {
-  // Clear previous
   if (sceneSprite) { app.stage.removeChild(sceneSprite); sceneSprite.destroy(); }
-
   const tex = PIXI.Texture.from(imagePath);
   sceneSprite = new PIXI.Sprite(tex);
   sceneSprite.width = 960;
   sceneSprite.height = 720;
   app.stage.addChildAt(sceneSprite, 0);
-
-  // Displacement filter
-  if (!displacementSprite) {
-    const noiseTex = createNoiseTexture(256);
-    displacementSprite = new PIXI.Sprite(noiseTex);
-    displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
-    app.stage.addChild(displacementSprite);
-    displacementFilter = new PIXI.DisplacementFilter(displacementSprite);
-    displacementFilter.scale.set(0);
-  }
-
-  // Organic GLSL filter
-  if (!organicFilter) {
-    organicFilter = new PIXI.Filter(null, ORGANIC_FRAG, {
-      uTime: 0.0,
-      uPain: 0.0,
-    });
-  }
-
-  // Filters applied by ticker only when damaged
-  sceneSprite.filters = [];
-
-  // Resize handler
-  const onResize = () => {
-    if (sceneSprite && sceneSprite.texture) {
-      sceneSprite.width = app.screen.width;
-      sceneSprite.height = app.screen.height;
-    }
-  };
-  app.renderer.on('resize', onResize);
 }
 
-// Animate displacement + shader uniforms
-let pixiTime = 0;
+// ══════════════════════════════════════
+// LOW VITALITY FX — lightweight, no GPU filters
+// ══════════════════════════════════════
+let pixelFlickerTimer = null;
+
+function startPixelFlicker() {
+  if (pixelFlickerTimer) return;
+  const layer = document.getElementById('hotspot-layer');
+  pixelFlickerTimer = setInterval(() => {
+    if (!state || state.vitality >= 5) return; // only below 50%
+    const count = Math.max(1, Math.floor((1 - state.vitality / state.vitalityMax) * 12));
+    for (let i = 0; i < count; i++) {
+      const px = document.createElement('div');
+      const size = 4 + Math.floor(Math.random() * 12);
+      px.style.cssText = `position:absolute;left:${Math.random()*920}px;top:${Math.random()*680}px;width:${size}px;height:${size}px;background:#000;pointer-events:none;z-index:15;`;
+      layer.appendChild(px);
+      setTimeout(() => px.remove(), 80 + Math.random() * 150);
+    }
+  }, 2000 + Math.random() * 2000);
+}
+
+function stopPixelFlicker() {
+  if (pixelFlickerTimer) { clearInterval(pixelFlickerTimer); pixelFlickerTimer = null; }
+}
 // ══════════════════════════════════════
 // SVG RESOURCE SHAPES
 // ══════════════════════════════════════
@@ -438,38 +349,7 @@ function drawPortrait() {
   ctx.beginPath(); ctx.moveTo(7,14); ctx.lineTo(2,6); ctx.lineTo(13,6); ctx.closePath(); ctx.stroke();
 }
 
-app.ticker.add((delta) => {
-  if (!sceneSprite || !state) return;
-
-  // Full life = no filters, crisp image, zero GPU cost
-  const damaged = state.vitality < state.vitalityMax;
-
-  if (!damaged) {
-    if (sceneSprite.filters && sceneSprite.filters.length > 0) sceneSprite.filters = [];
-    return;
-  }
-
-  // Enable filters only when damaged
-  if (!sceneSprite.filters || sceneSprite.filters.length === 0) {
-    sceneSprite.filters = [displacementFilter, organicFilter];
-  }
-
-  pixiTime += delta * 0.01;
-
-  // Displacement scales with vitality loss
-  if (displacementSprite) {
-    displacementSprite.x += 0.2;
-    displacementSprite.y += 0.15;
-    const vitalityRatio = state.vitality / state.vitalityMax;
-    displacementFilter.scale.set((1 - vitalityRatio) * 15);
-  }
-
-  // GLSL uniforms
-  if (organicFilter) {
-    organicFilter.uniforms.uTime = pixiTime;
-    organicFilter.uniforms.uPain = state.painLevel;
-  }
-});
+// No GPU ticker — all FX are lightweight DOM-based
 
 // ══════════════════════════════════════
 // STATE
@@ -610,8 +490,8 @@ function flashPain(){const f=document.createElement('div');f.style.cssText='posi
 // RESOURCE + VITALITY + CRAFT
 // ══════════════════════════════════════
 function collectResource(type,amount,hx,hy){if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
-function loseVitality(n){state.vitality=Math.max(0,state.vitality-n);updateVitalityUI();saveState();if(state.vitality===0)triggerDeath()}
-function triggerDeath(){if(displacementFilter)gsap.to(displacementFilter.scale,{x:60,y:60,duration:1,ease:'power4.in'});const ov=document.createElement('div');ov.style.cssText='position:absolute;inset:0;background:#000;opacity:0;z-index:50;pointer-events:none';hotspotLayer.parentElement.appendChild(ov);gsap.to(ov,{opacity:1,duration:3,ease:'power2.in'});setTimeout(()=>showDialogue("Tu t'es dissous avant d'avoir compris."),1500);setTimeout(()=>{resetState();ov.remove();loadScene(state.currentScene)},5000)}
+function loseVitality(n){state.vitality=Math.max(0,state.vitality-n);updateVitalityUI();saveState();if(state.vitality<state.vitalityMax)startPixelFlicker();if(state.vitality===0)triggerDeath()}
+function triggerDeath(){stopPixelFlicker();const ov=document.createElement('div');ov.style.cssText='position:absolute;inset:0;background:#000;opacity:0;z-index:50;pointer-events:none';hotspotLayer.parentElement.appendChild(ov);gsap.to(ov,{opacity:1,duration:3,ease:'power2.in'});setTimeout(()=>showDialogue("Tu t'es dissous avant d'avoir compris."),1500);setTimeout(()=>{resetState();ov.remove();loadScene(state.currentScene)},5000)}
 function craftRecipe(r){for(const[k,v]of Object.entries(r.cost))state.inventory[k]-=v;state.crafted.push(r.id);if(r.mechanic==='reveal-hotspots'||r.mechanic==='unlock-narrative')revealConditionalHotspots(r.id);else if(r.mechanic==='pain-absorb')state.painAbsorbActive=true;else if(r.mechanic==='unlock-exit'){const scene=SCENES[state.currentScene];const exit=scene.exits.find(e=>e.id===r.targetExit);if(exit){state.exits[exit.id]=true;renderExits(scene)}}showDialogue(r.sceneReaction);updateResourceUI();updateRecipeUI();saveState()}
 function revealConditionalHotspots(rid){SCENES[state.currentScene].hotspots.forEach(hs=>{if(hs.unlockedBy===rid){const el=document.getElementById('hs-el-'+hs.id);if(el){el.style.display='block';gsap.fromTo(el,{opacity:0},{opacity:1,duration:1.5,ease:'expo.out'})}}})}
 
