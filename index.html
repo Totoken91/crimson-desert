@@ -15,14 +15,14 @@
   --crimson-l:#BE372D;
   --rust:     #6B2416;
   --bone:     #C6B29B;
-  --bone-dim: #8A7A6A;
+  --bone-dim: #9A8A7A;
   --ash:      #3A3230;
-  --ash-l:    #5A4E4A;
+  --ash-l:    #6A5E5A;
   --pale:     #E8DDD0;
   --purple:   #3E2848;
   --purple-l: #7A4FA0;
-  --text:     #C6B29B;
-  --text-dim: #7A6E66;
+  --text:     #D0C4B6;
+  --text-dim: #9A8E86;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -34,7 +34,7 @@ body {
   color: var(--text);
   font-family: 'Crimson Pro', Georgia, serif;
   font-size: 18px;
-  line-height: 1.75;
+  line-height: 1.8;
   min-height: 100vh;
 }
 
@@ -115,9 +115,9 @@ nav::-webkit-scrollbar-thumb { background: var(--crimson); }
 
 nav a {
   display: block;
-  padding: 7px 12px;
+  padding: 8px 12px;
   font-family: 'Crimson Pro', serif;
-  font-size: 14px;
+  font-size: 14.5px;
   color: var(--text-dim);
   text-decoration: none;
   border-radius: 4px;
@@ -224,7 +224,7 @@ main {
    SECTIONS
 ══════════════════════════ */
 section {
-  padding: 72px 80px;
+  padding: 80px 80px;
   border-bottom: 1px solid var(--ash);
   animation: fadeIn 0.4s ease forwards;
 }
@@ -233,20 +233,20 @@ section {
 
 .section-number {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  letter-spacing: 0.25em;
   color: var(--crimson);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 section h2 {
   font-family: 'Cinzel', serif;
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   color: var(--pale);
-  margin-bottom: 40px;
-  padding-bottom: 16px;
+  margin-bottom: 44px;
+  padding-bottom: 18px;
   border-bottom: 1px solid var(--ash);
   letter-spacing: 0.05em;
 }
@@ -258,10 +258,14 @@ section h3 {
   color: var(--crimson-l);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin: 36px 0 14px;
+  margin: 44px 0 18px;
 }
 
-p { margin-bottom: 16px; color: var(--text); }
+section h3:first-of-type {
+  margin-top: 36px;
+}
+
+p { margin-bottom: 18px; color: var(--text); max-width: 65ch; }
 
 /* ══════════════════════════
    COMPOSANTS
@@ -302,14 +306,14 @@ p { margin-bottom: 16px; color: var(--text); }
   letter-spacing: 0.05em;
 }
 
-.pillar p { font-size: 14px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+.pillar p { font-size: 14.5px; color: var(--text-dim); margin: 0; line-height: 1.6; max-width: none; }
 
 /* Callout */
 .callout {
   border-left: 3px solid var(--crimson);
   background: rgba(140,28,28,0.06);
-  padding: 20px 24px;
-  margin: 28px 0;
+  padding: 22px 28px;
+  margin: 32px 0;
   border-radius: 0 4px 4px 0;
 }
 
@@ -319,18 +323,22 @@ p { margin-bottom: 16px; color: var(--text); }
   letter-spacing: 0.2em;
   color: var(--crimson-l);
   text-transform: uppercase;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.callout p { margin: 0; font-style: italic; font-size: 16px; color: var(--bone-dim); }
+.callout p { margin: 0; font-style: italic; font-size: 17px; color: var(--bone-dim); line-height: 1.7; max-width: none; }
+
+/* Fragments narratifs — style distinct */
+.callout + .callout { margin-top: 16px; }
 
 /* Liste */
-ul.styled { list-style: none; padding: 0; margin-bottom: 20px; }
+ul.styled { list-style: none; padding: 0; margin-bottom: 24px; }
 ul.styled li {
-  padding: 8px 0 8px 20px;
+  padding: 10px 0 10px 22px;
   position: relative;
   font-size: 16px;
   color: var(--text);
+  line-height: 1.65;
   border-bottom: 1px solid rgba(58,50,48,0.4);
 }
 ul.styled li:last-child { border-bottom: none; }
@@ -407,7 +415,7 @@ ul.styled li strong {
 .ing.s { border-color: rgba(127,119,221,0.4); color: #9A8FD4; background: rgba(127,119,221,0.05); }
 .ing.o { border-color: rgba(239,159,39,0.4); color: #B8821A; background: rgba(239,159,39,0.05); }
 
-.recipe-effect { font-size: 15px; color: var(--text-dim); line-height: 1.55; margin-bottom: 12px; }
+.recipe-effect { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 14px; }
 
 .recipe-cost {
   font-family: 'Crimson Pro', serif;
@@ -439,10 +447,11 @@ ul.styled li strong {
 }
 
 .data-table td {
-  padding: 11px 16px;
+  padding: 13px 16px;
   border-bottom: 1px solid rgba(58,50,48,0.5);
   color: var(--text);
   vertical-align: top;
+  line-height: 1.55;
 }
 
 .data-table tr:last-child td { border-bottom: none; }
@@ -519,7 +528,7 @@ ul.styled li strong {
   letter-spacing: 0.05em;
 }
 
-.zone-content { padding: 24px 24px; font-size: 14.5px; color: var(--text-dim); line-height: 1.6; }
+.zone-content { padding: 24px 24px; font-size: 14.5px; color: var(--text); line-height: 1.65; }
 
 /* Roadmap */
 .roadmap { display: grid; gap: 1px; background: var(--ash); margin: 20px 0; }
