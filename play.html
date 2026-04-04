@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Désert Cramoisi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/pixi.js@7/dist/pixi.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
@@ -17,7 +17,7 @@
   --col-d: #E24B4A; --col-s: #7F77DD; --col-o: #EF9F27;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'JetBrains Mono',monospace; color:var(--bone); cursor:none; user-select:none; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'Press Start 2P',monospace; color:var(--bone); cursor:none; user-select:none; display:flex; align-items:center; justify-content:center; min-height:100vh; }
 
 /* ── LAYOUT — fixed 1280×720 ── */
 #game { position:relative; width:1280px; height:720px; background:var(--bg); overflow:hidden; }
@@ -28,7 +28,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 #panel-right { right:0; }
 .panel-canvas { position:absolute; inset:0; z-index:0; }
 .panel-content { position:relative; z-index:2; padding:20px 14px; display:flex; flex-direction:column; gap:10px; height:100%; }
-.panel-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; color:var(--ash); text-transform:lowercase; padding-bottom:6px; }
+.panel-title { font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:0.15em; color:var(--crimson); text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid var(--ash); margin-bottom:4px; }
 /* Organic edge SVGs */
 .panel-edge { position:absolute; top:0; height:100%; width:24px; pointer-events:none; z-index:3; }
 #panel-left .panel-edge { right:-20px; }
@@ -36,9 +36,9 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 
 /* ── RESOURCES ── */
 .res-row { display:flex; align-items:center; gap:5px; padding:4px 0; }
-.res-label { font-size:14px; font-weight:500; text-shadow:2px 2px 0 #3A0000; width:16px; }
+.res-label { font-family:'Press Start 2P',monospace; font-size:10px; text-shadow:2px 2px 0 #3A0000; width:18px; }
 .res-shapes { display:flex; gap:2px; align-items:center; }
-.res-shape { font-size:14px; line-height:1; transition:opacity 0.3s; }
+.res-shape { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1; transition:opacity 0.3s; }
 .res-shape.empty { opacity:0.2; }
 /* Async pulsations */
 .res-shape:nth-child(1) { animation: pulse-a 4s ease-in-out infinite; }
@@ -49,31 +49,31 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .res-shape:nth-child(6) { animation: pulse-a 4s ease-in-out 2.5s infinite; }
 @keyframes pulse-a { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.05) rotate(2deg)} }
 
-.res-num { margin-left:auto; font-size:11px; color:var(--bone-dim); }
+.res-num { margin-left:auto; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone); }
 .res-row.cap .res-num { animation: blink-cap 1.2s ease-in-out infinite; }
 @keyframes blink-cap { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
 /* Vitality — hand-carved dashes */
 #vitality-bar { display:flex; gap:0; margin-top:14px; padding-top:12px; flex-wrap:wrap; }
-.vit-dash { font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1; color:#2A1010; transition:color 0.3s; }
+.vit-dash { font-family:'Press Start 2P',monospace; font-size:8px; line-height:1; color:#2A1010; transition:color 0.3s; }
 .vit-dash.full { color:var(--crimson); }
 .vit-dash.low { animation: flicker-vit 0.8s ease-in-out infinite; }
 @keyframes flicker-vit { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
 /* ── RIGHT PANEL ── */
-#btn-reset { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash); background:transparent; border:1px solid var(--ash); padding:3px 6px; cursor:none; text-align:center; letter-spacing:0.15em; margin-top:auto; opacity:0.3; transition:all 0.2s; }
+#btn-reset { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px 8px; cursor:none; text-align:center; letter-spacing:0.1em; margin-top:auto; opacity:0.4; transition:all 0.2s; }
 #btn-reset:hover { opacity:0.7; border-color:var(--crimson); color:var(--crimson); }
-#btn-voir { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px; cursor:none; text-align:center; letter-spacing:0.3em; transition:all 0.2s; }
+#btn-voir { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone-dim); background:transparent; border:1px solid var(--ash); padding:6px; cursor:none; text-align:center; letter-spacing:0.15em; transition:all 0.2s; }
 #btn-voir:hover { border-color:var(--crimson-l); text-shadow:0 0 8px var(--crimson); }
 .recipe-item { padding:8px 0; }
 .recipe-sep { height:1px; background:linear-gradient(to right,transparent,#3A3230 20%,#3A3230 80%,transparent); opacity:0.4; margin:8px 0; }
-.recipe-name { font-family:'Cinzel',serif; font-size:14px; color:var(--bone); margin-bottom:3px; }
-.recipe-cost { font-size:11px; color:var(--bone-dim); margin-bottom:5px; font-family:'JetBrains Mono',monospace; }
-.recipe-cost span { margin-right:6px; }
-.recipe-btn { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:3px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
+.recipe-name { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone); margin-bottom:5px; line-height:1.4; }
+.recipe-cost { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--bone-dim); margin-bottom:5px; }
+.recipe-cost span { margin-right:4px; }
+.recipe-btn { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--bone-dim); background:transparent; border:1px solid var(--ash); padding:4px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
 .recipe-btn:hover:not(:disabled) { border-color:var(--crimson); color:var(--crimson-l); }
 .recipe-btn:disabled { opacity:0.3; cursor:not-allowed; }
-#alchemy-msg { font-family:'Crimson Pro',serif; font-style:italic; font-size:13px; color:#5A4E4A; margin-top:auto; }
+#alchemy-msg { font-family:'Press Start 2P',monospace; font-size:6px; color:var(--ash-l); margin-top:auto; line-height:1.6; }
 
 /* ── SCENE — fixed 960×720 ── */
 #scene-wrapper { position:absolute; left:160px; top:0; width:960px; height:720px; background:var(--bg2); overflow:hidden; }
@@ -97,16 +97,16 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .hold-bar-fill { height:100%; width:0%; background:var(--crimson); }
 
 /* Float text */
-.float-text { position:absolute; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:500; pointer-events:none; z-index:30; }
+.float-text { position:absolute; font-family:'Press Start 2P',monospace; font-size:10px; pointer-events:none; z-index:30; text-shadow:2px 2px 0 #000; }
 
 /* ── DIALOGUE ── */
 #dialogue { position:absolute; bottom:0; left:0; width:960px; height:80px; background:rgba(13,9,0,0.95); border-top:1px solid var(--ash); display:flex; align-items:flex-start; gap:12px; padding:10px 16px; z-index:40; opacity:0; transform:translateY(10px); pointer-events:none; }
 #dialogue.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
 #portrait { width:48px; height:48px; background:var(--bg3); border:1px solid var(--ash); flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #portrait canvas { width:48px; height:48px; image-rendering:pixelated; }
-#portrait-label { font-size:10px; letter-spacing:0.2em; color:var(--ash-l); margin-top:2px; }
+#portrait-label { font-family:'Press Start 2P',monospace; font-size:5px; letter-spacing:0.1em; color:var(--ash-l); margin-top:2px; }
 #dialogue-content { flex:1; display:flex; flex-direction:column; justify-content:center; min-height:48px; }
-#dialogue-text { font-family:'Crimson Pro',serif; font-size:15px; color:var(--bone); line-height:1.5; text-shadow:1px 1px 0 #2A0000; }
+#dialogue-text { font-family:'Press Start 2P',monospace; font-size:9px; color:var(--pale); line-height:1.8; text-shadow:2px 2px 0 #2A0000; }
 #dialogue-text .corrupt { color:var(--crimson); }
 #dialogue-arrow { font-size:10px; color:var(--ash-l); margin-top:4px; display:none; }
 #dialogue-arrow.visible { display:block; }
