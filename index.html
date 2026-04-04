@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Désert Cramoisi — GDD v0.1</title>
+<title>Désert Cramoisi — GDD v0.2 (Fusion)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -675,23 +675,25 @@ footer {
 <nav>
   <div class="nav-brand">
     <div class="title">Désert Cramoisi</div>
-    <div class="sub">GDD v0.1 — 2025</div>
+    <div class="sub">GDD v0.2 — 2025</div>
   </div>
 
   <div class="nav-section">
     <div class="nav-section-label">Document</div>
     <a href="#vision">01 — Vision</a>
     <a href="#gameplay" class="sub-link">Gameplay</a>
-    <a href="#craft" class="sub-link">Système de craft</a>
+    <a href="#craft" class="sub-link">Alchimie point &amp; click</a>
     <a href="#recettes" class="sub-link">Recettes</a>
     <a href="#narration">02 — Narration</a>
+    <a href="#esthetique" class="sub-link">Traitement visuel</a>
     <a href="#fins" class="sub-link">Les trois fins</a>
     <a href="#artdirection">03 — Direction artistique</a>
     <a href="#monde">04 — Le monde</a>
-    <a href="#zones" class="sub-link">Zones</a>
+    <a href="#zones" class="sub-link">Scènes</a>
     <a href="#entites" class="sub-link">Entités</a>
     <a href="#tech">05 — Technique</a>
     <a href="#roadmap">06 — Roadmap</a>
+    <a href="#equipe">07 — Équipe</a>
   </div>
 </nav>
 
@@ -700,15 +702,16 @@ footer {
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow">Game Design Document · v0.1</div>
+    <div class="hero-eyebrow">Game Design Document · v0.2 — Fusion Anomalie × Crimson</div>
     <h1>Désert<br><span>Cramoisi</span></h1>
-    <p class="hero-desc">Un RPG de puzzle-crafting sans combat où la douleur est une ressource, le sacrifice une mécanique, et le monde entier une mémoire fracturée.</p>
+    <p class="hero-desc">Un point &amp; click narratif d'horreur alchimique. Photos traitées, narration cryptique, alchimie intégrée à l'exploration. Tu n'es pas arrivé dans ce désert — tu l'as créé.</p>
     <div class="hero-tags">
       <span class="tag red">Horreur alchimique</span>
-      <span class="tag red">Puzzle crafting</span>
-      <span class="tag">Pixel art 64px</span>
-      <span class="tag">Godot 4</span>
-      <span class="tag">Solo dev</span>
+      <span class="tag red">Point &amp; click narratif</span>
+      <span class="tag red">Alchimie intégrée</span>
+      <span class="tag">Photos traitées</span>
+      <span class="tag">HTML / CSS / JS</span>
+      <span class="tag">Kenny + Alexandra</span>
       <span class="tag">Sans combat</span>
     </div>
   </div>
@@ -718,11 +721,16 @@ footer {
     <div class="section-number">01</div>
     <h2>Vision du jeu</h2>
 
-    <p>Un désert de sable cramoisi sans horizon clair. Un personnage sans mémoire ni identité. Une table d'alchimie noire dont les règles ne s'expliquent jamais. Le joueur apprend en ratant, souffre pour progresser, et reconstruit qui il était à travers ce qu'il choisit de crafter.</p>
+    <p>Un désert de sable cramoisi sans horizon clair. Des photos traitées comme des hallucinations. Des zones cliquables où chaque inspection révèle un fragment de mémoire, jamais une explication. Le joueur explore en point &amp; click, découvre des ressources, et les combine dans un système d'alchimie intégré aux scènes — pour progresser, il faut sacrifier quelque chose.</p>
 
     <div class="callout">
       <div class="callout-label">Question narrative centrale</div>
       <p>Tu n'es pas arrivé dans ce désert. Tu l'as créé. Le monde autour de toi est le reflet de ta propre psyché fracturée — et chaque recette craftée est un souvenir récupéré.</p>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Origine du projet</div>
+      <p>Fusion de deux projets : l'approche narrative et visuelle d'Anomalie (photos traitées, narration cryptique, point &amp; click) et le lore, la direction artistique et le concept alchimique de Désert Cramoisi.</p>
     </div>
 
     <h3>Piliers de design</h3>
@@ -730,32 +738,33 @@ footer {
     <div class="pillars">
       <div class="pillar">
         <div class="pillar-label">Exploration</div>
-        <div class="pillar-title">Découverte par expérimentation</div>
-        <p>Aucun tutoriel. Les recettes s'apprennent en ratant. Le monde ne s'excuse pas.</p>
+        <div class="pillar-title">Point &amp; click sans tutoriel</div>
+        <p>Zones cliquables sur des photos traitées. Chaque inspection révèle un fragment — jamais ce qu'on attendait. Le monde ne s'excuse pas.</p>
       </div>
       <div class="pillar">
-        <div class="pillar-label">Ressource</div>
+        <div class="pillar-label">Alchimie</div>
         <div class="pillar-title">Coût moral, pas statistique</div>
-        <p>Chaque craft prélève quelque chose d'irréversible — une perception, un souvenir, une sensation.</p>
+        <p>Chaque craft prélève quelque chose d'irréversible — une perception, un souvenir, une sensation. L'alchimie est intégrée aux scènes, pas dans un menu séparé.</p>
       </div>
       <div class="pillar">
         <div class="pillar-label">Ambiance</div>
-        <div class="pillar-title">Cauchemar lucide</div>
-        <p>Le monde obéit à une logique interne cohérente, mais elle ne s'explique jamais à voix haute.</p>
+        <div class="pillar-title">Cauchemar documentaire</div>
+        <p>Photos réelles transformées en visions — contraste extrême, grain, palette cramoisie. Le réel devient irréel. Le monde obéit à sa propre logique, jamais expliquée.</p>
       </div>
       <div class="pillar">
         <div class="pillar-label">Narration</div>
         <div class="pillar-title">Identité émergente</div>
-        <p>Ce que tu crées révèle qui tu étais, sans que le jeu le dise explicitement.</p>
+        <p>Texte court, jamais explicatif. Ce que tu inspectes parle de toi, pas de l'objet. Ce que tu crées révèle qui tu étais.</p>
       </div>
     </div>
 
     <h3>Références</h3>
     <ul class="styled">
+      <li><strong>I Live Under Your House</strong> — esthétique dégradée, ton surréaliste, malaise domestique transposé au désert</li>
       <li><strong>Fear &amp; Hunger</strong> — organique, brutal, monde sans pitié ni explication</li>
-      <li><strong>I Have No Mouth But I Must Scream</strong> — absurde cruel, déshumanisation, logique opaque</li>
+      <li><strong>I Have No Mouth But I Must Scream</strong> — absurde cruel, déshumanisation, point &amp; click d'horreur</li>
       <li><strong>Disco Elysium</strong> — narration par objets et fragments, identité reconstruite par le jeu</li>
-      <li><strong>Kenshi</strong> — monde indifférent, règles apprises par la souffrance répétée</li>
+      <li><strong>Yume Nikki</strong> — exploration sans explication, progression par la découverte</li>
     </ul>
   </section>
 
@@ -764,40 +773,52 @@ footer {
     <div class="section-number">01.1</div>
     <h2>Gameplay</h2>
 
-    <p>Sans combat, le gameplay repose sur trois actions qui s'alimentent mutuellement :</p>
+    <p>Point &amp; click narratif sans combat. Chaque scène est une photo traitée avec des zones cliquables. Pas de HUD classique — l'interface est organique, intégrée au décor.</p>
 
+    <h3>Boucle de jeu</h3>
     <ul class="styled">
-      <li><strong>Explorer</strong> — traverser les zones du désert, collecter des ressources, observer les entités et les règles du monde</li>
-      <li><strong>Crafter</strong> — combiner des ressources à la table d'alchimie pour créer des objets ou déclencher des rituels</li>
-      <li><strong>Lire</strong> — interpréter les fragments de lore révélés par les objets craftés pour progresser dans la narration</li>
+      <li><strong>Inspecter</strong> — cliquer sur des zones de la scène pour déclencher des fragments narratifs cryptiques. Le texte parle de toi, jamais de l'objet.</li>
+      <li><strong>Collecter</strong> — certaines inspections révèlent des ressources alchimiques (Douleur, Essence, Organes) directement dans la scène.</li>
+      <li><strong>Combiner</strong> — les ressources collectées peuvent être combinées sur des points d'alchimie intégrés aux scènes (autels, fissures, cercles de cendre).</li>
+      <li><strong>Progresser</strong> — les crafts réussis altèrent la scène, débloquent de nouvelles zones ou révèlent des fragments de mémoire.</li>
+    </ul>
+
+    <h3>Interaction</h3>
+    <ul class="styled">
+      <li>Curseur contextuel — change selon le type de zone (inspection, collecte, alchimie)</li>
+      <li>Pas d'inventaire visible — les ressources collectées sont représentées par des altérations visuelles du personnage ou de l'écran</li>
+      <li>Progression : X inspections + 1 craft dans une scène → nouvelle scène débloquée</li>
+      <li>Une scène verrouillée (█████) dès le début — révélée après un craft Tier III spécifique</li>
     </ul>
 
     <div class="callout">
       <div class="callout-label">Design note</div>
-      <p>Les recettes ratées ne sont pas neutres. Un mauvais mélange produit toujours quelque chose — parfois dangereux, parfois révélateur. L'échec est une mécanique de jeu à part entière.</p>
+      <p>Les combinaisons ratées ne sont pas neutres. Un mauvais mélange produit toujours quelque chose — parfois le texte narratif change, parfois l'image se dégrade, parfois une entité apparaît. L'échec est une mécanique de jeu à part entière.</p>
     </div>
   </section>
 
   <!-- ══ CRAFT ══ -->
   <section id="craft">
     <div class="section-number">01.2</div>
-    <h2>Système de craft</h2>
+    <h2>Alchimie point &amp; click</h2>
 
-    <p>Tout le système repose sur trois types de ressources fondamentales. La tension centrale du jeu vient de leur nature : l'une prélève sur soi, les deux autres prélèvent sur le monde.</p>
+    <p>L'alchimie n'est pas un menu séparé — elle est intégrée aux scènes. Chaque zone contient des points d'alchimie (un autel de pierre, une fissure dans le sol, un cercle de cendre) où le joueur peut combiner les ressources qu'il a collectées en inspectant la scène.</p>
+
+    <p>Trois types de ressources fondamentales. La tension du jeu vient de leur nature : l'une prélève sur soi, les deux autres prélèvent sur le monde.</p>
 
     <div class="craft-system">
       <div class="craft-col">
-        <div class="craft-col-title">Sources</div>
-        <div class="craft-item"><div class="craft-dot dot-d"></div><span>Douleur — soi-même</span></div>
-        <div class="craft-item"><div class="craft-dot dot-s"></div><span>Essence — sacrifice d'entités</span></div>
-        <div class="craft-item"><div class="craft-dot dot-o"></div><span>Organes — prélevés sur créatures</span></div>
+        <div class="craft-col-title">Collecte (dans les scènes)</div>
+        <div class="craft-item"><div class="craft-dot dot-d"></div><span>Douleur — cliquer sur des objets tranchants, brûlants</span></div>
+        <div class="craft-item"><div class="craft-dot dot-s"></div><span>Essence — interagir avec des entités, les sacrifier</span></div>
+        <div class="craft-item"><div class="craft-dot dot-o"></div><span>Organes — prélevés sur des restes dans le désert</span></div>
       </div>
       <div class="craft-arrow">→</div>
       <div class="craft-col">
-        <div class="craft-col-title">Produits</div>
-        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Armes &amp; outils rituels</span></div>
-        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Mutations corporelles</span></div>
-        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Fragments de mémoire</span></div>
+        <div class="craft-col-title">Résultats (sur les points d'alchimie)</div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Altération de la scène — nouvelles zones visibles</span></div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Fragments de mémoire — narration révélée</span></div>
+        <div class="craft-item"><div class="craft-dot dot-out"></div><span>Mutations visuelles — l'image se transforme</span></div>
       </div>
     </div>
 
@@ -805,35 +826,36 @@ footer {
       <thead>
         <tr>
           <th>Ressource</th>
-          <th>Source</th>
-          <th>Nature du coût</th>
+          <th>Comment la trouver</th>
+          <th>Coût pour le joueur</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Douleur</td>
-          <td>Se blesser soi-même</td>
-          <td>Points de vie permanents, altérations sensorielles</td>
+          <td>Inspecter des éléments dangereux de la scène (lames, flammes, os brisés)</td>
+          <td>L'image se dégrade — grain, distorsion, perte de couleurs</td>
         </tr>
         <tr>
           <td>Essence</td>
-          <td>Sacrifier des entités ou PNJ</td>
-          <td>Hantise cyclique des entités sacrifiées</td>
+          <td>Interagir avec les entités-fantômes, accepter de les sacrifier</td>
+          <td>Hantise : l'entité réapparaît aléatoirement dans les scènes suivantes</td>
         </tr>
         <tr>
           <td>Organes</td>
-          <td>Prélevés sur créatures ou soi</td>
-          <td>Pertes fonctionnelles irréversibles selon l'organe</td>
+          <td>Trouver des restes organiques dans le désert, ou se prélever soi-même</td>
+          <td>Perte fonctionnelle — le curseur change, des zones deviennent invisibles</td>
         </tr>
       </tbody>
     </table>
 
-    <h3>Table d'alchimie</h3>
+    <h3>Points d'alchimie</h3>
     <ul class="styled">
-      <li>3 à 5 slots d'ingrédients disposés librement par le joueur</li>
-      <li>Un slot résultat qui révèle le produit ou une réaction d'échec</li>
-      <li>Aucune indication sur les recettes — tout s'apprend par essai-erreur ou par lore trouvé dans le monde</li>
-      <li>Les échecs produisent toujours quelque chose — jamais un résultat vide</li>
+      <li>Intégrés aux scènes — visuellement distincts (lueur rouge, texture organique sur la photo)</li>
+      <li>Le joueur y dépose 2-3 ressources par glisser-déposer ou par clics successifs</li>
+      <li>Le résultat s'affiche comme une transformation de la scène — pas dans une fenêtre pop-up</li>
+      <li>Aucune indication sur les combinaisons — tout s'apprend par essai-erreur ou par fragments de lore</li>
+      <li>Les échecs altèrent toujours quelque chose — l'image, le texte, ou l'ambiance sonore</li>
     </ul>
   </section>
 
@@ -941,7 +963,28 @@ footer {
     <div class="section-number">02</div>
     <h2>Narration</h2>
 
-    <p>Le joueur se réveille dans le désert cramoisi sans identité ni souvenir. En explorant et en craftant, il découvre progressivement qu'il est l'origine de ce monde : le désert est la projection de sa propre psyché fracturée par un rituel poussé trop loin.</p>
+    <p>Le joueur se réveille dans le désert cramoisi sans identité ni souvenir. Chaque inspection déclenche un fragment de texte court, cryptique — qui parle de lui, jamais de l'objet. En explorant et en craftant, il découvre progressivement qu'il est l'origine de ce monde : le désert est la projection de sa propre psyché fracturée.</p>
+
+    <h3>Ton narratif</h3>
+
+    <p>Texte court, jamais explicatif. Le texte pose des sensations, pas des réponses. Exemples :</p>
+
+    <div class="callout">
+      <div class="callout-label">Fragments d'inspection</div>
+      <p>Tu étais là avant que le sable existe.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment</div>
+      <p>Ils t'appellent mirage. Tu t'appelles présence.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment</div>
+      <p>Le désert connaît leur poids par cœur. Pas le tien. Tu n'en as pas.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment</div>
+      <p>Tu n'es pas perdu. On ne perd pas ce qui a toujours été ici.</p>
+    </div>
 
     <h3>Structure en trois actes</h3>
 
@@ -953,20 +996,49 @@ footer {
         <tr>
           <td>I</td>
           <td>Éveil</td>
-          <td>Découverte de la table d'alchimie, premières règles apprises par observation, premier fragment de mémoire déclenché</td>
+          <td>Exploration des premières scènes, découverte des points d'alchimie, premier fragment de mémoire déclenché par un craft</td>
         </tr>
         <tr>
           <td>II</td>
           <td>Reconnaissance</td>
-          <td>Les crafts Tier II altèrent la perception du monde, les fragments forment des motifs, le joueur comprend que les entités lui sont liées</td>
+          <td>Les crafts Tier II altèrent visuellement les scènes (les photos changent), les fragments forment des motifs, le joueur comprend que les entités lui sont liées</td>
         </tr>
         <tr>
           <td>III</td>
           <td>Dissolution</td>
-          <td>Les crafts Tier III révèlent la vérité sur l'origine du désert, le joueur arrive à l'une des trois fins selon ses habitudes</td>
+          <td>Les crafts Tier III révèlent la vérité — le joueur arrive à l'une des trois fins selon ce qu'il a choisi de sacrifier</td>
         </tr>
       </tbody>
     </table>
+  </section>
+
+  <!-- ══ TRAITEMENT VISUEL ══ -->
+  <section id="esthetique">
+    <div class="section-number">02.1</div>
+    <h2>Traitement visuel des scènes</h2>
+
+    <p>Chaque scène est construite à partir de photos réelles traitées en post-production, puis enrichies de dessins par-dessus. L'image finale donne un sentiment de réalité corrompue — un lieu qui existe mais qui ne devrait pas.</p>
+
+    <h3>Pipeline visuel</h3>
+    <ul class="styled">
+      <li><strong>Photo brute</strong> — photos de lieux réels (extérieurs désertiques, ruines, paysages arides, structures abandonnées)</li>
+      <li><strong>Traitement post</strong> — contraste extrême, grain lourd, teinte cramoisie/sépia (palette Crimson Desert, pas vert EGA)</li>
+      <li><strong>Couche dessin</strong> — dessins superposés : silhouettes d'entités, annotations griffonnées, formes organiques ambiguës, cercles rituels</li>
+      <li><strong>Zones cliquables</strong> — définies en couche SVG par-dessus l'image traitée</li>
+    </ul>
+
+    <h3>Effets visuels (CSS/JS)</h3>
+    <ul class="styled">
+      <li>Scanlines subtiles — rappel d'un écran qui ne devrait pas exister</li>
+      <li>Grain animé — texture organique qui bouge lentement</li>
+      <li>Vignette — bords sombres qui se resserrent quand la Douleur augmente</li>
+      <li>Dégradation progressive — plus le joueur sacrifie, plus l'image se détériore (perte de couleurs, distorsion, bruit)</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Principe clé</div>
+      <p>La photo donne l'ancrage dans le réel. Le traitement et les dessins détruisent ce réel. Le joueur navigue entre les deux — et ses actions alchimiques accélèrent la destruction.</p>
+    </div>
   </section>
 
   <!-- ══ FINS ══ -->
@@ -1016,12 +1088,12 @@ footer {
 
     <h3>Règles graphiques</h3>
     <ul class="styled">
-      <li><strong>Pixel art 64px+</strong> — assets minimum 64×64, personnages 32×64. Lisibilité avant détail.</li>
-      <li><strong>Animations 4–8 frames</strong> — tout est lent, lourd, organique. Rien ne s'anime vite.</li>
-      <li><strong>Contraste dur</strong> — transitions nettes lumière/ombre, pas de dégradés doux.</li>
-      <li><strong>UI organique</strong> — interfaces comme des parchemins tachés, jamais un HUD propre et géométrique.</li>
-      <li><strong>Lumière interne</strong> — toute lumière vient de rituels ou de plaies. Jamais du soleil direct.</li>
-      <li><strong>Couleur signature</strong> — chaque objet alchimique a une teinte fixe. L'or n'existe pas ici.</li>
+      <li><strong>Photos traitées</strong> — chaque scène est une photo réelle post-traitée (contraste extrême, grain, palette cramoisie). Pas de pixel art.</li>
+      <li><strong>Dessins superposés</strong> — couche SVG/canvas par-dessus les photos : silhouettes, griffonnages, formes rituelles (par Alexandra).</li>
+      <li><strong>Contraste dur</strong> — transitions nettes lumière/ombre, pas de dégradés doux. Teintes cramoisies dominant.</li>
+      <li><strong>UI organique</strong> — curseur contextuel (œil, main, flamme), boîte de dialogue intégrée, pas de HUD propre et géométrique.</li>
+      <li><strong>Lumière interne</strong> — les sources de lumière dans les photos sont retouchées pour sembler provenir de rituels ou de plaies. Jamais de lumière naturelle cohérente.</li>
+      <li><strong>Typographie</strong> — VT323 pour les fragments narratifs, Press Start 2P pour les éléments d'interface. Cinzel pour les titres rituels.</li>
     </ul>
 
     <h3>Son et musique</h3>
@@ -1044,29 +1116,38 @@ footer {
   <!-- ══ ZONES ══ -->
   <section id="zones">
     <div class="section-number">04.1</div>
-    <h2>Zones</h2>
+    <h2>Scènes</h2>
+
+    <p>Chaque scène est une photo traitée plein écran avec des zones cliquables. Le joueur navigue entre les scènes en cliquant sur les bords ou sur des passages visibles dans l'image.</p>
 
     <div class="zones">
       <div class="zone">
         <div class="zone-id">
-          <div class="zone-num">Zone 01</div>
+          <div class="zone-num">Scène 01</div>
           <div class="zone-name">Les Dunes plates</div>
         </div>
-        <div class="zone-content">Zone de départ. Sable cramoisi à perte de vue, ressources basiques, table d'alchimie initiale. Aucun danger immédiat — juste le silence et les règles à apprendre.</div>
+        <div class="zone-content">Scène de départ. Photo d'un paysage désertique plat, traité en teintes cramoisies. Sable à perte de vue, premier point d'alchimie (cercle de cendre au sol). Ressources basiques à collecter par inspection. Silence total.</div>
       </div>
       <div class="zone">
         <div class="zone-id">
-          <div class="zone-num">Zone 02</div>
+          <div class="zone-num">Scène 02</div>
           <div class="zone-name">Les Ossements</div>
         </div>
-        <div class="zone-content">Architecture d'os et de pierre. Ressources Tier II, entités mi-humaines, premières règles contre-intuitives du monde. Accès après un craft Tier I spécifique.</div>
+        <div class="zone-content">Photo de structures rocheuses/ruines traitée pour ressembler à de l'os et de la pierre. Dessins superposés d'entités mi-humaines. Ressources Tier II. Accès après un craft Tier I spécifique dans la scène 01.</div>
       </div>
       <div class="zone">
         <div class="zone-id">
-          <div class="zone-num">Zone 03</div>
+          <div class="zone-num">Scène 03</div>
           <div class="zone-name">Le Coeur</div>
         </div>
-        <div class="zone-content">Zone centrale, accès par rituel uniquement. Recettes Tier III et trois fins du jeu. Le lieu où la vérité sur le désert devient lisible.</div>
+        <div class="zone-content">Photo fortement dégradée — presque abstraite. Point d'alchimie central pour les crafts Tier III et les trois fins. Accès par rituel uniquement.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Scène ██</div>
+          <div class="zone-name">█████</div>
+        </div>
+        <div class="zone-content">Scène verrouillée depuis le début. Le joueur peut la voir dans la navigation mais ne peut pas y entrer. Révélation finale — débloquée par un craft Tier III spécifique.</div>
       </div>
     </div>
   </section>
@@ -1111,15 +1192,15 @@ footer {
       <div class="stack-item">
         <div class="stack-icon">01</div>
         <div>
-          <div class="stack-name">Godot 4 — GDScript</div>
-          <div class="stack-desc">Moteur principal. Léger, open source, bien documenté pour solo dev.</div>
+          <div class="stack-name">HTML + CSS + JS vanilla</div>
+          <div class="stack-desc">Pas de framework. Le jeu tourne dans le navigateur. Léger, déployable partout.</div>
         </div>
       </div>
       <div class="stack-item">
         <div class="stack-icon">02</div>
         <div>
-          <div class="stack-name">Aseprite</div>
-          <div class="stack-desc">Création des assets pixel art 64px. Animations et tilesets.</div>
+          <div class="stack-name">Photos + SVG overlays</div>
+          <div class="stack-desc">Scènes = photos traitées (GIMP/Photoshop) + couches SVG pour les zones cliquables et dessins.</div>
         </div>
       </div>
       <div class="stack-item">
@@ -1132,8 +1213,8 @@ footer {
       <div class="stack-item">
         <div class="stack-icon">04</div>
         <div>
-          <div class="stack-name">Git + GitHub</div>
-          <div class="stack-desc">Versioning et sauvegarde du projet.</div>
+          <div class="stack-name">Git + GitHub + Vercel</div>
+          <div class="stack-desc">Versioning, hébergement et déploiement continu. Aussi déployable sur itch.io.</div>
         </div>
       </div>
     </div>
@@ -1145,13 +1226,13 @@ footer {
         <tr><th>Priorité</th><th>Système</th><th>Description</th></tr>
       </thead>
       <tbody>
-        <tr><td>MVP</td><td>Inventaire</td><td>Stockage et affichage des 3 types de ressources</td></tr>
-        <tr><td>MVP</td><td>Table d'alchimie</td><td>Interface drag &amp; drop avec slots et résultat</td></tr>
-        <tr><td>MVP</td><td>Système de recettes</td><td>Hashmap ingrédients → résultat, gestion des échecs</td></tr>
-        <tr><td>MVP</td><td>Scène de base</td><td>Une zone de désert explorable</td></tr>
-        <tr><td>Phase 2</td><td>Coûts irréversibles</td><td>Tracking des altérations permanentes du joueur</td></tr>
-        <tr><td>Phase 2</td><td>Système de fins</td><td>Tracking silencieux du ratio douleur/sacrifice</td></tr>
-        <tr><td>Phase 3</td><td>Son &amp; UI finale</td><td>Ambiances, polish, build distribuable</td></tr>
+        <tr><td>MVP</td><td>Moteur de scènes</td><td>Chargement des photos traitées, zones cliquables SVG, transitions entre scènes</td></tr>
+        <tr><td>MVP</td><td>Système d'inspection</td><td>Clic → fragment narratif, logique de progression par inspections</td></tr>
+        <tr><td>MVP</td><td>Ressources &amp; alchimie</td><td>Collecte des 3 ressources, points d'alchimie intégrés, combinaisons → résultat</td></tr>
+        <tr><td>MVP</td><td>Effets visuels</td><td>Scanlines, grain, vignette, dégradation progressive (CSS + canvas)</td></tr>
+        <tr><td>Phase 2</td><td>Altérations irréversibles</td><td>Dégradation visuelle permanente selon les crafts, perte de fonctionnalités du curseur</td></tr>
+        <tr><td>Phase 2</td><td>Système de fins</td><td>Tracking silencieux du ratio douleur/sacrifice → fin accessible</td></tr>
+        <tr><td>Phase 3</td><td>Son &amp; polish</td><td>Ambiances, sons corporels, drones, UI finale, déploiement</td></tr>
       </tbody>
     </table>
   </section>
@@ -1165,34 +1246,65 @@ footer {
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 0</div>
         <div class="roadmap-obj">Setup &amp; prototype</div>
-        <div class="roadmap-del">Godot installé, scène vide, table de craft fonctionnelle sans visuel</div>
+        <div class="roadmap-del">Structure HTML/CSS/JS, 1 photo traitée avec zones cliquables, système d'inspection basique fonctionnel</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 1</div>
         <div class="roadmap-obj">MVP jouable</div>
-        <div class="roadmap-del">1 zone, 6 recettes, inventaire complet, premier fragment lore</div>
+        <div class="roadmap-del">1 scène complète (Les Dunes), 4 recettes, collecte des 3 ressources, premier point d'alchimie, 3 fragments narratifs</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 2</div>
         <div class="roadmap-obj">Contenu core</div>
-        <div class="roadmap-del">3 zones, 12 recettes, système de fins, altérations joueur permanentes</div>
+        <div class="roadmap-del">3 scènes + scène verrouillée, 10 recettes, entités, système de fins, altérations visuelles permanentes</div>
       </div>
       <div class="roadmap-row">
         <div class="roadmap-phase">Phase 3</div>
         <div class="roadmap-obj">Finition</div>
-        <div class="roadmap-del">Son, UI finale, 3 fins implémentées, polish, build distribuable</div>
+        <div class="roadmap-del">Son, effets CSS avancés, 3 fins implémentées, polish, déploiement Vercel + itch.io</div>
       </div>
     </div>
 
     <div class="callout">
       <div class="callout-label">Scope MVP</div>
-      <p>Une zone, 6 recettes, 3 fragments narratifs, 1 fin possible. L'objectif est de valider que le système alchimique est fun et que l'ambiance fonctionne avant d'élargir le contenu.</p>
+      <p>Une scène photographique complète, 4 recettes alchimiques, 3 fragments narratifs, 1 point d'alchimie intégré. L'objectif est de valider que le point &amp; click + alchimie fonctionne et que l'ambiance photo traitée crée le malaise voulu.</p>
     </div>
   </section>
 
+  <!-- ══ 7. ÉQUIPE ══ -->
+  <section id="equipe">
+    <div class="section-number">07</div>
+    <h2>Équipe</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Tâche</th><th>Qui</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Photos (lieux, éclairage, repérage)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Traitement photo (contraste, grain, teinte)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Dessins superposés (entités, annotations, formes)</td><td>Alexandra</td></tr>
+        <tr><td>Direction artistique</td><td>Alexandra</td></tr>
+        <tr><td>Textes narratifs (fragments, lore)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Développement (moteur web, intégration, craft)</td><td>Kenny</td></tr>
+        <tr><td>Sound design</td><td>Kenny</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Assets à créer</h3>
+    <ul class="styled">
+      <li>Photos brutes des scènes (paysages désertiques, ruines, structures) — minimum 4 lieux</li>
+      <li>Traitement post (contraste, grain, teinte cramoisie) — 1 version traitée par scène</li>
+      <li>Dessins par-dessus — couche SVG/dessin par scène minimum (entités, cercles rituels, annotations)</li>
+      <li>Textes d'inspection par zone cliquable (2 variantes par objet)</li>
+      <li>Textes d'intro par scène (1-2 phrases)</li>
+      <li>Sons d'ambiance désert + sons corporels pour l'alchimie</li>
+    </ul>
+  </section>
+
   <footer>
-    <span>DÉSERT CRAMOISI — GDD v0.1</span>
-    <span>Document vivant — à mettre à jour à chaque itération majeure</span>
+    <span>DÉSERT CRAMOISI — GDD v0.2 — Fusion Anomalie × Crimson</span>
+    <span>Document vivant — Kenny + Alexandra</span>
   </footer>
 
 </main>
