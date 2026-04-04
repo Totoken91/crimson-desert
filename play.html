@@ -29,10 +29,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .panel-canvas { position:absolute; inset:0; z-index:0; }
 .panel-content { position:relative; z-index:2; padding:20px 14px; display:flex; flex-direction:column; gap:10px; height:100%; }
 .panel-title { font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:0.15em; color:var(--crimson); text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid var(--ash); margin-bottom:4px; }
-/* Organic edge SVGs */
-.panel-edge { position:absolute; top:0; height:100%; width:24px; pointer-events:none; z-index:3; }
-#panel-left .panel-edge { right:-20px; }
-#panel-right .panel-edge { left:-20px; }
+#panel-left { border-right:1px solid var(--ash); }
+#panel-right { border-left:1px solid var(--ash); }
 
 /* ── RESOURCES ── */
 .res-row { display:flex; align-items:center; gap:5px; padding:4px 0; }
@@ -78,12 +76,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 /* ── SCENE — fixed 960×720 ── */
 #scene-wrapper { position:absolute; left:160px; top:0; width:960px; height:720px; background:var(--bg2); overflow:hidden; }
 #pixi-container { position:absolute; inset:0; width:960px; height:720px; }
-/* Organic erosion on scene edges */
-#scene-erosion { position:absolute; inset:0; pointer-events:none; z-index:5; background:
-  radial-gradient(ellipse 20% 30% at 0% 20%, #080506 0%, transparent 100%),
-  radial-gradient(ellipse 15% 25% at 100% 60%, #080506 0%, transparent 100%),
-  radial-gradient(ellipse 30% 15% at 30% 0%, #080506 0%, transparent 100%),
-  radial-gradient(ellipse 25% 20% at 70% 100%, #080506 0%, transparent 100%); }
+/* erosion supprimée */
 
 /* ── HOTSPOT OVERLAY (HTML on top of PixiJS) ── */
 #hotspot-layer { position:absolute; inset:0; z-index:10; }
@@ -100,7 +93,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .float-text { position:absolute; font-family:'Press Start 2P',monospace; font-size:10px; pointer-events:none; z-index:30; text-shadow:2px 2px 0 #000; }
 
 /* ── DIALOGUE ── */
-#dialogue { position:absolute; bottom:0; left:0; width:960px; height:80px; background:rgba(13,9,0,0.95); border-top:1px solid var(--ash); display:flex; align-items:flex-start; gap:12px; padding:10px 16px; z-index:40; opacity:0; transform:translateY(10px); pointer-events:none; }
+#dialogue { position:absolute; bottom:0; left:0; width:960px; height:140px; background:rgba(8,5,4,0.92); border-top:2px solid var(--ash); display:flex; align-items:flex-start; gap:14px; padding:16px 20px; z-index:40; opacity:0; transform:translateY(10px); pointer-events:none; }
 #dialogue.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
 #portrait { width:48px; height:48px; background:var(--bg3); border:1px solid var(--ash); flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #portrait canvas { width:48px; height:48px; image-rendering:pixelated; }
@@ -132,7 +125,6 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
   <!-- LEFT PANEL -->
   <div class="panel" id="panel-left">
     <canvas class="panel-canvas" id="panel-left-bg"></canvas>
-    <svg class="panel-edge" preserveAspectRatio="none" viewBox="0 0 24 800"><path d="M24 0 C18 60,24 130,16 200 C8 280,22 350,14 440 C6 520,20 600,18 700 C24 760,16 780,24 800 L0 800 L0 0Z" fill="#100b0a"/></svg>
     <div class="panel-content">
       <div class="panel-title">ressources</div>
       <div class="res-row" id="res-d"><span class="res-label" style="color:var(--col-d)">D</span><div class="res-shapes" id="shapes-d"></div><span class="res-num" id="num-d"></span></div>
@@ -146,7 +138,6 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
   <!-- SCENE -->
   <div id="scene-wrapper">
     <div id="pixi-container">
-      <div id="scene-erosion"></div>
       <div id="hotspot-layer"></div>
       <div id="dialogue">
         <div id="portrait"><canvas width="16" height="16"></canvas><span id="portrait-label">ANOMALIE</span></div>
@@ -158,7 +149,6 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
   <!-- RIGHT PANEL -->
   <div class="panel" id="panel-right">
     <canvas class="panel-canvas" id="panel-right-bg"></canvas>
-    <svg class="panel-edge" preserveAspectRatio="none" viewBox="0 0 24 800"><path d="M0 0 C6 70,0 150,10 230 C18 310,4 400,12 480 C20 560,6 640,8 720 C0 770,10 790,0 800 L24 800 L24 0Z" fill="#100b0a"/></svg>
     <div class="panel-content">
       <div class="panel-title">alchimie</div>
       <button id="btn-voir">[ voir ]</button>
