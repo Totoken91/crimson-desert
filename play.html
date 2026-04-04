@@ -26,7 +26,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 .panel { position:relative; min-width:180px; overflow:visible; background:var(--bg2); }
 .panel-canvas { position:absolute; inset:0; z-index:0; }
 .panel-content { position:relative; z-index:2; padding:20px 16px; display:flex; flex-direction:column; gap:10px; height:100%; }
-.panel-title { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.3em; color:var(--ash); text-transform:lowercase; padding-bottom:6px; }
+.panel-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; color:var(--ash); text-transform:lowercase; padding-bottom:6px; }
 /* Organic edge SVGs */
 .panel-edge { position:absolute; top:0; height:100%; width:24px; pointer-events:none; z-index:3; }
 #panel-left .panel-edge { right:-20px; }
@@ -34,11 +34,10 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 
 /* ── RESOURCES ── */
 .res-row { display:flex; align-items:center; gap:5px; padding:4px 0; }
-.res-label { font-size:12px; font-weight:500; text-shadow:2px 2px 0 #3A0000; width:14px; }
-.res-shapes { display:flex; gap:3px; align-items:center; }
-.res-shape { transition:opacity 0.3s; }
+.res-label { font-size:14px; font-weight:500; text-shadow:2px 2px 0 #3A0000; width:16px; }
+.res-shapes { display:flex; gap:2px; align-items:center; }
+.res-shape { font-size:14px; line-height:1; transition:opacity 0.3s; }
 .res-shape.empty { opacity:0.2; }
-.res-shape.empty svg path { fill:#3A3230 !important; stroke:#3A3230 !important; }
 /* Async pulsations */
 .res-shape:nth-child(1) { animation: pulse-a 4s ease-in-out infinite; }
 .res-shape:nth-child(2) { animation: pulse-a 4s ease-in-out 0.5s infinite; }
@@ -48,7 +47,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 .res-shape:nth-child(6) { animation: pulse-a 4s ease-in-out 2.5s infinite; }
 @keyframes pulse-a { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.05) rotate(2deg)} }
 
-.res-num { margin-left:auto; font-size:9px; color:var(--bone-dim); }
+.res-num { margin-left:auto; font-size:11px; color:var(--bone-dim); }
 .res-row.cap .res-num { animation: blink-cap 1.2s ease-in-out infinite; }
 @keyframes blink-cap { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
@@ -60,16 +59,16 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 @keyframes flicker-vit { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
 /* ── RIGHT PANEL ── */
-#btn-reset { font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--ash); background:transparent; border:1px solid var(--ash); padding:3px 6px; cursor:none; text-align:center; letter-spacing:0.15em; margin-top:auto; opacity:0.3; transition:all 0.2s; }
+#btn-reset { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash); background:transparent; border:1px solid var(--ash); padding:3px 6px; cursor:none; text-align:center; letter-spacing:0.15em; margin-top:auto; opacity:0.3; transition:all 0.2s; }
 #btn-reset:hover { opacity:0.7; border-color:var(--crimson); color:var(--crimson); }
-#btn-voir { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px; cursor:none; text-align:center; letter-spacing:0.3em; transition:all 0.2s; }
+#btn-voir { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px; cursor:none; text-align:center; letter-spacing:0.3em; transition:all 0.2s; }
 #btn-voir:hover { border-color:var(--crimson-l); text-shadow:0 0 8px var(--crimson); }
 .recipe-item { padding:8px 0; }
 .recipe-sep { height:1px; background:linear-gradient(to right,transparent,#3A3230 20%,#3A3230 80%,transparent); opacity:0.4; margin:8px 0; }
-.recipe-name { font-family:'Cinzel',serif; font-size:13px; color:var(--bone); margin-bottom:3px; }
-.recipe-cost { font-size:10px; color:var(--bone-dim); margin-bottom:5px; font-family:'JetBrains Mono',monospace; }
+.recipe-name { font-family:'Cinzel',serif; font-size:14px; color:var(--bone); margin-bottom:3px; }
+.recipe-cost { font-size:11px; color:var(--bone-dim); margin-bottom:5px; font-family:'JetBrains Mono',monospace; }
 .recipe-cost span { margin-right:6px; }
-.recipe-btn { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:3px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
+.recipe-btn { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:3px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
 .recipe-btn:hover:not(:disabled) { border-color:var(--crimson); color:var(--crimson-l); }
 .recipe-btn:disabled { opacity:0.3; cursor:not-allowed; }
 #alchemy-msg { font-family:'Crimson Pro',serif; font-style:italic; font-size:13px; color:#5A4E4A; margin-top:auto; }
@@ -103,7 +102,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 #dialogue.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
 #portrait { width:48px; height:48px; background:var(--bg3); border:1px solid var(--ash); flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #portrait canvas { width:48px; height:48px; image-rendering:pixelated; }
-#portrait-label { font-size:7px; letter-spacing:0.2em; color:var(--ash-l); margin-top:2px; }
+#portrait-label { font-size:10px; letter-spacing:0.2em; color:var(--ash-l); margin-top:2px; }
 #dialogue-content { flex:1; display:flex; flex-direction:column; justify-content:center; min-height:48px; }
 #dialogue-text { font-family:'Crimson Pro',serif; font-size:15px; color:var(--bone); line-height:1.5; text-shadow:1px 1px 0 #2A0000; }
 #dialogue-text .corrupt { color:var(--crimson); }
@@ -386,11 +385,7 @@ let pixiTime = 0;
 // ══════════════════════════════════════
 // SVG RESOURCE SHAPES
 // ══════════════════════════════════════
-const SVG_SHAPES = {
-  douleur: `<svg viewBox="0 0 10 14" width="10" height="14"><path d="M5 1 C7 4, 9 7, 8 10 C7 13, 3 13, 2 10 C1 7, 3 4, 5 1Z" fill="currentColor"/></svg>`,
-  souffle: `<svg viewBox="0 0 12 12" width="12" height="12"><path d="M10 3 C10 1, 7 0, 5 1 C2 2, 1 5, 2 8 C3 11, 7 12, 9 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-  organique: `<svg viewBox="0 0 12 12" width="12" height="12"><path d="M6 1 C9 1, 11 3, 11 5 C11 7, 10 9, 8 10 C6 11, 3 11, 2 9 C0 7, 1 3, 3 2 C4 1, 5 1, 6 1Z" fill="currentColor"/></svg>`,
-};
+const RES_CHARS = { douleur:'♦', souffle:'◌', organique:'●' };
 
 const RES_COLORS = { douleur:'var(--col-d)', souffle:'var(--col-s)', organique:'var(--col-o)' };
 
@@ -561,7 +556,7 @@ function updateResourceUI(){
     const s=key==='douleur'?'d':key==='souffle'?'s':'o';
     const val=state.inventory[key],cap=CAPS[key];
     const cont=$('shapes-'+s);cont.innerHTML='';
-    for(let i=0;i<cap;i++){const d=document.createElement('div');d.className='res-shape'+(i>=val?' empty':'');d.style.color=RES_COLORS[key];d.innerHTML=SVG_SHAPES[key];cont.appendChild(d)}
+    for(let i=0;i<cap;i++){const d=document.createElement('span');d.className='res-shape'+(i>=val?' empty':'');d.style.color=RES_COLORS[key];d.textContent=RES_CHARS[key];cont.appendChild(d)}
     $('num-'+s).textContent=val+'/'+cap;
     $('res-'+s).classList.toggle('cap',val>=cap);
     $('res-'+s).querySelector('.res-label').textContent=glitchText(s.toUpperCase());
