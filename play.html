@@ -23,55 +23,66 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 #game { display:grid; grid-template-columns:1fr auto 1fr; width:100vw; height:100vh; }
 
 /* ── PANELS ── */
-.panel { position:relative; min-width:180px; overflow:hidden; }
+.panel { position:relative; min-width:180px; overflow:visible; background:var(--bg2); }
 .panel-canvas { position:absolute; inset:0; z-index:0; }
-.panel-content { position:relative; z-index:1; padding:20px 16px; display:flex; flex-direction:column; gap:10px; height:100%; }
-.panel-title { font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; color:var(--crimson); text-transform:uppercase; text-shadow:2px 2px 0 #3A0000; padding-bottom:8px; }
+.panel-content { position:relative; z-index:2; padding:20px 16px; display:flex; flex-direction:column; gap:10px; height:100%; }
+.panel-title { font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.3em; color:var(--ash); text-transform:lowercase; padding-bottom:6px; }
+/* Organic edge SVGs */
+.panel-edge { position:absolute; top:0; height:100%; width:24px; pointer-events:none; z-index:3; }
+#panel-left .panel-edge { right:-20px; }
+#panel-right .panel-edge { left:-20px; }
 
-/* ── RESOURCES (organic SVGs) ── */
-.res-row { display:flex; align-items:center; gap:6px; padding:3px 0; }
-.res-label { font-size:13px; font-weight:500; text-shadow:2px 2px 0 #3A0000; width:16px; }
-.res-shapes { display:flex; gap:2px; }
-.res-shape { width:14px; height:14px; transition: opacity 0.3s; }
-.res-shape.empty { opacity:0.15; }
-.res-shape svg { width:100%; height:100%; }
+/* ── RESOURCES ── */
+.res-row { display:flex; align-items:center; gap:5px; padding:4px 0; }
+.res-label { font-size:12px; font-weight:500; text-shadow:2px 2px 0 #3A0000; width:14px; }
+.res-shapes { display:flex; gap:3px; align-items:center; }
+.res-shape { transition:opacity 0.3s; }
+.res-shape.empty { opacity:0.2; }
+.res-shape.empty svg path { fill:#3A3230 !important; stroke:#3A3230 !important; }
 /* Async pulsations */
-.res-shape:nth-child(1) { animation: pulse-a 3s ease-in-out infinite; }
-.res-shape:nth-child(2) { animation: pulse-a 3s ease-in-out 0.4s infinite; }
-.res-shape:nth-child(3) { animation: pulse-a 3s ease-in-out 0.8s infinite; }
-.res-shape:nth-child(4) { animation: pulse-a 3s ease-in-out 1.2s infinite; }
-.res-shape:nth-child(5) { animation: pulse-a 3s ease-in-out 1.6s infinite; }
-.res-shape:nth-child(6) { animation: pulse-a 3s ease-in-out 2.0s infinite; }
-@keyframes pulse-a { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.1) rotate(3deg)} }
+.res-shape:nth-child(1) { animation: pulse-a 4s ease-in-out infinite; }
+.res-shape:nth-child(2) { animation: pulse-a 4s ease-in-out 0.5s infinite; }
+.res-shape:nth-child(3) { animation: pulse-a 4s ease-in-out 1.0s infinite; }
+.res-shape:nth-child(4) { animation: pulse-a 4s ease-in-out 1.5s infinite; }
+.res-shape:nth-child(5) { animation: pulse-a 4s ease-in-out 2.0s infinite; }
+.res-shape:nth-child(6) { animation: pulse-a 4s ease-in-out 2.5s infinite; }
+@keyframes pulse-a { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.05) rotate(2deg)} }
 
-.res-num { margin-left:auto; font-size:10px; color:var(--bone-dim); text-shadow:2px 2px 0 #3A0000; }
+.res-num { margin-left:auto; font-size:9px; color:var(--bone-dim); }
 .res-row.cap .res-num { animation: blink-cap 1.2s ease-in-out infinite; }
 @keyframes blink-cap { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-/* Vitality blocks */
-#vitality-bar { display:flex; gap:3px; margin-top:12px; padding-top:10px; }
-.vit-block { width:10px; height:10px; background:var(--ash); border-radius:1px; transition:background 0.3s; }
-.vit-block.full { background:var(--ash-l); }
-.vit-block.low { animation: blink-low 1.5s ease-in-out infinite; }
-@keyframes blink-low { 0%,100%{opacity:1} 50%{opacity:0.15} }
-.vit-block.empty { background:var(--crimson); opacity:0.15; }
+/* Vitality — hand-carved dashes */
+#vitality-bar { display:flex; gap:0; margin-top:14px; padding-top:12px; flex-wrap:wrap; }
+.vit-dash { font-family:'JetBrains Mono',monospace; font-size:11px; line-height:1; color:#2A1010; transition:color 0.3s; }
+.vit-dash.full { color:var(--crimson); }
+.vit-dash.low { animation: flicker-vit 0.8s ease-in-out infinite; }
+@keyframes flicker-vit { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
 /* ── RIGHT PANEL ── */
-#btn-reset { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:4px 6px; cursor:none; text-align:center; letter-spacing:0.1em; margin-top:auto; opacity:0.4; transition:opacity 0.2s; }
-#btn-reset:hover { opacity:0.8; border-color:var(--crimson); color:var(--crimson); }
-#btn-voir { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--crimson); background:transparent; border:1px solid var(--ash); padding:6px; cursor:none; text-align:center; letter-spacing:0.1em; text-shadow:2px 2px 0 #3A0000; }
-.recipe-item { padding:8px 0; border-bottom:1px dotted rgba(58,50,48,0.3); }
-.recipe-item:last-child { border-bottom:none; }
-.recipe-name { font-family:'Crimson Pro',serif; font-size:14px; color:var(--bone); text-shadow:2px 2px 0 #3A0000; margin-bottom:2px; }
-.recipe-cost { font-size:10px; color:var(--bone-dim); margin-bottom:4px; }
+#btn-reset { font-family:'JetBrains Mono',monospace; font-size:8px; color:var(--ash); background:transparent; border:1px solid var(--ash); padding:3px 6px; cursor:none; text-align:center; letter-spacing:0.15em; margin-top:auto; opacity:0.3; transition:all 0.2s; }
+#btn-reset:hover { opacity:0.7; border-color:var(--crimson); color:var(--crimson); }
+#btn-voir { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px; cursor:none; text-align:center; letter-spacing:0.3em; transition:all 0.2s; }
+#btn-voir:hover { border-color:var(--crimson-l); text-shadow:0 0 8px var(--crimson); }
+.recipe-item { padding:8px 0; }
+.recipe-sep { height:1px; background:linear-gradient(to right,transparent,#3A3230 20%,#3A3230 80%,transparent); opacity:0.4; margin:8px 0; }
+.recipe-name { font-family:'Cinzel',serif; font-size:13px; color:var(--bone); margin-bottom:3px; }
+.recipe-cost { font-size:10px; color:var(--bone-dim); margin-bottom:5px; font-family:'JetBrains Mono',monospace; }
 .recipe-cost span { margin-right:6px; }
-.recipe-btn { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--crimson); background:transparent; border:1px solid var(--ash); padding:3px 8px; cursor:none; letter-spacing:0.05em; text-shadow:1px 1px 0 #3A0000; }
-.recipe-btn:disabled { opacity:0.2; }
-#alchemy-msg { font-family:'Crimson Pro',serif; font-style:italic; font-size:12px; color:var(--bone-dim); margin-top:auto; }
+.recipe-btn { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:3px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
+.recipe-btn:hover:not(:disabled) { border-color:var(--crimson); color:var(--crimson-l); }
+.recipe-btn:disabled { opacity:0.3; cursor:not-allowed; }
+#alchemy-msg { font-family:'Crimson Pro',serif; font-style:italic; font-size:13px; color:#5A4E4A; margin-top:auto; }
 
 /* ── SCENE WRAPPER ── */
 #scene-wrapper { position:relative; display:flex; align-items:center; justify-content:center; background:var(--bg2); overflow:hidden; }
 #pixi-container { position:relative; aspect-ratio:4/3; height:100%; max-height:100%; }
+/* Organic erosion on scene edges */
+#scene-erosion { position:absolute; inset:0; pointer-events:none; z-index:5; background:
+  radial-gradient(ellipse 20% 30% at 0% 20%, #080506 0%, transparent 100%),
+  radial-gradient(ellipse 15% 25% at 100% 60%, #080506 0%, transparent 100%),
+  radial-gradient(ellipse 30% 15% at 30% 0%, #080506 0%, transparent 100%),
+  radial-gradient(ellipse 25% 20% at 70% 100%, #080506 0%, transparent 100%); }
 
 /* ── HOTSPOT OVERLAY (HTML on top of PixiJS) ── */
 #hotspot-layer { position:absolute; inset:0; z-index:10; }
@@ -120,8 +131,9 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
   <!-- LEFT PANEL -->
   <div class="panel" id="panel-left">
     <canvas class="panel-canvas" id="panel-left-bg"></canvas>
+    <svg class="panel-edge" preserveAspectRatio="none" viewBox="0 0 24 800"><path d="M24 0 C18 60,24 130,16 200 C8 280,22 350,14 440 C6 520,20 600,18 700 C24 760,16 780,24 800 L0 800 L0 0Z" fill="#100b0a"/></svg>
     <div class="panel-content">
-      <div class="panel-title">Ressources</div>
+      <div class="panel-title">ressources</div>
       <div class="res-row" id="res-d"><span class="res-label" style="color:var(--col-d)">D</span><div class="res-shapes" id="shapes-d"></div><span class="res-num" id="num-d"></span></div>
       <div class="res-row" id="res-s"><span class="res-label" style="color:var(--col-s)">S</span><div class="res-shapes" id="shapes-s"></div><span class="res-num" id="num-s"></span></div>
       <div class="res-row" id="res-o"><span class="res-label" style="color:var(--col-o)">O</span><div class="res-shapes" id="shapes-o"></div><span class="res-num" id="num-o"></span></div>
@@ -133,6 +145,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
   <!-- SCENE -->
   <div id="scene-wrapper">
     <div id="pixi-container">
+      <div id="scene-erosion"></div>
       <div id="hotspot-layer"></div>
       <div id="dialogue">
         <div id="portrait"><canvas width="16" height="16"></canvas><span id="portrait-label">ANOMALIE</span></div>
@@ -144,11 +157,12 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
   <!-- RIGHT PANEL -->
   <div class="panel" id="panel-right">
     <canvas class="panel-canvas" id="panel-right-bg"></canvas>
+    <svg class="panel-edge" preserveAspectRatio="none" viewBox="0 0 24 800"><path d="M0 0 C6 70,0 150,10 230 C18 310,4 400,12 480 C20 560,6 640,8 720 C0 770,10 790,0 800 L24 800 L24 0Z" fill="#100b0a"/></svg>
     <div class="panel-content">
-      <div class="panel-title">Alchimie</div>
-      <button id="btn-voir">[ VOIR ]</button>
+      <div class="panel-title">alchimie</div>
+      <button id="btn-voir">[ voir ]</button>
       <div id="recipe-list"></div>
-      <div id="alchemy-msg">Trouve un point d'invocation.</div>
+      <div id="alchemy-msg">— trouve un point d'invocation</div>
     </div>
   </div>
 </div>
@@ -373,9 +387,9 @@ let pixiTime = 0;
 // SVG RESOURCE SHAPES
 // ══════════════════════════════════════
 const SVG_SHAPES = {
-  douleur: `<svg viewBox="0 0 14 14"><path d="M7 1C6 4 3 6 3 9c0 2.5 1.8 4 4 4s4-1.5 4-4C11 6 8 4 7 1z" fill="currentColor" opacity="0.9"/></svg>`,
-  souffle: `<svg viewBox="0 0 14 14"><path d="M7 2a5 5 0 014.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 2a5 5 0 00-3.5 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/></svg>`,
-  organique: `<svg viewBox="0 0 14 14"><path d="M7 2C4 2 2.5 4 3 7c.5 3 2 4.5 4.5 4.5S11.5 10 11 7C10.5 4 10 2 7 2z" fill="currentColor" opacity="0.85"/></svg>`,
+  douleur: `<svg viewBox="0 0 10 14" width="10" height="14"><path d="M5 1 C7 4, 9 7, 8 10 C7 13, 3 13, 2 10 C1 7, 3 4, 5 1Z" fill="currentColor"/></svg>`,
+  souffle: `<svg viewBox="0 0 12 12" width="12" height="12"><path d="M10 3 C10 1, 7 0, 5 1 C2 2, 1 5, 2 8 C3 11, 7 12, 9 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  organique: `<svg viewBox="0 0 12 12" width="12" height="12"><path d="M6 1 C9 1, 11 3, 11 5 C11 7, 10 9, 8 10 C6 11, 3 11, 2 9 C0 7, 1 3, 3 2 C4 1, 5 1, 6 1Z" fill="currentColor"/></svg>`,
 };
 
 const RES_COLORS = { douleur:'var(--col-d)', souffle:'var(--col-s)', organique:'var(--col-o)' };
@@ -424,15 +438,16 @@ document.addEventListener('mousemove', e => {
 function drawPortrait() {
   const canvas = document.querySelector('#portrait canvas');
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#0a0506';
+  ctx.fillStyle = '#080506';
   ctx.fillRect(0, 0, 16, 16);
+  // Imperfect 6-pointed star — two offset triangles
   ctx.fillStyle = '#3A3230';
-  ctx.fillRect(5, 3, 6, 8);
-  ctx.fillStyle = '#6B2416';
-  ctx.fillRect(6, 5, 2, 2);
-  ctx.fillRect(9, 5, 2, 2);
-  ctx.fillStyle = '#8C1C1C';
-  ctx.fillRect(7, 9, 3, 1);
+  ctx.beginPath(); ctx.moveTo(8,2); ctx.lineTo(13,11); ctx.lineTo(3,11); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(7,14); ctx.lineTo(2,6); ctx.lineTo(13,6); ctx.closePath(); ctx.fill();
+  // Crimson edges
+  ctx.strokeStyle = '#8C1C1C'; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(8,2); ctx.lineTo(13,11); ctx.lineTo(3,11); ctx.closePath(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(7,14); ctx.lineTo(2,6); ctx.lineTo(13,6); ctx.closePath(); ctx.stroke();
 }
 
 app.ticker.add((delta) => {
@@ -554,7 +569,15 @@ function updateResourceUI(){
 }
 function updateVitalityUI(){
   vitalityBar.innerHTML='';
-  for(let i=0;i<state.vitalityMax;i++){const b=document.createElement('div');b.className='vit-block';if(i<state.vitality){b.classList.add('full');if(state.vitality<=2)b.classList.add('low')}else b.classList.add('empty');vitalityBar.appendChild(b)}
+  const offsets=[0,1,0,2,0,1,0,2,1,0];
+  for(let i=0;i<state.vitalityMax;i++){
+    const d=document.createElement('span');d.className='vit-dash';
+    d.textContent='—';
+    d.style.marginTop=offsets[i]+'px';
+    d.style.marginRight=(1+Math.floor(Math.random()*2))+'px';
+    if(i<state.vitality){d.classList.add('full');if(state.vitality<=2){d.classList.add('low');d.style.animationDelay=(i*0.1)+'s'}}
+    vitalityBar.appendChild(d);
+  }
 }
 function updateRecipeUI(){
   recipeListEl.innerHTML='';const onAlch=activeAlchemyPoint;
@@ -562,8 +585,12 @@ function updateRecipeUI(){
     const div=document.createElement('div');div.className='recipe-item';
     div.innerHTML=`<div class="recipe-name">${done?'✓ ':''}${r.name}</div><div class="recipe-cost">${r.cost.douleur?`<span style="color:var(--col-d)">D×${r.cost.douleur}</span>`:''} ${r.cost.souffle?`<span style="color:var(--col-s)">S×${r.cost.souffle}</span>`:''} ${r.cost.organique?`<span style="color:var(--col-o)">O×${r.cost.organique}</span>`:''}</div><button class="recipe-btn" ${can?'':'disabled'}>${done?'accompli':'accomplir'}</button>`;
     if(can)div.querySelector('.recipe-btn').addEventListener('click',()=>craftRecipe(r));
-    recipeListEl.appendChild(div)});
-  alchemyMsg.textContent=onAlch?'':'Trouve un point d\'invocation.';alchemyMsg.style.display=onAlch?'none':'block';
+    recipeListEl.appendChild(div);
+    // Organic separator
+    const sep=document.createElement('div');sep.className='recipe-sep';recipeListEl.appendChild(sep)});
+  // Remove last separator
+  const lastSep=recipeListEl.querySelector('.recipe-sep:last-child');if(lastSep)lastSep.remove();
+  alchemyMsg.textContent=onAlch?'':'— trouve un point d\'invocation';alchemyMsg.style.display=onAlch?'none':'block';
 }
 
 // ══════════════════════════════════════
