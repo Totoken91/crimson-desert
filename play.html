@@ -10,105 +10,97 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
 :root {
-  --bg: #080506; --bg2: #100b0a; --bg3: #160e0c;
-  --crimson: #8C1C1C; --crimson-l: #BE372D; --rust: #6B2416;
-  --bone: #C6B29B; --bone-dim: #8A7A6A;
-  --ash: #3A3230; --ash-l: #5A4E4A; --pale: #E8DDD0;
-  --col-d: #E24B4A; --col-s: #7F77DD; --col-o: #EF9F27;
+  --bg: #000000; --bg2: #000000;
+  --red: #FF0000; --amber: #FFAA00; --white: #FFFFFF; --grey: #666666;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'Press Start 2P',monospace; color:var(--bone); cursor:none; user-select:none; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'Press Start 2P',monospace; color:var(--amber); cursor:none; user-select:none; display:flex; align-items:center; justify-content:center; min-height:100vh;
+  -webkit-font-smoothing:none; -moz-osx-font-smoothing:unset; font-smooth:never; }
 
-/* ── LAYOUT — fixed 1280×720 ── */
-#game { position:relative; width:1280px; height:720px; background:var(--bg); overflow:hidden; }
+/* ── LAYOUT ── */
+#game { position:relative; width:1280px; height:720px; background:#000; overflow:hidden; }
 
-/* ── PANELS — absolute positioned ── */
-.panel { position:absolute; top:0; width:160px; height:720px; overflow:visible; background:var(--bg2); }
-#panel-left { left:0; }
-#panel-right { right:0; }
-.panel-canvas { position:absolute; inset:0; z-index:0; }
-.panel-content { position:relative; z-index:2; padding:20px 14px; display:flex; flex-direction:column; gap:10px; height:100%; }
-.panel-title { font-family:'Press Start 2P',monospace; font-size:8px; letter-spacing:0.15em; color:var(--crimson); text-transform:uppercase; padding-bottom:8px; border-bottom:1px solid var(--ash); margin-bottom:4px; }
-#panel-left { border-right:1px solid var(--ash); }
-#panel-right { border-left:1px solid var(--ash); }
+/* ── SCANLINES (seul effet autorisé) ── */
+#game::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 3px); pointer-events:none; z-index:999; }
 
-/* ── RESOURCES ── */
-.res-row { display:flex; align-items:center; gap:5px; padding:4px 0; }
-.res-label { font-family:'Press Start 2P',monospace; font-size:10px; text-shadow:2px 2px 0 #3A0000; width:18px; }
-.res-shapes { display:flex; gap:2px; align-items:center; }
-.res-shape { font-family:'Press Start 2P',monospace; font-size:10px; line-height:1; transition:opacity 0.3s; }
-.res-shape.empty { opacity:0.2; }
-/* Async pulsations */
-.res-shape:nth-child(1) { animation: pulse-a 4s ease-in-out infinite; }
-.res-shape:nth-child(2) { animation: pulse-a 4s ease-in-out 0.5s infinite; }
-.res-shape:nth-child(3) { animation: pulse-a 4s ease-in-out 1.0s infinite; }
-.res-shape:nth-child(4) { animation: pulse-a 4s ease-in-out 1.5s infinite; }
-.res-shape:nth-child(5) { animation: pulse-a 4s ease-in-out 2.0s infinite; }
-.res-shape:nth-child(6) { animation: pulse-a 4s ease-in-out 2.5s infinite; }
-@keyframes pulse-a { 0%,100%{transform:scale(1) rotate(0deg)} 50%{transform:scale(1.05) rotate(2deg)} }
+/* ── PANELS ── */
+.panel { position:absolute; top:0; width:160px; height:720px; background:#000; border:none; }
+#panel-left { left:0; border-right:1px solid var(--grey); }
+#panel-right { right:0; border-left:1px solid var(--grey); }
+.panel-canvas { display:none; }
+.panel-content { position:relative; padding:12px 10px; display:flex; flex-direction:column; gap:8px; height:100%; }
+.panel-title { font-size:8px; color:var(--red); text-transform:uppercase; padding-bottom:6px; letter-spacing:0.1em; }
 
-.res-num { margin-left:auto; font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone); }
-.res-row.cap .res-num { animation: blink-cap 1.2s ease-in-out infinite; }
-@keyframes blink-cap { 0%,100%{opacity:1} 50%{opacity:0.3} }
+/* ── RESOURCES — block characters ── */
+.res-row { display:flex; align-items:center; gap:4px; padding:2px 0; font-size:8px; line-height:1; }
+.res-label { width:12px; }
+.res-shapes { letter-spacing:1px; }
+.res-num { margin-left:auto; color:var(--grey); font-size:7px; }
+.res-row.cap .res-num { animation:blink-hard 1s step-start infinite; }
+@keyframes blink-hard { 0%,100%{visibility:visible} 50%{visibility:hidden} }
 
-/* Vitality — hand-carved dashes */
-#vitality-bar { display:flex; gap:0; margin-top:14px; padding-top:12px; flex-wrap:wrap; }
-.vit-dash { font-family:'Press Start 2P',monospace; font-size:8px; line-height:1; color:#2A1010; transition:color 0.3s; }
-.vit-dash.full { color:var(--crimson); }
-.vit-dash.low { animation: flicker-vit 0.8s ease-in-out infinite; }
-@keyframes flicker-vit { 0%,100%{opacity:1} 50%{opacity:0.4} }
+/* ── VITALITY ── */
+#vitality-bar { margin-top:12px; padding-top:8px; border-top:1px solid #333; font-size:8px; letter-spacing:1px; line-height:1; }
+.vit-dash { color:#330000; }
+.vit-dash.full { color:var(--red); }
+.vit-dash.low { animation:blink-hard 0.5s step-start infinite; }
 
-/* ── RIGHT PANEL ── */
-#btn-reset { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:5px 8px; cursor:none; text-align:center; letter-spacing:0.1em; margin-top:auto; opacity:0.4; transition:all 0.2s; }
-#btn-reset:hover { opacity:0.7; border-color:var(--crimson); color:var(--crimson); }
-#btn-voir { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone-dim); background:transparent; border:1px solid var(--ash); padding:6px; cursor:none; text-align:center; letter-spacing:0.15em; transition:all 0.2s; }
-#btn-voir:hover { border-color:var(--crimson-l); text-shadow:0 0 8px var(--crimson); }
-.recipe-item { padding:8px 0; }
-.recipe-sep { height:1px; background:linear-gradient(to right,transparent,#3A3230 20%,#3A3230 80%,transparent); opacity:0.4; margin:8px 0; }
-.recipe-name { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--bone); margin-bottom:5px; line-height:1.4; }
-.recipe-cost { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--bone-dim); margin-bottom:5px; }
+/* ── BUTTONS ── */
+.btn-dos { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--amber); background:#000; border:none; padding:2px 0; cursor:none; text-align:left; }
+.btn-dos:hover { color:#000; background:var(--amber); }
+.btn-dos:disabled { color:#333; background:#000; }
+
+#btn-reset { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--grey); background:#000; border:none; padding:2px 0; cursor:none; margin-top:auto; }
+#btn-reset:hover { color:#000; background:var(--grey); }
+
+#btn-voir { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--amber); background:#000; border:none; padding:2px 0; cursor:none; }
+#btn-voir:hover { color:#000; background:var(--amber); }
+
+/* ── RECIPES ── */
+.recipe-item { padding:4px 0; }
+.recipe-sep { font-size:7px; color:#333; padding:2px 0; }
+.recipe-name { font-size:8px; color:var(--white); margin-bottom:3px; line-height:1.4; }
+.recipe-cost { font-size:7px; color:var(--amber); margin-bottom:4px; }
 .recipe-cost span { margin-right:4px; }
-.recipe-btn { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--bone-dim); background:transparent; border:1px solid var(--ash); padding:4px 8px; cursor:none; letter-spacing:0.05em; transition:all 0.2s; border-radius:0; }
-.recipe-btn:hover:not(:disabled) { border-color:var(--crimson); color:var(--crimson-l); }
-.recipe-btn:disabled { opacity:0.3; cursor:not-allowed; }
-#alchemy-msg { font-family:'Press Start 2P',monospace; font-size:6px; color:var(--ash-l); margin-top:auto; line-height:1.6; }
+.recipe-btn { font-family:'Press Start 2P',monospace; font-size:7px; color:var(--amber); background:#000; border:none; padding:1px 0; cursor:none; }
+.recipe-btn:hover:not(:disabled) { color:#000; background:var(--amber); }
+.recipe-btn:disabled { color:#333; }
+#alchemy-msg { font-size:6px; color:var(--grey); margin-top:auto; line-height:1.8; }
 
-/* ── SCENE — fixed 960×720 ── */
-#scene-wrapper { position:absolute; left:160px; top:0; width:960px; height:720px; background:var(--bg2); overflow:hidden; }
+/* ── SCENE ── */
+#scene-wrapper { position:absolute; left:160px; top:0; width:960px; height:720px; background:#000; overflow:hidden; }
 #pixi-container { position:absolute; inset:0; width:960px; height:720px; }
-/* erosion supprimée */
 
-/* ── HOTSPOT OVERLAY (HTML on top of PixiJS) ── */
+/* ── HOTSPOTS ── */
 #hotspot-layer { position:absolute; inset:0; z-index:10; }
-.hotspot { position:absolute; background:transparent; border:1px dashed rgba(190,55,45,0.25); cursor:none; padding:0; border-radius:2px; }
-.hotspot:hover { background:rgba(140,28,28,0.1); border-color:rgba(190,55,45,0.45); }
-.hotspot.zoom-hs { border:none; background:transparent; }
-.hotspot.zoom-hs:hover { background:rgba(140,28,28,0.08); }
+.hotspot { position:absolute; background:transparent; border:1px dashed #FF000044; cursor:none; padding:0; }
+.hotspot:hover { background:#FF000011; }
+.hotspot.zoom-hs { border:none; }
+.hotspot.zoom-hs:hover { background:#FF000008; }
 .exit-zone { position:absolute; z-index:6; cursor:none; background:transparent; border:none; padding:0; }
-.exit-zone:not(.locked):hover { background:rgba(190,55,45,0.06); }
 
 /* Hold bar */
-.hold-bar { position:absolute; bottom:-4px; left:10px; right:10px; height:2px; background:var(--ash); }
-.hold-bar-fill { height:100%; width:0%; background:var(--crimson); }
+.hold-bar { position:absolute; bottom:-4px; left:10px; right:10px; height:2px; background:#333; }
+.hold-bar-fill { height:100%; width:0%; background:var(--red); }
 
 /* Float text */
-.float-text { position:absolute; font-family:'Press Start 2P',monospace; font-size:10px; pointer-events:none; z-index:30; text-shadow:2px 2px 0 #000; }
+.float-text { position:absolute; font-family:'Press Start 2P',monospace; font-size:10px; pointer-events:none; z-index:30; }
 
-/* ── DIALOGUE ── */
-#dialogue { position:absolute; bottom:40px; left:50%; transform:translateX(-50%) translateY(10px); width:640px; background:rgba(10,6,5,0.88); border:1px solid var(--ash); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:18px 28px; z-index:40; opacity:0; pointer-events:none; }
-#dialogue.visible { opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+/* ── DIALOGUE — ASCII box ── */
+#dialogue { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:640px; background:#000; border:1px solid var(--amber); display:none; flex-direction:column; padding:12px 16px; z-index:40; }
+#dialogue.visible { display:flex; }
 #portrait { display:none; }
 #portrait canvas { display:none; }
 #portrait-label { display:none; }
-#dialogue-content { display:flex; flex-direction:column; align-items:center; text-align:center; }
-#dialogue-text { font-family:'Press Start 2P',monospace; font-size:9px; color:var(--pale); line-height:2; text-shadow:2px 2px 0 #2A0000; text-align:center; }
-#dialogue-text .corrupt { color:var(--crimson); }
-#dialogue-arrow { font-size:10px; color:var(--ash-l); margin-top:8px; display:none; }
-#dialogue-arrow.visible { display:block; }
+#dialogue-content { display:flex; flex-direction:column; }
+#dialogue-text { font-family:'Press Start 2P',monospace; font-size:8px; color:var(--amber); line-height:2.2; }
+#dialogue-text .corrupt { color:var(--red); }
+#dialogue-arrow { font-size:8px; color:var(--amber); margin-top:6px; text-align:right; display:none; }
+#dialogue-arrow.visible { display:block; animation:blink-hard 0.5s step-start infinite; }
 
 /* ── CURSOR ── */
 #cursor { position:fixed; pointer-events:none; z-index:1000; transform:translate(-50%,-50%); }
-#cursor svg { width:24px; height:24px; fill:none; stroke:var(--bone-dim); stroke-width:1.5; filter:drop-shadow(0 0 3px rgba(140,28,28,0.3)); }
+#cursor svg { width:20px; height:20px; fill:none; stroke:var(--amber); stroke-width:1.5; }
 </style>
 </head>
 <body>
@@ -133,7 +125,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
       <div class="res-row" id="res-s"><span class="res-label" style="color:var(--col-s)">S</span><div class="res-shapes" id="shapes-s"></div><span class="res-num" id="num-s"></span></div>
       <div class="res-row" id="res-o"><span class="res-label" style="color:var(--col-o)">O</span><div class="res-shapes" id="shapes-o"></div><span class="res-num" id="num-o"></span></div>
       <div id="vitality-bar"></div>
-      <button id="btn-reset">[ reset ]</button>
+      <button id="btn-reset" class="btn-dos">[ reset ]</button>
     </div>
   </div>
 
@@ -153,7 +145,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
     <canvas class="panel-canvas" id="panel-right-bg"></canvas>
     <div class="panel-content">
       <div class="panel-title">alchimie</div>
-      <button id="btn-voir">[ voir ]</button>
+      <button id="btn-voir" class="btn-dos">[ voir ]</button>
       <div id="recipe-list"></div>
       <div id="alchemy-msg">— trouve un point d'invocation</div>
     </div>
@@ -377,9 +369,9 @@ function stopPixelFlicker() {
 // ══════════════════════════════════════
 // SVG RESOURCE SHAPES
 // ══════════════════════════════════════
-const RES_CHARS = { douleur:'♦', souffle:'◌', organique:'●' };
-
-const RES_COLORS = { douleur:'var(--col-d)', souffle:'var(--col-s)', organique:'var(--col-o)' };
+const RES_CHARS = { douleur:'█', souffle:'█', organique:'█' };
+const RES_EMPTY = '░';
+const RES_COLORS = { douleur:'var(--red)', souffle:'var(--amber)', organique:'var(--amber)' };
 
 // ══════════════════════════════════════
 // CURSOR (animated SVG)
@@ -389,29 +381,11 @@ const cursorSvg = document.getElementById('cursor-svg');
 let cursorType = 'default';
 let cursorTween = null;
 
-// Continuous idle animation
-gsap.to(cursorSvg, { rotation: 360, duration: 20, repeat: -1, ease: 'none', transformOrigin: '50% 50%' });
-
 function setCursor(type) {
   if (type === cursorType) return;
   cursorType = type;
-  if (cursorTween) cursorTween.kill();
-
   const svg = cursorSvg;
-  svg.style.stroke = type === 'hand' ? 'var(--col-o)' : type === 'eye' ? 'var(--col-s)' : type === 'flame' ? 'var(--crimson-l)' : type === 'exit' ? 'var(--pale)' : type === 'locked' ? 'var(--ash)' : 'var(--bone-dim)';
-
-  if (type === 'hand') {
-    // Contract on douleur
-    cursorTween = gsap.to(svg, { scale: 0.7, duration: 0.15, yoyo: true, repeat: 1, ease: 'power4.in' });
-  } else if (type === 'flame') {
-    // Slow rotate on alchemy
-    cursorTween = gsap.to(svg, { rotation: '+=360', duration: 4, repeat: -1, ease: 'none' });
-  } else if (type === 'eye') {
-    // Pulse on souffle
-    cursorTween = gsap.to(svg, { scale: 1.2, duration: 0.6, yoyo: true, repeat: -1, ease: 'sine.inOut' });
-  } else {
-    gsap.to(svg, { scale: 1, duration: 0.2 });
-  }
+  svg.style.stroke = type==='hand'?'#FF0000':type==='flame'?'#FF0000':type==='exit'?'#FFAA00':type==='locked'?'#333':'#FFAA00';
 }
 
 document.addEventListener('mousemove', e => {
@@ -591,33 +565,33 @@ function updateResourceUI(){
     const s=key==='douleur'?'d':key==='souffle'?'s':'o';
     const val=state.inventory[key],cap=CAPS[key];
     const cont=$('shapes-'+s);cont.innerHTML='';
-    for(let i=0;i<cap;i++){const d=document.createElement('span');d.className='res-shape'+(i>=val?' empty':'');d.style.color=RES_COLORS[key];d.textContent=RES_CHARS[key];cont.appendChild(d)}
+    let str='';for(let i=0;i<cap;i++)str+=i<val?RES_CHARS[key]:RES_EMPTY;cont.textContent=str;cont.style.color=RES_COLORS[key]
     $('num-'+s).textContent=val+'/'+cap;
     $('res-'+s).classList.toggle('cap',val>=cap);
     $('res-'+s).querySelector('.res-label').textContent=glitchText(s.toUpperCase());
   });
 }
 function updateVitalityUI(){
+  let str='';
+  for(let i=0;i<state.vitalityMax;i++)str+=i<state.vitality?'█':'░';
   vitalityBar.innerHTML='';
-  const offsets=[0,1,0,2,0,1,0,2,1,0];
   for(let i=0;i<state.vitalityMax;i++){
-    const d=document.createElement('span');d.className='vit-dash';
-    d.textContent='—';
-    d.style.marginTop=offsets[i]+'px';
-    d.style.marginRight=(1+Math.floor(Math.random()*2))+'px';
-    if(i<state.vitality){d.classList.add('full');if(state.vitality<=2){d.classList.add('low');d.style.animationDelay=(i*0.1)+'s'}}
-    vitalityBar.appendChild(d);
+    const s=document.createElement('span');s.className='vit-dash';
+    s.textContent=i<state.vitality?'█':'░';
+    if(i<state.vitality){s.classList.add('full');if(state.vitality<=2)s.classList.add('low')}
+    vitalityBar.appendChild(s);
   }
 }
 function updateRecipeUI(){
   recipeListEl.innerHTML='';const onAlch=activeAlchemyPoint;
   RECIPES.forEach(r=>{const canAfford=Object.entries(r.cost).every(([k,v])=>state.inventory[k]>=v);const done=state.crafted.includes(r.id);const can=canAfford&&onAlch&&!done;
     const div=document.createElement('div');div.className='recipe-item';
-    div.innerHTML=`<div class="recipe-name">${done?'✓ ':''}${r.name}</div><div class="recipe-cost">${r.cost.douleur?`<span style="color:var(--col-d)">D×${r.cost.douleur}</span>`:''} ${r.cost.souffle?`<span style="color:var(--col-s)">S×${r.cost.souffle}</span>`:''} ${r.cost.organique?`<span style="color:var(--col-o)">O×${r.cost.organique}</span>`:''}</div><button class="recipe-btn" ${can?'':'disabled'}>${done?'accompli':'accomplir'}</button>`;
+    const costs=[];if(r.cost.douleur)costs.push('D×'+r.cost.douleur);if(r.cost.souffle)costs.push('S×'+r.cost.souffle);if(r.cost.organique)costs.push('O×'+r.cost.organique);
+    div.innerHTML=`<div class="recipe-name">${done?'* ':''}${r.name}</div><div class="recipe-cost">Cout: ${costs.join(' ')}</div><button class="recipe-btn btn-dos" ${can?'':'disabled'}>${done?'[ accompli ]':'[ accomplir ]'}</button>`;
     if(can)div.querySelector('.recipe-btn').addEventListener('click',()=>craftRecipe(r));
     recipeListEl.appendChild(div);
     // Organic separator
-    const sep=document.createElement('div');sep.className='recipe-sep';recipeListEl.appendChild(sep)});
+    const sep=document.createElement('div');sep.className='recipe-sep';sep.textContent='──────────────';recipeListEl.appendChild(sep)});
   // Remove last separator
   const lastSep=recipeListEl.querySelector('.recipe-sep:last-child');if(lastSep)lastSep.remove();
   alchemyMsg.textContent=onAlch?'':'— trouve un point d\'invocation';alchemyMsg.style.display=onAlch?'none':'block';
@@ -630,7 +604,7 @@ let typingTimer=null,dialogueFinished=false,dialogueFullText='';
 function showDialogue(text){
   clearTyping();dialogueFullText=text;dialogueFinished=false;dialogueText.textContent='';
   dialogueArrow.classList.remove('visible');
-  gsap.to(dialogueEl,{opacity:1,y:0,duration:0.3,ease:'power2.out'});dialogueEl.classList.add('visible');
+  dialogueEl.classList.add('visible');
   const chars=text.split('');let i=0;
   function typeNext(){if(i>=chars.length){dialogueFinished=true;dialogueArrow.classList.add('visible');return}
     let ch=chars[i];if(state.vitality<=1&&Math.random()<0.125){const sp=document.createElement('span');sp.className='corrupt';sp.textContent=GLITCHS[Math.floor(Math.random()*GLITCHS.length)];dialogueText.appendChild(sp)}
@@ -639,7 +613,7 @@ function showDialogue(text){
   typeNext();
 }
 function clearTyping(){if(typingTimer){clearTimeout(typingTimer);typingTimer=null}}
-function closeDialogue(){if(!dialogueFinished){clearTyping();dialogueText.textContent=dialogueFullText;dialogueFinished=true;dialogueArrow.classList.add('visible');return}gsap.to(dialogueEl,{opacity:0,y:10,duration:0.2});dialogueEl.classList.remove('visible');dialogueFinished=false}
+function closeDialogue(){if(!dialogueFinished){clearTyping();dialogueText.textContent=dialogueFullText;dialogueFinished=true;dialogueArrow.classList.add('visible');return}dialogueEl.classList.remove('visible');dialogueFinished=false}
 dialogueEl.addEventListener('click',e=>{e.stopPropagation();closeDialogue()});
 
 // ══════════════════════════════════════
@@ -724,8 +698,8 @@ function scaleGame(){
 // ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
-drawPortrait();drawPanels();
-window.addEventListener('resize',()=>{scaleGame();drawPanels()});
+drawPortrait();
+window.addEventListener('resize',()=>{scaleGame()});
 scaleGame();
 startDecayTimer();loadScene(state.currentScene);
 </script>
