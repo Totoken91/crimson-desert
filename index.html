@@ -934,6 +934,7 @@ footer {
     <a href="#gameplay">02 — Gameplay</a>
     <a href="#craft" class="sub-link">Alchimie</a>
     <a href="#ressources" class="sub-link">Ressources</a>
+    <a href="#vitalite" class="sub-link">Vitalité &amp; caps</a>
     <a href="#recettes" class="sub-link">Recettes</a>
     <a href="#narration">03 — Narration</a>
     <a href="#fins" class="sub-link">Les trois fins</a>
@@ -1039,17 +1040,18 @@ footer {
         <div class="mockup-panel">
           <div class="mockup-panel-title">ressources</div>
           <div class="mockup-resource">
-            <span class="label" style="color:#E24B4A">D:</span>
-            <span class="val" style="color:#E24B4A">03</span>
+            <span class="label" style="color:#E24B4A">D</span>
+            <span class="val" style="color:#E24B4A">■■■<span style="opacity:0.25">□□</span></span>
           </div>
           <div class="mockup-resource">
-            <span class="label" style="color:#7F77DD">S:</span>
-            <span class="val" style="color:#7F77DD">01</span>
+            <span class="label" style="color:#7F77DD">S</span>
+            <span class="val" style="color:#7F77DD">■■<span style="opacity:0.25">□□</span></span>
           </div>
           <div class="mockup-resource">
-            <span class="label" style="color:#EF9F27">O:</span>
-            <span class="val" style="color:#EF9F27">00</span>
+            <span class="label" style="color:#EF9F27">O</span>
+            <span class="val" style="color:#EF9F27">■■■■■<span style="opacity:0.25">○</span></span>
           </div>
+          <div style="margin-top:6px;font-family:'VT323',monospace;font-size:10px;color:#3A3230;letter-spacing:2px">░░░░░░░░░░</div>
         </div>
         <!-- Centre : scène 4/3 -->
         <div class="mockup-scene">
@@ -1232,9 +1234,123 @@ footer {
     <p>Sur toute collecte, un texte flottant <code>+N</code> monte et disparaît (translateY -40px, fade-out, 1s) en couleur de la ressource.</p>
   </section>
 
+  <!-- ══ LIMITES, COÛTS & VITALITÉ ══ -->
+  <section id="vitalite">
+    <div class="section-number">02.3</div>
+    <h2>Limites, coûts &amp; vitalité</h2>
+
+    <h3>Vitalité — jauge cachée</h3>
+
+    <p>Le joueur a une jauge de Vitalité interne (10 points max). Elle n'est <strong>jamais affichée comme un chiffre</strong>. Le joueur ressent son état uniquement via des symptômes visuels progressifs. Elle ne remonte <strong>jamais</strong> une fois perdue.</p>
+
+    <p><strong>Coût de la Douleur :</strong> chaque point de Douleur collecté coûte 1 Vitalité. Mode B (maintenu 3s) = −3 Vitalité maximum.</p>
+
+    <h3>Symptômes visuels par seuil</h3>
+
+    <p>Les effets sont <strong>cumulatifs</strong> — à 25% tous les effets des seuils précédents sont actifs.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Seuil</th><th>Effet</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>≤ 75%</td><td>Vignette resserrée</td><td>Imperceptible au premier regard. <code>--vignette-size: 55%</code></td></tr>
+        <tr><td>≤ 50%</td><td>Tremor</td><td>La scène tremble très doucement — 1px toutes les 3s</td></tr>
+        <tr><td>≤ 25%</td><td>Pixel flicker</td><td>Des zones aléatoires de la scène clignotent en noir 1 frame (canvas overlay, toutes les 2-4s)</td></tr>
+        <tr><td>≤ 10%</td><td>Dialogue corrompu</td><td>Pendant le typage, 1 caractère sur 8 est remplacé par un glyphe : <code>░▒▓█▄▀■□▪▫</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Mort — vitalité à 0</h3>
+
+    <p>La scène se noircit progressivement (3s). La boîte dialogue affiche :</p>
+
+    <div class="callout">
+      <div class="callout-label">Texte de mort</div>
+      <p>Tu t'es dissous avant d'avoir compris.</p>
+    </div>
+
+    <p><strong>Reset partiel</strong> après 4 secondes :</p>
+
+    <ul class="styled">
+      <li><strong>Réinitialisé</strong> — vitalité → 10, inventaire → 0, crafts → vidé, inspections → vidé, passages → verrouillés</li>
+      <li><strong>Conservé</strong> — <code>painLevel</code> (altérations visuelles permanentes) et <code>narrativeFlags</code> (fragments déjà vus)</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Principe narratif</div>
+      <p>Tu recommences. Le désert, lui, n'a pas oublié.</p>
+    </div>
+
+    <h3>Caps par ressource</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Ressource</th><th>Cap</th><th>Coût de collecte</th><th>Régénération</th><th>Décomposition</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span style="color:#E24B4A">Douleur</span></td>
+          <td>5</td>
+          <td>−1 Vitalité par point</td>
+          <td>Aucune</td>
+          <td>Non</td>
+        </tr>
+        <tr>
+          <td><span style="color:#7F77DD">Souffle</span></td>
+          <td>4</td>
+          <td>Source détruite définitivement</td>
+          <td>Aucune</td>
+          <td>Non</td>
+        </tr>
+        <tr>
+          <td><span style="color:#EF9F27">Organique</span></td>
+          <td>6</td>
+          <td>Aucun</td>
+          <td>Repousse en 8 min</td>
+          <td>−1 / 2 min si &gt; 5 en stock</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Douleur — cap 5</h3>
+
+    <ul class="styled">
+      <li>À <strong>5/5</strong> : le chiffre clignote en rouge <code style="color:#E24B4A">#E24B4A</code></li>
+      <li>Hotspot Douleur avec inventaire plein → curseur <code>not-allowed</code>, pas de collecte</li>
+      <li>Texte : <em>« Tu ne peux pas porter plus que ça. »</em></li>
+    </ul>
+
+    <h3>Souffle — cap 4, rare et non régénérable</h3>
+
+    <ul class="styled">
+      <li>Les traces collectées <strong>disparaissent définitivement</strong> de la scène</li>
+      <li>Exception : les cercles de cendre restent mais se ternissent — ne donnent du Souffle qu'<strong>une seule fois</strong></li>
+      <li>Si toutes les sources d'une scène sont épuisées : <em>« Il n'y a plus rien ici qui se souvienne. »</em> (une seule fois)</li>
+      <li>À <strong>4/4</strong> : chiffre violet avec légère pulsation</li>
+    </ul>
+
+    <h3>Organique — cap 6, abondant mais périssable</h3>
+
+    <ul class="styled">
+      <li>Les excroissances <strong>repoussent après 8 minutes</strong></li>
+      <li>Si stock <strong>&gt; 5</strong> : décomposition automatique −1 toutes les 2 minutes</li>
+      <li>Texte à la première décomposition : <em>« Ça ne se conserve pas. Tu aurais dû t'en douter. »</em> (une seule fois)</li>
+      <li>À <strong>6/6</strong> : chiffre ambre vif + point clignotant (décomposition imminente)</li>
+      <li>Timer persisté dans localStorage — calcul des pertes au rechargement</li>
+    </ul>
+
+    <h3>Affichage UI panneau gauche</h3>
+
+    <div class="callout">
+      <div class="callout-label">Layout mis à jour</div>
+      <p>D [■■■□□] 3/5 — barres au lieu de chiffres seuls<br>S [■■□□] 2/4<br>O [■■■■■○] 5/6 ⚠ — alerte si &gt; 5<br><br>░░░░░░░░░░ — Vitalité : 10 blocs 6×6px, aucun label, aucun tooltip. Couleur #3A3230 (plein) → #8C1C1C (vide). Se vide de droite à gauche. À 2/10 les blocs restants clignotent.</p>
+    </div>
+  </section>
+
   <!-- ══ RECETTES ══ -->
   <section id="recettes">
-    <div class="section-number">02.3</div>
+    <div class="section-number">02.4</div>
     <h2>Recettes alchimiques</h2>
 
     <h3>Tier I — MVP</h3>
