@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Désert Cramoisi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   PALETTE
+══════════════════════════════════════ */
+:root {
+  --bg:        #080506;
+  --bg2:       #100b0a;
+  --bg3:       #160e0c;
+  --crimson:   #8C1C1C;
+  --crimson-l: #BE372D;
+  --rust:      #6B2416;
+  --bone:      #C6B29B;
+  --bone-dim:  #8A7A6A;
+  --ash:       #3A3230;
+  --ash-l:     #5A4E4A;
+  --pale:      #E8DDD0;
+  --col-d:     #E24B4A;
+  --col-s:     #7F77DD;
+  --col-o:     #EF9F27;
+  --vignette-size: 60%;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--bone);
+  cursor: none;
+  user-select: none;
+}
+
+/* ── Grain overlay ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* ══════════════════════════════════════
+   LAYOUT — 3 columns
+══════════════════════════════════════ */
+#game {
+  display: grid;
+  grid-template-columns: 180px 1fr 180px;
+  width: 100vw; height: 100vh;
+}
+
+/* ── Panneau gauche ── */
+#panel-left {
+  background: var(--bg2);
+  border-right: 1px solid var(--ash);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ash);
+}
+
+/* Resources */
+.resource-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 4px 0;
+}
+
+.resource-label { width: 14px; font-weight: 500; }
+.resource-bars { letter-spacing: 1px; font-size: 11px; }
+.resource-num { margin-left: auto; font-size: 10px; color: var(--bone-dim); }
+
+.resource-row.cap .resource-num { animation: blink-cap 1.2s ease-in-out infinite; }
+@keyframes blink-cap { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Vitality */
+#vitality-bar {
+  display: flex;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ash);
+}
+
+.vit-block {
+  width: 8px; height: 8px;
+  background: var(--ash);
+  transition: background 0.3s;
+}
+.vit-block.full { background: var(--ash-l); }
+.vit-block.low { animation: blink-low 1.5s ease-in-out infinite; }
+@keyframes blink-low { 0%,100%{opacity:1} 50%{opacity:0.2} }
+.vit-block.empty { background: var(--crimson); opacity: 0.2; }
+
+/* ── Panneau droit ── */
+#panel-right {
+  background: var(--bg2);
+  border-left: 1px solid var(--ash);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+#btn-voir {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--crimson);
+  background: transparent;
+  border: 1px solid var(--ash);
+  padding: 6px;
+  cursor: none;
+  text-align: center;
+  letter-spacing: 0.1em;
+  transition: border-color 0.2s;
+}
+#btn-voir:hover { border-color: var(--crimson); }
+
+.recipe-item {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(58,50,48,0.4);
+}
+.recipe-item:last-child { border-bottom: none; }
+
+.recipe-name {
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--bone);
+  margin-bottom: 2px;
+}
+
+.recipe-cost {
+  font-size: 10px;
+  color: var(--bone-dim);
+  margin-bottom: 4px;
+}
+
+.recipe-cost span { margin-right: 6px; }
+
+.recipe-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--crimson);
+  background: transparent;
+  border: 1px solid var(--ash);
+  padding: 3px 8px;
+  cursor: none;
+  letter-spacing: 0.05em;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.recipe-btn:hover:not(:disabled) { border-color: var(--crimson); }
+.recipe-btn:disabled { opacity: 0.25; cursor: none; }
+
+#alchemy-msg {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--bone-dim);
+  margin-top: auto;
+}
+
+/* ══════════════════════════════════════
+   SCENE (center)
+══════════════════════════════════════ */
+#scene-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+#scene {
+  position: relative;
+  aspect-ratio: 4/3;
+  height: 100%;
+  max-height: 100%;
+  max-width: calc(100% * 4 / 3);
+  overflow: hidden;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}
+
+#scene-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  image-rendering: pixelated;
+  transition: opacity 0.8s;
+}
+
+#scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.12) 3px, rgba(0,0,0,0.12) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+#vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center,
+    transparent var(--vignette-size),
+    rgba(0,0,0,0.85) 100%
+  );
+  pointer-events: none;
+  z-index: 9;
+  transition: all 0.5s;
+}
+
+#flash-overlay {
+  position: absolute; inset: 0;
+  background: var(--crimson);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+}
+
+#death-overlay {
+  position: absolute; inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+  transition: opacity 3s;
+}
+
+#hotspot-layer {
+  position: absolute; inset: 0;
+  z-index: 5;
+}
+
+.hotspot {
+  position: absolute;
+  background: transparent;
+  border: none;
+  cursor: none;
+  padding: 0;
+}
+
+.hotspot.revealed {
+  outline: 1px solid rgba(58,50,48,0.4);
+}
+
+/* Hold bar */
+.hold-bar {
+  position: absolute;
+  bottom: -4px; left: 10%; right: 10%;
+  height: 2px;
+  background: var(--ash);
+}
+.hold-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--crimson);
+  transition: background 0.2s;
+}
+
+/* Floating text */
+.float-text {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 30;
+  animation: float-up 1s ease-out forwards;
+}
+@keyframes float-up {
+  from { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(-40px); opacity: 0; }
+}
+
+/* Eclat */
+.eclat {
+  position: absolute;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--crimson-l);
+  box-shadow: 0 0 12px var(--crimson-l), 0 0 24px rgba(190,55,45,0.3);
+  z-index: 15;
+  cursor: none;
+  animation: eclat-pulse 0.6s ease-in-out infinite;
+  transform: translate(-50%, -50%);
+}
+@keyframes eclat-pulse {
+  0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.9; }
+  50%     { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
+}
+
+/* Exit zones */
+.exit-zone {
+  position: absolute;
+  z-index: 6;
+  cursor: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.exit-zone:not(.locked):hover {
+  background: rgba(190,55,45,0.04);
+}
+
+/* ══════════════════════════════════════
+   DIALOGUE
+══════════════════════════════════════ */
+#dialogue {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: rgba(13,9,0,0.95);
+  border-top: 1px solid var(--ash);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 16px;
+  z-index: 40;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+
+#dialogue.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#portrait {
+  width: 48px; height: 48px;
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#portrait canvas {
+  width: 48px; height: 48px;
+  image-rendering: pixelated;
+}
+
+#portrait-label {
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  color: var(--ash-l);
+  margin-top: 2px;
+}
+
+#dialogue-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 48px;
+}
+
+#dialogue-text {
+  font-family: 'Crimson Pro', serif;
+  font-size: 15px;
+  color: var(--bone);
+  line-height: 1.5;
+}
+
+#dialogue-text .corrupt { color: var(--crimson); }
+
+#dialogue-arrow {
+  font-size: 10px;
+  color: var(--ash-l);
+  margin-top: 4px;
+  animation: bob 1s ease-in-out infinite;
+  display: none;
+}
+#dialogue-arrow.visible { display: block; }
+@keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(3px)} }
+
+/* ══════════════════════════════════════
+   CURSOR
+══════════════════════════════════════ */
+#cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+  width: 20px; height: 20px;
+}
+
+#cursor svg {
+  width: 100%; height: 100%;
+  fill: none;
+  stroke: var(--bone-dim);
+  stroke-width: 1.5;
+}
+
+#cursor.type-eye svg { stroke: var(--col-s); }
+#cursor.type-hand svg { stroke: var(--col-o); }
+#cursor.type-flame svg { stroke: var(--crimson-l); }
+#cursor.type-exit svg { stroke: var(--pale); }
+#cursor.type-locked svg { stroke: var(--ash); }
+
+#cursor.shake {
+  animation: cursor-shake 0.1s linear infinite;
+}
+@keyframes cursor-shake {
+  0%   { transform: translate(calc(-50% + 1px), calc(-50% - 1px)); }
+  25%  { transform: translate(calc(-50% - 1px), calc(-50% + 1px)); }
+  50%  { transform: translate(calc(-50% + 1px), calc(-50% + 1px)); }
+  75%  { transform: translate(calc(-50% - 1px), calc(-50% - 1px)); }
+  100% { transform: translate(calc(-50% + 1px), calc(-50% - 1px)); }
+}
+
+/* ══════════════════════════════════════
+   SCENE TREMOR
+══════════════════════════════════════ */
+#scene.tremor {
+  animation: tremor 3s ease-in-out infinite;
+}
+@keyframes tremor {
+  0%,100% { transform: none; }
+  50% { transform: translate(1px, 0.5px); }
+}
+
+/* ══════════════════════════════════════
+   FLASH
+══════════════════════════════════════ */
+@keyframes flash-out {
+  from { opacity: 0.3; }
+  to   { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor">
+  <svg viewBox="0 0 20 20">
+    <circle cx="10" cy="10" r="7" />
+    <circle cx="10" cy="10" r="1.5" fill="currentColor" />
+  </svg>
+</div>
+
+<!-- GAME LAYOUT -->
+<div id="game">
+
+  <!-- LEFT PANEL -->
+  <div id="panel-left">
+    <div class="panel-title">Ressources</div>
+    <div class="resource-row" id="res-d">
+      <span class="resource-label" style="color:var(--col-d)">D</span>
+      <span class="resource-bars" id="bars-d" style="color:var(--col-d)"></span>
+      <span class="resource-num" id="num-d"></span>
+    </div>
+    <div class="resource-row" id="res-s">
+      <span class="resource-label" style="color:var(--col-s)">S</span>
+      <span class="resource-bars" id="bars-s" style="color:var(--col-s)"></span>
+      <span class="resource-num" id="num-s"></span>
+    </div>
+    <div class="resource-row" id="res-o">
+      <span class="resource-label" style="color:var(--col-o)">O</span>
+      <span class="resource-bars" id="bars-o" style="color:var(--col-o)"></span>
+      <span class="resource-num" id="num-o"></span>
+    </div>
+    <div id="vitality-bar"></div>
+  </div>
+
+  <!-- SCENE -->
+  <div id="scene-wrapper">
+    <div id="scene">
+      <div id="scene-bg"></div>
+      <div id="hotspot-layer"></div>
+      <div id="scanlines"></div>
+      <div id="vignette"></div>
+      <div id="flash-overlay"></div>
+      <div id="death-overlay"></div>
+      <div id="dialogue">
+        <div id="portrait">
+          <canvas width="16" height="16"></canvas>
+          <span id="portrait-label">ANOMALIE</span>
+        </div>
+        <div id="dialogue-content">
+          <div id="dialogue-text"></div>
+          <div id="dialogue-arrow">▼</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="panel-right">
+    <div class="panel-title">Alchimie</div>
+    <button id="btn-voir">[ VOIR ]</button>
+    <div id="recipe-list"></div>
+    <div id="alchemy-msg">Trouve un point d'invocation.</div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+const SAVE_KEY = 'desert-cramoisi-state';
+const CAPS = { douleur: 5, souffle: 4, organique: 6 };
+const ORGANIQUE_SAFE = 5;
+const ORGANIQUE_DECAY_MS = 120000;
+const ORGANIQUE_RESPAWN_MS = 480000;
+
+const DEFAULT_STATE = {
+  currentScene: 'scene-01',
+  inventory: { douleur: 0, souffle: 0, organique: 0 },
+  vitality: 10,
+  vitalityMax: 10,
+  painLevel: 0.0,
+  crafted: [],
+  inspected: {},
+  exits: {},
+  souffleCollected: {},
+  organicRespawn: {},
+  organicDecayStart: null,
+  activeEffects: [],
+  painAbsorbActive: false,
+  narrativeFlags: {},
+};
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if (s && s.inventory) return s;
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_STATE));
+}
+
+function saveState() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+}
+
+function resetState() {
+  const keep = { painLevel: state.painLevel, narrativeFlags: { ...state.narrativeFlags } };
+  state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  state.painLevel = keep.painLevel;
+  state.narrativeFlags = keep.narrativeFlags;
+  saveState();
+}
+
+// ══════════════════════════════════════
+// RECIPES
+// ══════════════════════════════════════
+const RECIPES = [
+  {
+    id: 'lanterne-os',
+    name: "Lanterne d'os",
+    cost: { douleur: 2, souffle: 1, organique: 0 },
+    effect: "Révèle les zones cachées.",
+    sceneReaction: "Quelque chose dans le sable répond à la lumière. Tu vois ce que tu ne voyais pas.",
+    mechanic: 'reveal-hotspots',
+  },
+  {
+    id: 'tuile-memoire',
+    name: "Tuile de mémoire",
+    cost: { douleur: 3, souffle: 2, organique: 0 },
+    effect: "Grave un fragment dans le sable.",
+    sceneReaction: "Tu n'es pas perdu. On ne perd pas ce qui a toujours été ici.",
+    mechanic: 'unlock-narrative',
+  },
+  {
+    id: 'armure-peau',
+    name: "Armure de peau",
+    cost: { douleur: 0, souffle: 1, organique: 1 },
+    effect: "Prochain craft sans Douleur.",
+    sceneReaction: "Quelque chose enveloppe ce qui reste de toi.",
+    mechanic: 'pain-absorb',
+  },
+  {
+    id: 'lien-nerf',
+    name: "Lien de nerf",
+    cost: { douleur: 3, souffle: 0, organique: 2 },
+    effect: "Débloque le passage.",
+    sceneReaction: "Le passage s'ouvre. Tu ne sais pas si c'est une bonne chose.",
+    mechanic: 'unlock-exit',
+    targetExit: 'exit-droite',
+  },
+];
+
+// ══════════════════════════════════════
+// SCENE DATA
+// ══════════════════════════════════════
+const SCENES = {
+  'scene-01': {
+    id: 'scene-01',
+    label: 'Les Dunes plates',
+    intro: "Tu étais là avant que le sable existe.",
+    bg: 'desert-bg-1.png',
+    hotspots: [
+      { id:'hs-cercle', type:'souffle', x:38,y:62,w:16,h:10, cursor:'eye', resource:{type:'souffle',amount:1}, collectMode:'click', texts:["Le cercle a été tracé avec quelque chose qui brûlait encore.","Tu reconnais le tracé. Tu n'as jamais appris à tracer."], collectible:true, souffleUnique:true, visible:true, unlockedBy:null },
+      { id:'hs-ombre', type:'souffle', x:12,y:38,w:18,h:28, cursor:'eye', resource:{type:'souffle',amount:1}, collectMode:'click', texts:["L'ombre disparaît quand tu la regardes trop longtemps.","Il y avait quelqu'un ici. La chaleur garde la forme."], collectible:false, respawnDelay:30000, visible:true, unlockedBy:null },
+      { id:'hs-doigts', type:'organique', x:48,y:68,w:6,h:10, cursor:'hand', resource:{type:'organique',amount:1}, collectMode:'click', texts:["Ça se détache facilement. Trop facilement.","Tu ne sais pas si c'était vivant. Tu le prends quand même."], collectible:true, respawnDelay:ORGANIQUE_RESPAWN_MS, visible:true, unlockedBy:null },
+      { id:'hs-couteau', type:'douleur', x:68,y:60,w:4,h:12, cursor:'hand', resource:{type:'douleur',amount:1}, collectMode:'click', flashOnCollect:true, texts:["Tu appuies. Ça compte.","La douleur est une ressource comme les autres."], collectible:true, visible:true, unlockedBy:null },
+      { id:'hs-rocher', type:'douleur', x:28,y:58,w:14,h:20, cursor:'hand', collectMode:'hold', holdMax:3000, holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"La pierre ne ressent rien. Toi si."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. Pourquoi tu continues ?"},{ms:3000,resource:{type:'douleur',amount:1},text:"Tu pouvais t'arrêter. Tu ne l'as pas fait.",painDelta:0.05}], collectible:false, visible:true, unlockedBy:null },
+      { id:'hs-alchimie', type:'alchimie', x:18,y:70,w:12,h:14, cursor:'flame', resource:null, collectMode:'click', texts:[], action:'open-alchemy', collectible:false, visible:true, unlockedBy:null },
+      { id:'hs-horizon', type:'inspect', x:0,y:25,w:100,h:15, cursor:'eye', resource:null, collectMode:'click', texts:["L'horizon devrait être là. Il y est. Mais pas pour toi.","Tu n'as pas de direction. Tu as une présence."], collectible:false, visible:true, unlockedBy:null, eclatEnabled:true, eclatResource:{type:'souffle',amount:1} },
+      { id:'hs-fissure', type:'douleur', x:60,y:52,w:8,h:14, cursor:'eye', resource:{type:'douleur',amount:2}, collectMode:'click', texts:["La fissure saigne. Pas de sang — quelque chose d'autre.","Tu aurais dû voir ça depuis le début. Tu ne voulais pas."], collectible:true, visible:false, unlockedBy:'lanterne-os' },
+      { id:'hs-empreinte', type:'organique', x:22,y:76,w:12,h:8, cursor:'hand', resource:{type:'organique',amount:1}, collectMode:'click', texts:["Une empreinte dans le sable. La forme est la tienne.","Tu étais là avant. Tu ne te souviens pas. Le sable, oui."], collectible:true, visible:false, unlockedBy:'tuile-memoire' },
+    ],
+    exits: [
+      { id:'exit-droite', targetScene:'scene-02', x:88,y:15,w:12,h:80, locked:true, lockedText:"Quelque chose bloque ce passage.", unlockedBy:'lien-nerf' },
+    ],
+  },
+  'scene-02': {
+    id: 'scene-02',
+    label: 'Les Ossements',
+    intro: "Tu as déjà été ici. Pas toi. Quelque chose de toi.",
+    bg: 'desert-house-bg.png',
+    hotspots: [
+      { id:'hs-kyste', type:'organique', x:55,y:45,w:8,h:10, cursor:'hand', resource:{type:'organique',amount:2}, collectMode:'click', texts:["Le kyste cède sous la pression. Quelque chose de chaud s'écoule.","Tu ne sais pas si c'était douloureux pour lui."], collectible:true, respawnDelay:ORGANIQUE_RESPAWN_MS, visible:true, unlockedBy:null },
+      { id:'hs-reflet', type:'souffle', x:30,y:55,w:20,h:15, cursor:'eye', resource:{type:'souffle',amount:1}, collectMode:'click', texts:["La roche réfléchit quelque chose qui n'est pas là.","Tu t'es souvenu de quelque chose. Tu ne sais plus quoi."], collectible:true, souffleUnique:true, visible:true, unlockedBy:null },
+      { id:'hs-mur', type:'douleur', x:5,y:20,w:10,h:70, cursor:'hand', collectMode:'hold', holdMax:3000, holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"La pierre absorbe."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu presses plus fort."},{ms:3000,resource:{type:'douleur',amount:1},text:"Il ne reste pas de trace. Mais tu sais.",painDelta:0.05}], collectible:false, visible:true, unlockedBy:null },
+      { id:'hs-alchimie-2', type:'alchimie', x:42,y:75,w:16,h:10, cursor:'flame', resource:null, collectMode:'click', texts:[], action:'open-alchemy', collectible:false, visible:true, unlockedBy:null },
+    ],
+    exits: [
+      { id:'exit-gauche', targetScene:'scene-01', x:0,y:15,w:10,h:80, locked:false, lockedText:null, unlockedBy:null },
+    ],
+  },
+};
+
+// ══════════════════════════════════════
+// DOM REFS
+// ══════════════════════════════════════
+const $ = id => document.getElementById(id);
+const sceneEl = $('scene');
+const sceneBg = $('scene-bg');
+const hotspotLayer = $('hotspot-layer');
+const dialogueEl = $('dialogue');
+const dialogueText = $('dialogue-text');
+const dialogueArrow = $('dialogue-arrow');
+const cursorEl = $('cursor');
+const flashEl = $('flash-overlay');
+const deathEl = $('death-overlay');
+const vignetteEl = $('vignette');
+const alchemyMsg = $('alchemy-msg');
+const recipeListEl = $('recipe-list');
+const vitalityBar = $('vitality-bar');
+
+// ══════════════════════════════════════
+// CURSOR
+// ══════════════════════════════════════
+const CURSOR_SVGS = {
+  default: '<circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/>',
+  eye: '<ellipse cx="10" cy="10" rx="8" ry="5"/><circle cx="10" cy="10" r="2.5" fill="currentColor"/>',
+  hand: '<path d="M10 3v8M7 6v7M13 6v7M5 10v4a3 3 0 003 3h4a3 3 0 003-3v-4"/>',
+  flame: '<path d="M10 3c-1 3-4 5-4 8a4 4 0 008 0c0-3-3-5-4-8z"/><circle cx="10" cy="12" r="1.5" fill="currentColor"/>',
+  exit: '<path d="M4 10h12M12 6l4 4-4 4"/>',
+  locked: '<rect x="6" y="9" width="8" height="6" rx="1"/><path d="M8 9V7a2 2 0 014 0v2"/>',
+};
+
+let cursorType = 'default';
+
+function setCursor(type) {
+  if (type === cursorType) return;
+  cursorType = type;
+  cursorEl.className = 'type-' + type;
+  cursorEl.querySelector('svg').innerHTML = CURSOR_SVGS[type] || CURSOR_SVGS.default;
+}
+
+document.addEventListener('mousemove', e => {
+  cursorEl.style.left = e.clientX + 'px';
+  cursorEl.style.top = e.clientY + 'px';
+});
+
+// ══════════════════════════════════════
+// UI RENDERING
+// ══════════════════════════════════════
+function updateResourceUI() {
+  ['douleur','souffle','organique'].forEach(key => {
+    const short = key[0].toUpperCase() === 'D' ? 'd' : key[0] === 's' ? 's' : 'o';
+    const val = state.inventory[key];
+    const cap = CAPS[key];
+    const full = '■'.repeat(val);
+    const empty = '□'.repeat(cap - val);
+    $('bars-' + short).textContent = full + empty;
+    $('num-' + short).textContent = val + '/' + cap;
+    const row = $('res-' + short);
+    row.classList.toggle('cap', val >= cap);
+  });
+}
+
+function updateVitalityUI() {
+  vitalityBar.innerHTML = '';
+  for (let i = 0; i < state.vitalityMax; i++) {
+    const block = document.createElement('div');
+    block.className = 'vit-block';
+    if (i < state.vitality) {
+      block.classList.add('full');
+      if (state.vitality <= 2) block.classList.add('low');
+    } else {
+      block.classList.add('empty');
+    }
+    vitalityBar.appendChild(block);
+  }
+}
+
+function updateVitalityEffects() {
+  const v = state.vitality;
+  // Vignette
+  const vs = v <= 7 ? (v <= 2 ? '35%' : v <= 5 ? '45%' : '50%') : '60%';
+  document.documentElement.style.setProperty('--vignette-size', vs);
+  // Tremor
+  sceneEl.classList.toggle('tremor', v <= 5);
+}
+
+function updateRecipeUI() {
+  recipeListEl.innerHTML = '';
+  const onAlchemy = currentSceneHasActiveAlchemy();
+
+  RECIPES.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'recipe-item';
+
+    const canAfford = Object.entries(r.cost).every(([k,v]) => state.inventory[k] >= v);
+    const alreadyCrafted = state.crafted.includes(r.id);
+    const canCraft = canAfford && onAlchemy && !alreadyCrafted;
+
+    div.innerHTML = `
+      <div class="recipe-name">${alreadyCrafted ? '✓ ' : ''}${r.name}</div>
+      <div class="recipe-cost">
+        ${r.cost.douleur ? `<span style="color:var(--col-d)">D×${r.cost.douleur}</span>` : ''}
+        ${r.cost.souffle ? `<span style="color:var(--col-s)">S×${r.cost.souffle}</span>` : ''}
+        ${r.cost.organique ? `<span style="color:var(--col-o)">O×${r.cost.organique}</span>` : ''}
+      </div>
+      <button class="recipe-btn" ${canCraft ? '' : 'disabled'}>${alreadyCrafted ? 'accompli' : 'accomplir'}</button>
+    `;
+
+    if (canCraft) {
+      div.querySelector('.recipe-btn').addEventListener('click', () => craftRecipe(r));
+    }
+
+    recipeListEl.appendChild(div);
+  });
+
+  alchemyMsg.textContent = onAlchemy ? '' : 'Trouve un point d\'invocation.';
+  alchemyMsg.style.display = onAlchemy ? 'none' : 'block';
+}
+
+function currentSceneHasActiveAlchemy() {
+  return !!activeAlchemyPoint;
+}
+
+let activeAlchemyPoint = false;
+
+// ══════════════════════════════════════
+// PORTRAIT
+// ══════════════════════════════════════
+function drawPortrait() {
+  const canvas = document.querySelector('#portrait canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0a0506';
+  ctx.fillRect(0, 0, 16, 16);
+  // Abstract geometric shape
+  ctx.fillStyle = '#3A3230';
+  ctx.fillRect(5, 3, 6, 8);
+  ctx.fillStyle = '#6B2416';
+  ctx.fillRect(6, 5, 2, 2);
+  ctx.fillRect(9, 5, 2, 2);
+  ctx.fillStyle = '#8C1C1C';
+  ctx.fillRect(7, 9, 3, 1);
+}
+
+// ══════════════════════════════════════
+// DIALOGUE
+// ══════════════════════════════════════
+let typingTimer = null;
+let dialogueFinished = false;
+let dialogueFullText = '';
+const GLITCHS = '░▒▓█▄▀■□▪▫';
+
+function showDialogue(text) {
+  clearTyping();
+  dialogueFullText = text;
+  dialogueFinished = false;
+  dialogueText.textContent = '';
+  dialogueArrow.classList.remove('visible');
+  dialogueEl.classList.add('visible');
+
+  let i = 0;
+  typingTimer = setInterval(() => {
+    if (i >= text.length) {
+      clearTyping();
+      dialogueFinished = true;
+      dialogueArrow.classList.add('visible');
+      return;
+    }
+    let ch = text[i];
+    // Corruption at low vitality
+    if (state.vitality <= 1 && Math.random() < 0.125) {
+      const span = document.createElement('span');
+      span.className = 'corrupt';
+      span.textContent = GLITCHS[Math.floor(Math.random() * GLITCHS.length)];
+      dialogueText.appendChild(span);
+    } else {
+      dialogueText.appendChild(document.createTextNode(ch));
+    }
+    i++;
+  }, 22);
+}
+
+function clearTyping() {
+  if (typingTimer) { clearInterval(typingTimer); typingTimer = null; }
+}
+
+function closeDialogue() {
+  if (!dialogueFinished) {
+    // Skip to end
+    clearTyping();
+    dialogueText.textContent = dialogueFullText;
+    dialogueFinished = true;
+    dialogueArrow.classList.add('visible');
+    return;
+  }
+  dialogueEl.classList.remove('visible');
+  dialogueFinished = false;
+}
+
+dialogueEl.addEventListener('click', e => {
+  e.stopPropagation();
+  closeDialogue();
+});
+
+// ══════════════════════════════════════
+// FLOATING TEXT
+// ══════════════════════════════════════
+function floatText(x, y, text, color) {
+  const el = document.createElement('div');
+  el.className = 'float-text';
+  el.textContent = text;
+  el.style.color = color;
+  el.style.left = x + '%';
+  el.style.top = y + '%';
+  hotspotLayer.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+// ══════════════════════════════════════
+// FLASH
+// ══════════════════════════════════════
+function flashPain() {
+  flashEl.style.animation = 'none';
+  flashEl.offsetHeight; // reflow
+  flashEl.style.opacity = '0.3';
+  flashEl.style.animation = 'flash-out 0.3s ease forwards';
+}
+
+// ══════════════════════════════════════
+// RESOURCE COLLECTION
+// ══════════════════════════════════════
+const RES_COLORS = { douleur: 'var(--col-d)', souffle: 'var(--col-s)', organique: 'var(--col-o)' };
+
+function collectResource(type, amount, hsX, hsY) {
+  if (state.inventory[type] >= CAPS[type]) {
+    if (type === 'douleur') showDialogue("Tu ne peux pas porter plus que ça.");
+    return false;
+  }
+
+  const actual = Math.min(amount, CAPS[type] - state.inventory[type]);
+  state.inventory[type] += actual;
+
+  if (type === 'douleur') {
+    loseVitality(actual);
+    flashPain();
+  }
+
+  floatText(hsX + 2, hsY - 5, '+' + actual, RES_COLORS[type]);
+  updateResourceUI();
+  saveState();
+  return true;
+}
+
+// ══════════════════════════════════════
+// VITALITY
+// ══════════════════════════════════════
+function loseVitality(amount) {
+  state.vitality = Math.max(0, state.vitality - amount);
+  updateVitalityUI();
+  updateVitalityEffects();
+  saveState();
+  if (state.vitality === 0) triggerDeath();
+}
+
+function triggerDeath() {
+  deathEl.style.transition = 'opacity 3s';
+  deathEl.style.opacity = '1';
+  setTimeout(() => {
+    showDialogue("Tu t'es dissous avant d'avoir compris.");
+  }, 1500);
+  setTimeout(() => {
+    resetState();
+    deathEl.style.transition = 'opacity 1.5s';
+    deathEl.style.opacity = '0';
+    loadScene(state.currentScene);
+  }, 5000);
+}
+
+// ══════════════════════════════════════
+// CRAFTING
+// ══════════════════════════════════════
+function craftRecipe(recipe) {
+  // Deduct cost
+  for (const [k, v] of Object.entries(recipe.cost)) {
+    state.inventory[k] -= v;
+  }
+  state.crafted.push(recipe.id);
+
+  // Mechanic
+  if (recipe.mechanic === 'reveal-hotspots') {
+    revealConditionalHotspots(recipe.id);
+  } else if (recipe.mechanic === 'unlock-narrative') {
+    revealConditionalHotspots(recipe.id);
+  } else if (recipe.mechanic === 'pain-absorb') {
+    state.painAbsorbActive = true;
+  } else if (recipe.mechanic === 'unlock-exit') {
+    const scene = SCENES[state.currentScene];
+    const exit = scene.exits.find(e => e.id === recipe.targetExit);
+    if (exit) {
+      state.exits[exit.id] = true;
+      // Re-render exits
+      renderExits(scene);
+    }
+  }
+
+  showDialogue(recipe.sceneReaction);
+  updateResourceUI();
+  updateRecipeUI();
+  saveState();
+}
+
+function revealConditionalHotspots(recipeId) {
+  const scene = SCENES[state.currentScene];
+  scene.hotspots.forEach(hs => {
+    if (hs.unlockedBy === recipeId) {
+      const el = document.getElementById('hs-el-' + hs.id);
+      if (el) {
+        el.style.display = 'block';
+        el.style.opacity = '0';
+        el.style.transition = 'opacity 1.5s';
+        requestAnimationFrame(() => el.style.opacity = '1');
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════
+// HOLD MECHANIC
+// ══════════════════════════════════════
+let holdTimer = null;
+let holdStart = 0;
+let holdHs = null;
+let holdTierIndex = 0;
+let holdBarEl = null;
+
+function startHold(hs, el) {
+  holdHs = hs;
+  holdStart = Date.now();
+  holdTierIndex = 0;
+  cursorEl.classList.add('shake');
+
+  // Create hold bar
+  holdBarEl = document.createElement('div');
+  holdBarEl.className = 'hold-bar';
+  holdBarEl.innerHTML = '<div class="hold-bar-fill"></div>';
+  el.appendChild(holdBarEl);
+
+  holdTimer = setInterval(() => {
+    const elapsed = Date.now() - holdStart;
+    const pct = Math.min(elapsed / hs.holdMax * 100, 100);
+    holdBarEl.querySelector('.hold-bar-fill').style.width = pct + '%';
+    if (pct > 66) holdBarEl.querySelector('.hold-bar-fill').style.background = 'var(--crimson-l)';
+
+    // Check tiers
+    while (holdTierIndex < hs.holdTiers.length && elapsed >= hs.holdTiers[holdTierIndex].ms) {
+      const tier = hs.holdTiers[holdTierIndex];
+      if (tier.resource) collectResource(tier.resource.type, tier.resource.amount, hs.x, hs.y);
+      if (tier.text) showDialogue(tier.text);
+      if (tier.painDelta) { state.painLevel = Math.min(1, state.painLevel + tier.painDelta); saveState(); }
+      holdTierIndex++;
+    }
+
+    // Vignette tighten during hold
+    const vigSize = 60 - (pct / 100) * 25;
+    document.documentElement.style.setProperty('--vignette-size', vigSize + '%');
+
+    if (elapsed >= hs.holdMax) {
+      endHold();
+      sceneEl.style.animation = 'none';
+      sceneEl.offsetHeight;
+      sceneEl.style.animation = 'tremor 0.2s linear 3';
+    }
+  }, 50);
+}
+
+function endHold() {
+  if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+  cursorEl.classList.remove('shake');
+  if (holdBarEl) { holdBarEl.remove(); holdBarEl = null; }
+  holdHs = null;
+  // Restore vignette
+  updateVitalityEffects();
+}
+
+// ══════════════════════════════════════
+// ECLAT
+// ══════════════════════════════════════
+let eclatTimers = [];
+
+function startEclat(hs) {
+  const spawn = () => {
+    const delay = 8000 + Math.random() * 6000;
+    const timer = setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'eclat';
+      el.style.left = (hs.x + hs.w / 2) + '%';
+      el.style.top = (hs.y + hs.h / 2) + '%';
+      hotspotLayer.appendChild(el);
+
+      const lifespan = state.painLevel >= 0.6 ? 1500 : 2500;
+      const removeTimer = setTimeout(() => el.remove(), lifespan);
+
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+        clearTimeout(removeTimer);
+        el.remove();
+        if (hs.eclatResource) {
+          collectResource(hs.eclatResource.type, 3, hs.x + hs.w/2, hs.y + hs.h/2);
+          floatText(hs.x + hs.w/2, hs.y + hs.h/2 - 8, '+3!', RES_COLORS[hs.eclatResource.type]);
+        }
+      });
+
+      spawn(); // schedule next
+    }, delay);
+    eclatTimers.push(timer);
+  };
+  spawn();
+}
+
+function clearEclats() {
+  eclatTimers.forEach(t => clearTimeout(t));
+  eclatTimers = [];
+  hotspotLayer.querySelectorAll('.eclat').forEach(e => e.remove());
+}
+
+// ══════════════════════════════════════
+// ORGANIC DECAY
+// ══════════════════════════════════════
+let decayTimer = null;
+
+function startDecayTimer() {
+  stopDecayTimer();
+  decayTimer = setInterval(() => {
+    if (state.inventory.organique > ORGANIQUE_SAFE) {
+      state.inventory.organique--;
+      if (!state.narrativeFlags['decay-warning']) {
+        showDialogue("Ça ne se conserve pas. Tu aurais dû t'en douter.");
+        state.narrativeFlags['decay-warning'] = true;
+      }
+      updateResourceUI();
+      saveState();
+    }
+  }, ORGANIQUE_DECAY_MS);
+}
+
+function stopDecayTimer() {
+  if (decayTimer) { clearInterval(decayTimer); decayTimer = null; }
+}
+
+// ══════════════════════════════════════
+// SCENE LOADING
+// ══════════════════════════════════════
+function loadScene(sceneId) {
+  const scene = SCENES[sceneId];
+  if (!scene) return;
+
+  state.currentScene = sceneId;
+  activeAlchemyPoint = false;
+  clearEclats();
+
+  // Background
+  sceneBg.style.backgroundImage = `url('${scene.bg}')`;
+
+  // Clear hotspots
+  hotspotLayer.querySelectorAll('.hotspot, .exit-zone').forEach(e => e.remove());
+
+  // Render hotspots
+  scene.hotspots.forEach(hs => {
+    // Check if collected
+    const sceneKey = sceneId + ':' + hs.id;
+    if (hs.collectible && hs.type === 'souffle' && state.souffleCollected[sceneKey]) return;
+    if (hs.collectible && state.inspected[sceneKey] && hs.type !== 'organique') return;
+    if (hs.collectible && hs.type === 'organique' && state.organicRespawn[sceneKey]) {
+      if (Date.now() - state.organicRespawn[sceneKey] < (hs.respawnDelay || ORGANIQUE_RESPAWN_MS)) return;
+      else delete state.organicRespawn[sceneKey];
+    }
+
+    // Check visibility
+    const isVisible = hs.visible || (hs.unlockedBy && state.crafted.includes(hs.unlockedBy));
+    if (!isVisible) {
+      // Still create but hidden
+      const el = createHotspotEl(hs, sceneId);
+      el.style.display = 'none';
+      return;
+    }
+
+    createHotspotEl(hs, sceneId);
+  });
+
+  // Render exits
+  renderExits(scene);
+
+  // Start eclats
+  scene.hotspots.filter(h => h.eclatEnabled).forEach(h => startEclat(h));
+
+  // Intro text
+  if (!state.narrativeFlags['intro-' + sceneId]) {
+    setTimeout(() => {
+      showDialogue(scene.intro);
+      state.narrativeFlags['intro-' + sceneId] = true;
+      saveState();
+    }, 500);
+  }
+
+  updateResourceUI();
+  updateVitalityUI();
+  updateVitalityEffects();
+  updateRecipeUI();
+  saveState();
+}
+
+function createHotspotEl(hs, sceneId) {
+  const el = document.createElement('button');
+  el.className = 'hotspot';
+  el.id = 'hs-el-' + hs.id;
+  el.style.left = hs.x + '%';
+  el.style.top = hs.y + '%';
+  el.style.width = hs.w + '%';
+  el.style.height = hs.h + '%';
+
+  el.addEventListener('mouseenter', () => setCursor(hs.cursor || 'eye'));
+  el.addEventListener('mouseleave', () => setCursor('default'));
+
+  if (hs.collectMode === 'hold') {
+    el.addEventListener('mousedown', e => { e.preventDefault(); startHold(hs, el); });
+    el.addEventListener('mouseup', () => endHold());
+    el.addEventListener('mouseleave', () => endHold());
+  } else {
+    el.addEventListener('click', () => handleHotspotClick(hs, el, sceneId));
+  }
+
+  hotspotLayer.appendChild(el);
+  return el;
+}
+
+function handleHotspotClick(hs, el, sceneId) {
+  if (hs.action === 'open-alchemy') {
+    activeAlchemyPoint = true;
+    updateRecipeUI();
+    showDialogue("Le cercle attend.");
+    return;
+  }
+
+  // Text
+  if (hs.texts && hs.texts.length) {
+    const text = hs.texts[Math.floor(Math.random() * hs.texts.length)];
+    showDialogue(text);
+  }
+
+  // Resource
+  if (hs.resource) {
+    const ok = collectResource(hs.resource.type, hs.resource.amount, hs.x + hs.w/2, hs.y + hs.h/2);
+    if (!ok) return;
+
+    if (hs.flashOnCollect) flashPain();
+
+    // Mark collected
+    const key = sceneId + ':' + hs.id;
+    if (hs.collectible) {
+      state.inspected[key] = true;
+      if (hs.souffleUnique) state.souffleCollected[key] = true;
+      if (hs.type === 'organique') state.organicRespawn[key] = Date.now();
+
+      // Fade out
+      el.style.transition = hs.type === 'souffle'
+        ? 'filter 0.4s, opacity 0.4s'
+        : 'transform 0.2s, opacity 0.3s';
+      if (hs.type === 'souffle') {
+        el.style.filter = 'blur(4px)';
+      } else {
+        el.style.transform = 'scale(0.6)';
+      }
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    }
+
+    saveState();
+  }
+
+  // Mark inspected for non-resource
+  if (!hs.resource && hs.type === 'inspect') {
+    const key = sceneId + ':' + hs.id;
+    state.inspected[key] = true;
+    saveState();
+  }
+}
+
+function renderExits(scene) {
+  hotspotLayer.querySelectorAll('.exit-zone').forEach(e => e.remove());
+
+  scene.exits.forEach(exit => {
+    const el = document.createElement('button');
+    el.className = 'exit-zone';
+    el.style.left = exit.x + '%';
+    el.style.top = exit.y + '%';
+    el.style.width = exit.w + '%';
+    el.style.height = exit.h + '%';
+
+    const isLocked = exit.locked && !state.exits[exit.id] && !(exit.unlockedBy && state.crafted.includes(exit.unlockedBy));
+
+    if (isLocked) {
+      el.classList.add('locked');
+      el.addEventListener('mouseenter', () => setCursor('locked'));
+      el.addEventListener('click', () => showDialogue(exit.lockedText));
+    } else {
+      el.addEventListener('mouseenter', () => setCursor('exit'));
+      el.addEventListener('click', () => {
+        activeAlchemyPoint = false;
+        loadScene(exit.targetScene);
+      });
+    }
+
+    el.addEventListener('mouseleave', () => setCursor('default'));
+    hotspotLayer.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════════
+// VOIR BUTTON
+// ══════════════════════════════════════
+$('btn-voir').addEventListener('click', () => {
+  hotspotLayer.querySelectorAll('.hotspot').forEach(el => {
+    el.classList.add('revealed');
+  });
+  setTimeout(() => {
+    hotspotLayer.querySelectorAll('.hotspot').forEach(el => el.classList.remove('revealed'));
+  }, 3000);
+});
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+drawPortrait();
+startDecayTimer();
+loadScene(state.currentScene);
+</script>
+</body>
+</html>
