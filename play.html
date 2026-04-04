@@ -17,15 +17,17 @@
   --col-d: #E24B4A; --col-s: #7F77DD; --col-o: #EF9F27;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); font-family:'JetBrains Mono',monospace; color:var(--bone); cursor:none; user-select:none; }
+html, body { width:100%; height:100%; overflow:hidden; background:#000; font-family:'JetBrains Mono',monospace; color:var(--bone); cursor:none; user-select:none; display:flex; align-items:center; justify-content:center; min-height:100vh; }
 
-/* ── LAYOUT ── */
-#game { display:grid; grid-template-columns:1fr auto 1fr; width:100vw; height:100vh; }
+/* ── LAYOUT — fixed 1280×720 ── */
+#game { position:relative; width:1280px; height:720px; background:var(--bg); overflow:hidden; }
 
-/* ── PANELS ── */
-.panel { position:relative; min-width:180px; overflow:visible; background:var(--bg2); }
+/* ── PANELS — absolute positioned ── */
+.panel { position:absolute; top:0; width:160px; height:720px; overflow:visible; background:var(--bg2); }
+#panel-left { left:0; }
+#panel-right { right:0; }
 .panel-canvas { position:absolute; inset:0; z-index:0; }
-.panel-content { position:relative; z-index:2; padding:20px 16px; display:flex; flex-direction:column; gap:10px; height:100%; }
+.panel-content { position:relative; z-index:2; padding:20px 14px; display:flex; flex-direction:column; gap:10px; height:100%; }
 .panel-title { font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; color:var(--ash); text-transform:lowercase; padding-bottom:6px; }
 /* Organic edge SVGs */
 .panel-edge { position:absolute; top:0; height:100%; width:24px; pointer-events:none; z-index:3; }
@@ -73,9 +75,9 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 .recipe-btn:disabled { opacity:0.3; cursor:not-allowed; }
 #alchemy-msg { font-family:'Crimson Pro',serif; font-style:italic; font-size:13px; color:#5A4E4A; margin-top:auto; }
 
-/* ── SCENE WRAPPER ── */
-#scene-wrapper { position:relative; display:flex; align-items:center; justify-content:center; background:var(--bg2); overflow:hidden; }
-#pixi-container { position:relative; aspect-ratio:4/3; height:100%; max-height:100%; }
+/* ── SCENE — fixed 960×720 ── */
+#scene-wrapper { position:absolute; left:160px; top:0; width:960px; height:720px; background:var(--bg2); overflow:hidden; }
+#pixi-container { position:absolute; inset:0; width:960px; height:720px; }
 /* Organic erosion on scene edges */
 #scene-erosion { position:absolute; inset:0; pointer-events:none; z-index:5; background:
   radial-gradient(ellipse 20% 30% at 0% 20%, #080506 0%, transparent 100%),
@@ -91,14 +93,14 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 .exit-zone:not(.locked):hover { background:rgba(190,55,45,0.06); }
 
 /* Hold bar */
-.hold-bar { position:absolute; bottom:-4px; left:10%; right:10%; height:2px; background:var(--ash); }
+.hold-bar { position:absolute; bottom:-4px; left:10px; right:10px; height:2px; background:var(--ash); }
 .hold-bar-fill { height:100%; width:0%; background:var(--crimson); }
 
 /* Float text */
 .float-text { position:absolute; font-family:'JetBrains Mono',monospace; font-size:14px; font-weight:500; pointer-events:none; z-index:30; }
 
 /* ── DIALOGUE ── */
-#dialogue { position:absolute; bottom:0; left:0; right:0; height:80px; background:rgba(13,9,0,0.95); border-top:1px solid var(--ash); display:flex; align-items:flex-start; gap:12px; padding:10px 16px; z-index:40; opacity:0; transform:translateY(10px); pointer-events:none; }
+#dialogue { position:absolute; bottom:0; left:0; width:960px; height:80px; background:rgba(13,9,0,0.95); border-top:1px solid var(--ash); display:flex; align-items:flex-start; gap:12px; padding:10px 16px; z-index:40; opacity:0; transform:translateY(10px); pointer-events:none; }
 #dialogue.visible { opacity:1; transform:translateY(0); pointer-events:auto; }
 #portrait { width:48px; height:48px; background:var(--bg3); border:1px solid var(--ash); flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 #portrait canvas { width:48px; height:48px; image-rendering:pixelated; }
@@ -247,7 +249,8 @@ function drawPanels() {
 // ══════════════════════════════════════
 const pixiContainer = document.getElementById('pixi-container');
 const app = new PIXI.Application({
-  resizeTo: pixiContainer,
+  width: 960,
+  height: 720,
   backgroundAlpha: 0,
   antialias: false,
 });
@@ -345,8 +348,8 @@ function setupPixiScene(imagePath) {
 
   const tex = PIXI.Texture.from(imagePath);
   sceneSprite = new PIXI.Sprite(tex);
-  sceneSprite.width = app.screen.width;
-  sceneSprite.height = app.screen.height;
+  sceneSprite.width = 960;
+  sceneSprite.height = 720;
   app.stage.addChildAt(sceneSprite, 0);
 
   // Displacement filter
@@ -610,7 +613,7 @@ dialogueEl.addEventListener('click',e=>{e.stopPropagation();closeDialogue()});
 // ══════════════════════════════════════
 // FLOAT + FLASH
 // ══════════════════════════════════════
-function floatText(x,y,text,color){const el=document.createElement('div');el.className='float-text';el.textContent=text;el.style.color=color;el.style.left=x+'%';el.style.top=y+'%';hotspotLayer.appendChild(el);gsap.fromTo(el,{y:0,opacity:1},{y:-40,opacity:0,duration:1,ease:'expo.out',onComplete:()=>el.remove()})}
+function floatText(x,y,text,color){const el=document.createElement('div');el.className='float-text';el.textContent=text;el.style.color=color;el.style.left=(x/100*SCENE_W)+'px';el.style.top=(y/100*SCENE_H)+'px';hotspotLayer.appendChild(el);gsap.fromTo(el,{y:0,opacity:1},{y:-40,opacity:0,duration:1,ease:'expo.out',onComplete:()=>el.remove()})}
 function flashPain(){const f=document.createElement('div');f.style.cssText='position:absolute;inset:0;background:var(--crimson);pointer-events:none;z-index:20;opacity:0';hotspotLayer.appendChild(f);gsap.fromTo(f,{opacity:0.35},{opacity:0,duration:0.3,ease:'power4.in',onComplete:()=>f.remove()})}
 
 // ══════════════════════════════════════
@@ -639,7 +642,7 @@ function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=nu
 // ══════════════════════════════════════
 // SCENE TRANSITION (noise dissolve)
 // ══════════════════════════════════════
-function transitionToScene(tid){const ov=document.createElement('canvas');ov.style.cssText='position:absolute;inset:0;z-index:45;pointer-events:none';ov.width=pixiContainer.offsetWidth;ov.height=pixiContainer.offsetHeight;hotspotLayer.parentElement.appendChild(ov);const ctx=ov.getContext('2d');let p=0;const dissolve=()=>{p+=0.03;ctx.clearRect(0,0,ov.width,ov.height);for(let x=0;x<ov.width;x+=4){for(let y=0;y<ov.height;y+=4){if(Math.sin(x*0.05)*Math.cos(y*0.07)+Math.random()*0.3<p){ctx.fillStyle=Math.random()>0.5?'#8C1C1C':'#080506';ctx.fillRect(x,y,4,4)}}}if(p<1.2)requestAnimationFrame(dissolve);else{loadScene(tid);let r=1.2;const reveal=()=>{r-=0.04;ctx.clearRect(0,0,ov.width,ov.height);for(let x=0;x<ov.width;x+=4){for(let y=0;y<ov.height;y+=4){if(Math.sin(x*0.05)*Math.cos(y*0.07)+Math.random()*0.3<r){ctx.fillStyle=Math.random()>0.5?'#8C1C1C':'#080506';ctx.fillRect(x,y,4,4)}}}if(r>0)requestAnimationFrame(reveal);else ov.remove()};requestAnimationFrame(reveal)}};requestAnimationFrame(dissolve)}
+function transitionToScene(tid){const ov=document.createElement('canvas');ov.style.cssText='position:absolute;inset:0;z-index:45;pointer-events:none';ov.width=960;ov.height=720;hotspotLayer.parentElement.appendChild(ov);const ctx=ov.getContext('2d');let p=0;const dissolve=()=>{p+=0.03;ctx.clearRect(0,0,ov.width,ov.height);for(let x=0;x<ov.width;x+=4){for(let y=0;y<ov.height;y+=4){if(Math.sin(x*0.05)*Math.cos(y*0.07)+Math.random()*0.3<p){ctx.fillStyle=Math.random()>0.5?'#8C1C1C':'#080506';ctx.fillRect(x,y,4,4)}}}if(p<1.2)requestAnimationFrame(dissolve);else{loadScene(tid);let r=1.2;const reveal=()=>{r-=0.04;ctx.clearRect(0,0,ov.width,ov.height);for(let x=0;x<ov.width;x+=4){for(let y=0;y<ov.height;y+=4){if(Math.sin(x*0.05)*Math.cos(y*0.07)+Math.random()*0.3<r){ctx.fillStyle=Math.random()>0.5?'#8C1C1C':'#080506';ctx.fillRect(x,y,4,4)}}}if(r>0)requestAnimationFrame(reveal);else ov.remove()};requestAnimationFrame(reveal)}};requestAnimationFrame(dissolve)}
 
 // ══════════════════════════════════════
 // SCENE LOADING
@@ -659,9 +662,10 @@ function loadScene(sceneId){
   if(!state.narrativeFlags['intro-'+sceneId]){setTimeout(()=>{showDialogue(scene.intro);state.narrativeFlags['intro-'+sceneId]=true;saveState()},600)}
   updateResourceUI();updateVitalityUI();updateRecipeUI();saveState();
 }
-function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x}%;top:${hs.y}%;width:${hs.w}%;height:${hs.h}%`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
+const SCENE_W=960,SCENE_H=720;
+function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
 function handleHotspotClick(hs,el,sceneId){if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
-function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x}%;top:${exit.y}%;width:${exit.w}%;height:${exit.h}%`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else{el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
+function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else{el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
 // RESET
 $('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));loadScene('scene-01')});
@@ -670,10 +674,27 @@ $('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);s
 $('btn-voir').addEventListener('click',()=>{hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='rgba(140,28,28,0.15)';el.style.borderColor='rgba(190,55,45,0.5)'});setTimeout(()=>hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='';el.style.borderColor=''}),3000)});
 
 // ══════════════════════════════════════
+// ══════════════════════════════════════
+// SCALE TO FIT
+// ══════════════════════════════════════
+function scaleGame(){
+  const game=document.getElementById('game');
+  const sx=window.innerWidth/1280;
+  const sy=window.innerHeight/720;
+  const s=Math.min(sx,sy);
+  game.style.transform=`scale(${s})`;
+  game.style.transformOrigin='top left';
+  game.style.position='absolute';
+  game.style.left=`${(window.innerWidth-1280*s)/2}px`;
+  game.style.top=`${(window.innerHeight-720*s)/2}px`;
+}
+
+// ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
 drawPortrait();drawPanels();
-window.addEventListener('resize',()=>{drawPanels();if(sceneSprite){sceneSprite.width=app.screen.width;sceneSprite.height=app.screen.height}});
+window.addEventListener('resize',()=>{scaleGame();drawPanels()});
+scaleGame();
 startDecayTimer();loadScene(state.currentScene);
 </script>
 </body>
