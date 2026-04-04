@@ -753,6 +753,9 @@ ul.styled li strong {
   position: relative;
   display: flex;
   flex-direction: column;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
   background:
     radial-gradient(ellipse 100% 50% at 50% 40%, rgba(140,28,28,0.10) 0%, transparent 100%),
     linear-gradient(to bottom, #080506 0%, #140a09 35%, #1e100e 50%, #140a09 65%, #080506 100%);
@@ -1021,9 +1024,9 @@ footer {
 
     <p><strong>Pas de tutoriel. Pas d'explication. Le monde ne s'excuse pas.</strong></p>
 
-    <h3>Interface — layout 4/3</h3>
+    <h3>Interface</h3>
 
-    <p>Le jeu est en format 4/3. La scène occupe le centre, les panneaux UI sont sur les côtés.</p>
+    <p>La scène est en format 4/3 au centre de l'écran. Les panneaux UI sont sur les côtés.</p>
 
     <div class="mockup">
       <div class="mockup-bar">
@@ -1053,7 +1056,7 @@ footer {
           </div>
         </div>
         <!-- Centre : scène -->
-        <div class="mockup-scene" style="background:url('desert-bg-1.png') center/cover no-repeat">
+        <div class="mockup-scene" style="background:url('desert-bg-1.png') center/cover no-repeat;image-rendering:pixelated">
           <div class="mockup-scene-content" style="background:none">
             <div class="mockup-hotspot" style="top:15%;left:10%;width:30%;height:22%"></div>
             <div class="mockup-hotspot" style="top:55%;left:50%;width:25%;height:20%"></div>
