@@ -34,24 +34,11 @@ html, body {
   overflow: hidden;
 }
 
-/* Desert landscape — layered CSS painting */
+/* Desert landscape — real photo */
 .landscape {
   position: absolute;
   inset: 0;
-  background:
-    /* sky glow */
-    radial-gradient(ellipse 120% 60% at 50% 15%, rgba(140,28,28,0.12) 0%, transparent 100%),
-    /* horizon haze */
-    linear-gradient(to bottom,
-      #0a0506 0%,
-      #10080a 25%,
-      #1a0c0b 40%,
-      #251210 48%,
-      #2e1614 52%,
-      #1f0f0e 60%,
-      #150c0a 75%,
-      #0a0606 100%
-    );
+  background: url('desert-bg-1.png') center/cover no-repeat;
 }
 
 /* Sand texture overlay */
