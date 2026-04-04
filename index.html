@@ -2,641 +2,1094 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Désert Cramoisi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Désert Cramoisi — GDD v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+:root {
+  --bg:       #080506;
+  --bg2:      #100b0a;
+  --bg3:      #160e0c;
+  --crimson:  #8C1C1C;
+  --crimson-l:#BE372D;
+  --rust:     #6B2416;
+  --bone:     #C6B29B;
+  --bone-dim: #9A8A7A;
+  --ash:      #3A3230;
+  --ash-l:    #6A5E5A;
+  --pale:     #E8DDD0;
+  --purple:   #3E2848;
+  --purple-l: #7A4FA0;
+  --text:     #D0C4B6;
+  --text-dim: #9A8E86;
+}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --crimson: #8C1C1C;
-  --crimson-light: #BE372D;
-  --bone: #C6B29B;
-  --bone-dim: #8A7A6A;
-  --bg: #080506;
-  --bg-panel: #0f0a09;
-}
+html { scroll-behavior: smooth; }
 
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
+body {
   background: var(--bg);
-  cursor: crosshair;
+  color: var(--text);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.8;
+  min-height: 100vh;
 }
 
-/* ══════════════════════════
-   SCENE
-══════════════════════════ */
-#scene {
+/* ── Grain overlay ── */
+body::before {
+  content: '';
   position: fixed;
   inset: 0;
-  overflow: hidden;
-}
-
-/* Desert landscape — layered CSS painting */
-.landscape {
-  position: absolute;
-  inset: 0;
-  background:
-    /* sky glow */
-    radial-gradient(ellipse 120% 60% at 50% 15%, rgba(140,28,28,0.12) 0%, transparent 100%),
-    /* horizon haze */
-    linear-gradient(to bottom,
-      #0a0506 0%,
-      #10080a 25%,
-      #1a0c0b 40%,
-      #251210 48%,
-      #2e1614 52%,
-      #1f0f0e 60%,
-      #150c0a 75%,
-      #0a0606 100%
-    );
-}
-
-/* Sand texture overlay */
-.landscape::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-  opacity: 0.7;
-  mix-blend-mode: overlay;
-}
-
-/* Dune shapes */
-.dune {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(46,22,20,0.6) 0%, transparent 70%);
-}
-.dune-1 { width: 160%; height: 45%; bottom: -10%; left: -30%; }
-.dune-2 { width: 80%; height: 30%; bottom: 5%; right: -10%; background: radial-gradient(ellipse, rgba(37,18,16,0.5) 0%, transparent 70%); }
-.dune-3 { width: 60%; height: 20%; bottom: 15%; left: 10%; background: radial-gradient(ellipse, rgba(30,14,12,0.4) 0%, transparent 70%); }
-
-/* Distant shapes — bones/rocks on horizon */
-.distant {
-  position: absolute;
-  bottom: 48%;
-  opacity: 0.15;
-}
-.distant-1 {
-  left: 20%;
-  width: 3px; height: 40px;
-  background: linear-gradient(to top, rgba(198,178,155,0.4), transparent);
-  transform: rotate(-3deg);
-}
-.distant-2 {
-  left: 22%;
-  width: 2px; height: 28px;
-  background: linear-gradient(to top, rgba(198,178,155,0.3), transparent);
-  transform: rotate(5deg);
-}
-.distant-3 {
-  right: 30%;
-  width: 50px; height: 8px;
-  border-radius: 50%;
-  background: rgba(198,178,155,0.15);
-  bottom: 46%;
-}
-
-/* ══════════════════════════
-   DRAWN OVERLAY — hand-drawn layer
-══════════════════════════ */
-.drawn-overlay {
-  position: absolute;
-  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
-  opacity: 0.12;
-}
-
-/* Circle ritual on ground */
-.ritual-circle {
-  position: absolute;
-  bottom: 28%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px; height: 40px;
-  border: 1px solid var(--bone);
-  border-radius: 50%;
-  opacity: 0.4;
-}
-
-.ritual-circle::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px; height: 20px;
-  border: 1px solid var(--crimson-light);
-  border-radius: 50%;
+  z-index: 999;
   opacity: 0.6;
 }
 
-/* Scratch marks */
-.scratch {
-  position: absolute;
-  background: var(--bone);
-  opacity: 0.08;
-}
-.scratch-1 { width: 1px; height: 80px; top: 30%; right: 25%; transform: rotate(15deg); }
-.scratch-2 { width: 1px; height: 50px; top: 35%; right: 26%; transform: rotate(-8deg); }
-.scratch-3 { width: 60px; height: 1px; bottom: 40%; left: 15%; transform: rotate(2deg); }
-
 /* ══════════════════════════
-   POST-PROCESSING FX
+   LAYOUT — single column, centered
 ══════════════════════════ */
-
-/* Scanlines */
-#scene::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
-  );
-  pointer-events: none;
-  z-index: 50;
-}
-
-/* Vignette */
-#scene::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(8,5,6,0.7) 100%);
-  pointer-events: none;
-  z-index: 51;
-}
-
-/* Animated grain */
-#grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 100;
-  opacity: 0.4;
-  mix-blend-mode: overlay;
-}
-
-/* ══════════════════════════
-   HOTSPOTS
-══════════════════════════ */
-.hotspot {
-  position: absolute;
-  z-index: 30;
-  cursor: none;
-  border: none;
-  background: transparent;
-  transition: opacity 0.3s;
-}
-
-.hotspot::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  transition: border-color 0.4s, box-shadow 0.4s;
-}
-
-.hotspot:hover::after {
-  border-color: rgba(190,55,45,0.25);
-  box-shadow: 0 0 20px rgba(140,28,28,0.15), inset 0 0 15px rgba(140,28,28,0.08);
-}
-
-.hotspot.inspected {
-  opacity: 0.4;
-}
-
-/* Custom cursor */
-#cursor {
-  position: fixed;
-  width: 20px; height: 20px;
-  pointer-events: none;
-  z-index: 200;
-  transform: translate(-50%, -50%);
-  transition: transform 0.1s;
-}
-
-#cursor .ring {
-  width: 20px; height: 20px;
-  border: 1.5px solid var(--bone-dim);
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-#cursor .dot {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 3px; height: 3px;
-  background: var(--crimson-light);
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-#cursor.hover .ring {
-  width: 28px; height: 28px;
-  border-color: var(--crimson-light);
-  margin: -4px 0 0 -4px;
-}
-
-#cursor.hover .dot {
-  width: 5px; height: 5px;
-  background: var(--bone);
-}
-
-/* ══════════════════════════
-   DIALOGUE BOX
-══════════════════════════ */
-#dialogue {
-  position: fixed;
-  bottom: 0;
-  left: 0; right: 0;
-  z-index: 150;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s, transform 0.5s;
-}
-
-#dialogue.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-#dialogue-inner {
-  max-width: 700px;
-  margin: 0 auto 40px;
-  background: rgba(8,5,6,0.92);
-  border: 1px solid rgba(140,28,28,0.3);
-  border-radius: 4px;
-  padding: 28px 36px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-#dialogue-text {
-  font-family: 'VT323', monospace;
-  font-size: 22px;
-  color: var(--bone);
-  line-height: 1.6;
-  letter-spacing: 0.03em;
-  min-height: 1.6em;
-}
-
-#dialogue-hint {
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  color: rgba(140,28,28,0.5);
-  margin-top: 16px;
-  text-align: right;
-  letter-spacing: 0.1em;
-}
-
-/* Typewriter cursor blink */
-#dialogue-text::after {
-  content: '█';
-  animation: blink 0.8s infinite;
-  color: var(--crimson-light);
-  margin-left: 2px;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* ══════════════════════════
-   TITLE INTRO
-══════════════════════════ */
-#intro {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  background: var(--bg);
+.wrapper {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOP NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--ash);
+  padding: 0 40px;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: crosshair;
-  transition: opacity 1.5s;
+  gap: 0;
+  overflow-x: auto;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-#intro.fade-out {
-  opacity: 0;
-  pointer-events: none;
+nav::-webkit-scrollbar { height: 2px; }
+nav::-webkit-scrollbar-track { background: transparent; }
+nav::-webkit-scrollbar-thumb { background: var(--crimson); }
+
+.nav-brand {
+  padding: 16px 24px 16px 0;
+  border-right: 1px solid var(--ash);
+  margin-right: 20px;
+  flex-shrink: 0;
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
-#intro h1 {
-  font-family: 'VT323', monospace;
-  font-size: clamp(36px, 6vw, 64px);
-  color: var(--crimson-light);
-  letter-spacing: 0.15em;
+.nav-brand .title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
   text-transform: uppercase;
-  text-shadow: 0 0 60px rgba(140,28,28,0.4);
-  margin-bottom: 24px;
-  text-align: center;
+  line-height: 1.3;
 }
 
-#intro p {
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  color: var(--bone-dim);
-  letter-spacing: 0.1em;
-  animation: pulse 2s ease-in-out infinite;
+.nav-brand .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  letter-spacing: 0.05em;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
+.nav-section {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.nav-section-label { display: none; }
+
+nav a {
+  display: block;
+  padding: 18px 14px;
+  font-family: 'Crimson Pro', serif;
+  font-size: 14px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  border-bottom: 2px solid transparent;
+  border-left: none;
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+nav a:hover {
+  color: var(--bone);
+  background: rgba(140,28,28,0.06);
+  border-bottom-color: var(--crimson);
+}
+
+nav a.active {
+  color: var(--crimson-l);
+  border-bottom-color: var(--crimson-l);
+  background: rgba(140,28,28,0.08);
+}
+
+nav a.sub-link {
+  font-size: 12.5px;
+  padding: 18px 10px;
+  color: var(--ash-l);
+}
+
+nav a.sub-link:hover { color: var(--text-dim); }
+
+/* ── MAIN CONTENT ── */
+main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 40px 0;
 }
 
 /* ══════════════════════════
-   INSPECT COUNTER (subtle)
+   HERO
 ══════════════════════════ */
-#counter {
-  position: fixed;
-  top: 16px;
-  right: 20px;
-  font-family: 'VT323', monospace;
-  font-size: 14px;
-  color: rgba(140,28,28,0.3);
+.hero {
+  padding: 100px 80px 80px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 50%, rgba(140,28,28,0.08) 100%);
+  border-radius: 8px;
+  border: 1px solid var(--ash);
+  margin-bottom: 20px;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(140,28,28,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.04em;
+  color: var(--pale);
+  text-shadow: 0 0 80px rgba(140,28,28,0.4);
+  margin-bottom: 16px;
+}
+
+.hero h1 span { color: var(--crimson-l); }
+
+.hero-desc {
+  font-size: 19px;
+  font-style: italic;
+  color: var(--bone-dim);
+  max-width: 560px;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
   letter-spacing: 0.1em;
-  z-index: 150;
+  padding: 5px 12px;
+  border: 1px solid var(--ash);
+  border-radius: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.tag.red { border-color: var(--crimson); color: var(--crimson-l); background: rgba(140,28,28,0.08); }
+
+/* ══════════════════════════
+   SECTIONS
+══════════════════════════ */
+section {
+  padding: 72px 80px;
+  border-bottom: none;
+  animation: fadeIn 0.4s ease forwards;
+  margin: 20px 0;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--ash);
+}
+
+section:first-of-type { margin-top: 0; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+section h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--pale);
+  margin-bottom: 44px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--ash);
+  letter-spacing: 0.05em;
+}
+
+section h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--crimson-l);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 44px 0 18px;
+}
+
+section h3:first-of-type {
+  margin-top: 36px;
+}
+
+p { margin-bottom: 18px; color: var(--text); max-width: 65ch; }
+
+/* ══════════════════════════
+   COMPOSANTS
+══════════════════════════ */
+
+/* Piliers */
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--ash);
+  border: 1px solid var(--ash);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+
+.pillar {
+  background: var(--bg3);
+  padding: 28px 24px;
+  transition: background 0.2s;
+}
+
+.pillar:hover { background: rgba(22,14,12,0.8); }
+
+.pillar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.pillar-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--bone);
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.pillar p { font-size: 14.5px; color: var(--text-dim); margin: 0; line-height: 1.6; max-width: none; }
+
+/* Callout */
+.callout {
+  border-left: 3px solid var(--crimson);
+  background: rgba(140,28,28,0.08);
+  padding: 22px 28px;
+  margin: 32px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.callout-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson-l);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.callout p { margin: 0; font-style: italic; font-size: 17px; color: var(--bone-dim); line-height: 1.7; max-width: none; }
+
+/* Fragments narratifs — style distinct */
+.callout + .callout { margin-top: 16px; }
+
+/* Liste */
+ul.styled { list-style: none; padding: 0; margin-bottom: 24px; }
+ul.styled li {
+  padding: 10px 0 10px 22px;
+  position: relative;
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.65;
+  border-bottom: 1px solid rgba(58,50,48,0.4);
+}
+ul.styled li:last-child { border-bottom: none; }
+ul.styled li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--crimson);
+  font-weight: 400;
+}
+ul.styled li strong {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+/* Recettes */
+.recipe-grid { display: grid; gap: 20px; margin: 20px 0; }
+
+.recipe-card {
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  border-top: 2px solid var(--crimson);
+  padding: 28px;
+  border-radius: 6px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.recipe-card:hover {
+  border-color: var(--crimson-l);
+  background: rgba(22,14,12,0.9);
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+
+.recipe-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--pale);
+  letter-spacing: 0.05em;
+}
+
+.recipe-tier {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid var(--crimson);
+  color: var(--crimson-l);
+  white-space: nowrap;
+}
+
+.recipe-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.ing {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.ing.d { border-color: rgba(224,75,74,0.4); color: #C05555; background: rgba(224,75,74,0.05); }
+.ing.s { border-color: rgba(127,119,221,0.4); color: #9A8FD4; background: rgba(127,119,221,0.05); }
+.ing.o { border-color: rgba(239,159,39,0.4); color: #B8821A; background: rgba(239,159,39,0.05); }
+
+.recipe-effect { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 14px; }
+
+.recipe-cost {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--crimson-l);
+  padding-top: 12px;
+  border-top: 1px solid var(--ash);
+}
+
+/* Tableau */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  font-size: 14.5px;
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.data-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--crimson-l);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--crimson);
+  background: rgba(140,28,28,0.08);
+}
+
+.data-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid rgba(58,50,48,0.5);
+  color: var(--text);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(140,28,28,0.04); }
+
+/* Fins */
+.endings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--ash); margin: 24px 0; border-radius: 6px; overflow: hidden; }
+
+.ending {
+  background: var(--bg3);
+  padding: 28px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+
+.ending:hover { background: var(--bg3); }
+
+.ending::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.ending.dissolution::before { background: var(--bone-dim); }
+.ending.repetition::before { background: var(--crimson-l); }
+.ending.rupture::before { background: var(--purple-l); }
+
+.ending-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--pale);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.ending p { font-size: 13.5px; color: var(--text-dim); margin: 0; font-style: italic; line-height: 1.5; }
+
+/* Zones */
+.zones { display: grid; gap: 1px; background: var(--ash); margin: 20px 0; border-radius: 6px; overflow: hidden; }
+
+.zone {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  background: var(--bg3);
+  transition: background 0.2s;
+}
+
+.zone:hover { background: var(--bg3); }
+
+.zone-id {
+  padding: 24px 20px;
+  border-right: 1px solid var(--ash);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.zone-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--crimson);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.zone-name {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--pale);
+  letter-spacing: 0.05em;
+}
+
+.zone-content { padding: 24px 24px; font-size: 14.5px; color: var(--text); line-height: 1.65; }
+
+/* Roadmap */
+.roadmap { display: grid; gap: 1px; background: var(--ash); margin: 20px 0; border-radius: 6px; overflow: hidden; }
+
+.roadmap-row {
+  display: grid;
+  grid-template-columns: 120px 180px 1fr;
+  background: var(--bg3);
+  transition: background 0.2s;
+}
+
+.roadmap-row:hover { background: var(--bg3); }
+
+.roadmap-row > div {
+  padding: 18px 20px;
+  border-right: 1px solid var(--ash);
+  font-size: 14px;
+}
+
+.roadmap-row > div:last-child { border-right: none; }
+
+.roadmap-phase {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--crimson-l);
+  letter-spacing: 0.1em;
+}
+
+.roadmap-obj { color: var(--bone); font-weight: 600; font-size: 14px; }
+.roadmap-del { color: var(--text-dim); font-size: 13.5px; }
+
+/* Système craft */
+.craft-system {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  align-items: center;
+  gap: 0;
+  margin: 24px 0;
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  border-radius: 6px;
+  padding: 32px;
+}
+
+.craft-col { }
+.craft-arrow { text-align: center; color: var(--crimson); font-size: 24px; }
+.craft-col-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.craft-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(58,50,48,0.3);
+  font-size: 14px;
+}
+
+.craft-item:last-child { border-bottom: none; }
+
+.craft-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-d { background: #C05555; }
+.dot-s { background: #9A8FD4; }
+.dot-o { background: #B8821A; }
+.dot-out { background: var(--crimson-l); }
+
+/* Palette visuelle */
+.palette-row { display: flex; gap: 0; margin: 20px 0; height: 72px; border-radius: 6px; overflow: hidden; border: 1px solid var(--ash); }
+.palette-swatch { flex: 1; position: relative; cursor: default; transition: flex 0.3s; }
+.palette-swatch:hover { flex: 2; }
+.palette-swatch span {
+  position: absolute;
+  bottom: 6px; left: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+.palette-swatch:hover span { opacity: 1; }
+
+/* Stack technique */
+.stack-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+
+.stack-item {
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  border-radius: 6px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.stack-icon {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--crimson);
+  padding: 4px 6px;
+  border: 1px solid var(--crimson);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stack-name { font-size: 14px; color: var(--bone); font-weight: 600; margin-bottom: 2px; }
+.stack-desc { font-size: 12.5px; color: var(--text-dim); }
+
+/* Footer */
+footer {
+  padding: 40px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  background: var(--bg2);
+  border-radius: 8px;
+  border: 1px solid var(--ash);
+  margin: 20px 0 40px;
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 0 16px; }
+  main { padding: 16px 16px 0; }
+  .hero, section { padding: 40px 28px; margin: 12px 0; }
+  .pillars { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 8px; padding: 28px; margin: 12px 0 24px; }
+  .roadmap-row { grid-template-columns: 1fr; }
+  .zone { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 1400px) {
+  main { max-width: 1200px; }
 }
 </style>
 </head>
 <body>
 
-<!-- INTRO SCREEN -->
-<div id="intro" onclick="startGame()">
-  <h1>Désert Cramoisi</h1>
-  <p>[ cliquer pour entrer ]</p>
-</div>
+<div class="wrapper">
 
-<!-- CUSTOM CURSOR -->
-<div id="cursor">
-  <div class="ring"></div>
-  <div class="dot"></div>
-</div>
-
-<!-- SCENE -->
-<div id="scene">
-  <!-- Landscape -->
-  <div class="landscape">
-    <div class="dune dune-1"></div>
-    <div class="dune dune-2"></div>
-    <div class="dune dune-3"></div>
-    <div class="distant distant-1"></div>
-    <div class="distant distant-2"></div>
-    <div class="distant distant-3"></div>
+<!-- ══════ NAV ══════ -->
+<nav>
+  <div class="nav-brand">
+    <div class="title">Désert Cramoisi</div>
+    <div class="sub">GDD v1.0 — 2025</div>
   </div>
 
-  <!-- Hand-drawn overlay -->
-  <div class="drawn-overlay">
-    <div class="ritual-circle"></div>
-    <div class="scratch scratch-1"></div>
-    <div class="scratch scratch-2"></div>
-    <div class="scratch scratch-3"></div>
+  <div class="nav-section">
+    <div class="nav-section-label">Document</div>
+    <a href="#vision">01 — Vision</a>
+    <a href="#gameplay">02 — Comment on joue</a>
+    <a href="#narration">03 — Narration</a>
+    <a href="#artdirection">04 — Direction artistique</a>
+    <a href="#monde">05 — Le monde</a>
+    <a href="#tech">06 — Technique &amp; roadmap</a>
+    <a href="#equipe">07 — Équipe</a>
+  </div>
+</nav>
+
+<!-- ══════ MAIN ══════ -->
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Game Design Document · v1.0</div>
+    <h1>Désert<br><span>Cramoisi</span></h1>
+    <p class="hero-desc">Point &amp; click narratif. Tu te réveilles dans un désert cramoisi sans mémoire. Tu cliques. Le monde te parle — de toi, jamais de lui.</p>
+    <div class="hero-tags">
+      <span class="tag red">Point &amp; click</span>
+      <span class="tag red">Horreur narrative</span>
+      <span class="tag red">Sans combat</span>
+      <span class="tag">Photos traitées + dessins</span>
+      <span class="tag">HTML / CSS / JS</span>
+      <span class="tag">Kenny + Alexandra</span>
+    </div>
   </div>
 
-  <!-- HOTSPOTS -->
-  <button class="hotspot" id="hs-horizon" style="top:38%; left:35%; width:30%; height:10%;"></button>
-  <button class="hotspot" id="hs-sable" style="top:60%; left:20%; width:25%; height:15%;"></button>
-  <button class="hotspot" id="hs-os" style="top:42%; left:17%; width:12%; height:10%;"></button>
-  <button class="hotspot" id="hs-cercle" style="top:65%; left:40%; width:20%; height:12%;"></button>
-  <button class="hotspot" id="hs-ciel" style="top:8%; left:25%; width:50%; height:20%;"></button>
-  <button class="hotspot" id="hs-ombre" style="top:50%; left:70%; width:20%; height:18%;"></button>
-  <button class="hotspot" id="hs-pierre" style="top:75%; left:60%; width:18%; height:12%;"></button>
+  <!-- ══ 1. VISION ══ -->
+  <section id="vision">
+    <div class="section-number">01</div>
+    <h2>Vision</h2>
+
+    <p>Un personnage sans mémoire se réveille dans un désert cramoisi. Devant lui : une image. Il clique. Un texte apparaît — court, cryptique, qui parle de lui. Il clique ailleurs. Quelque chose change. Pas le monde. Lui.</p>
+
+    <p>Le jeu ne donne aucune explication. Pas de tutoriel, pas de HUD, pas d'objectif affiché. Le joueur inspecte des scènes — des photos réelles traitées, corrompues, recouvertes de dessins — et reconstruit ce qu'il était, fragment par fragment, à travers ce que le monde lui dit de lui-même.</p>
+
+    <div class="callout">
+      <div class="callout-label">Le malaise</div>
+      <p>Le texte sait que tu es là. Il s'adresse à toi. Il ne décrit pas ce que tu regardes — il te décrit, toi, en train de regarder.</p>
+    </div>
+
+    <h3>Piliers</h3>
+
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-label">Format</div>
+        <div class="pillar-title">Point &amp; click sur photos traitées</div>
+        <p>Chaque scène est une photo réelle post-traitée. Le joueur clique pour inspecter. Pas de HUD, pas d'inventaire. L'interface est le monde.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Narration</div>
+        <div class="pillar-title">Le texte parle de toi</div>
+        <p>Tu cliques sur un os — le texte te dit « Tu étais là avant que le sable existe. » Jamais de description d'objet. Toujours un miroir.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Ambiance</div>
+        <div class="pillar-title">Cauchemar documentaire</div>
+        <p>Photos réelles corrompues — contraste extrême, grain, palette cramoisie, dessins par-dessus. Le réel rendu irréel.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-label">Progression</div>
+        <div class="pillar-title">Comprendre par accumulation</div>
+        <p>Pas de quêtes, pas de puzzles classiques. Les fragments s'accumulent. Le joueur comprend progressivement ce qu'il est et ce qu'il a fait.</p>
+      </div>
+    </div>
+
+    <h3>Références</h3>
+    <ul class="styled">
+      <li><strong>I Live Under Your House</strong> — esthétique dégradée, ton surréaliste, malaise existentiel</li>
+      <li><strong>I Have No Mouth But I Must Scream</strong> — point &amp; click d'horreur, absurde cruel</li>
+      <li><strong>Disco Elysium</strong> — narration par fragments, identité reconstruite par le jeu</li>
+      <li><strong>Yume Nikki</strong> — exploration sans explication, progression par la découverte</li>
+    </ul>
+  </section>
+
+  <!-- ══ 2. COMMENT ON JOUE ══ -->
+  <section id="gameplay">
+    <div class="section-number">02</div>
+    <h2>Comment on joue</h2>
+
+    <p>Chaque scène est une image plein écran. Le joueur clique sur des zones pour déclencher des fragments de texte. Certains clics changent quelque chose dans la scène — un détail se déplace, une zone s'ouvre, l'image se dégrade. En inspectant suffisamment, une nouvelle scène se débloque.</p>
+
+    <h3>Boucle de jeu</h3>
+    <ul class="styled">
+      <li><strong>Inspecter</strong> — cliquer sur une zone → fragment narratif. Le texte parle de toi.</li>
+      <li><strong>Observer</strong> — certains clics modifient la scène (un élément bouge, une couleur change, un dessin apparaît).</li>
+      <li><strong>Débloquer</strong> — après un certain nombre d'inspections, un passage s'ouvre vers la scène suivante.</li>
+    </ul>
+
+    <h3>Interface</h3>
+    <ul class="styled">
+      <li><strong>Curseur custom</strong> — change de forme au survol des zones interactives</li>
+      <li><strong>Boîte de dialogue</strong> — texte en bas de l'écran, police VT323, effet typewriter</li>
+      <li><strong>Pas de HUD</strong> — aucun compteur, aucune barre, aucun menu visible</li>
+      <li><strong>Pas d'inventaire</strong> — le joueur ne transporte rien, il accumule des fragments</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-label">Ce qu'on ne fait PAS</div>
+      <p>Pas de système de craft. Pas de ressources. Pas de puzzles combinatoires. Pas de combat. Pas de points de vie. Le joueur clique et lit. C'est tout. La complexité est dans le texte et dans ce que la scène lui montre de lui-même.</p>
+    </div>
+  </section>
+
+  <!-- ══ 3. NARRATION ══ -->
+  <section id="narration">
+    <div class="section-number">03</div>
+    <h2>Narration</h2>
+
+    <p>Le joueur se réveille dans le désert sans identité ni souvenir. Chaque inspection révèle un fragment de texte — court, cryptique, à la deuxième personne. Le texte ne décrit jamais l'objet inspecté. Il parle du joueur.</p>
+
+    <p>En accumulant les fragments, le joueur reconstitue progressivement ce qu'il est et pourquoi il est là. Il n'y a pas de twist final annoncé — la compréhension est graduelle, et chaque joueur la vit à son rythme.</p>
+
+    <h3>Ton narratif</h3>
+
+    <p>Court. Cryptique. Jamais explicatif. Le texte pose des sensations, pas des réponses.</p>
+
+    <div class="callout">
+      <div class="callout-label">Fragment — Sable</div>
+      <p>Le sable connaît leur poids par cœur. Pas le tien. Tu n'en as pas.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment — Horizon</div>
+      <p>L'horizon ne recule pas. Il n'existe pas.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment — Ombre</div>
+      <p>Tu étais là avant que le sable existe.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment — Cercle</div>
+      <p>La cendre est encore tiède. Quelqu'un a brûlé quelque chose ici. Quelqu'un qui te ressemble.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-label">Fragment — Ciel</div>
+      <p>Il n'y a pas de soleil. La lumière vient de nulle part. Comme toi.</p>
+    </div>
+
+    <h3>Progression narrative</h3>
+
+    <p>Le joueur ne « finit » pas l'histoire au sens classique. Plus il inspecte, plus les fragments deviennent directs, plus le malaise s'installe. La dernière scène ne donne pas de réponse — elle pose une dernière question.</p>
+  </section>
+
+  <!-- ══ 4. DIRECTION ARTISTIQUE ══ -->
+  <section id="artdirection">
+    <div class="section-number">04</div>
+    <h2>Direction artistique</h2>
+
+    <h3>Palette</h3>
+
+    <div class="palette-row">
+      <div class="palette-swatch" style="background:#080506"><span style="color:#8A7A6A">#080506<br>nuit</span></div>
+      <div class="palette-swatch" style="background:#3A3230"><span style="color:#C6B29B">#3A3230<br>cendre</span></div>
+      <div class="palette-swatch" style="background:#6B2416"><span style="color:#C6B29B">#6B2416<br>rouille</span></div>
+      <div class="palette-swatch" style="background:#8C1C1C"><span style="color:#E8DDD0">#8C1C1C<br>sang</span></div>
+      <div class="palette-swatch" style="background:#BE372D"><span style="color:#E8DDD0">#BE372D<br>rituel</span></div>
+      <div class="palette-swatch" style="background:#3E2848"><span style="color:#C6B29B">#3E2848<br>magie</span></div>
+      <div class="palette-swatch" style="background:#C6B29B"><span style="color:#3A3230">#C6B29B<br>os</span></div>
+    </div>
+
+    <h3>Pipeline visuel</h3>
+    <ul class="styled">
+      <li><strong>1. Photo brute</strong> — lieux réels (extérieurs désertiques, ruines, paysages arides, structures abandonnées)</li>
+      <li><strong>2. Traitement post</strong> — contraste extrême, grain lourd, teinte cramoisie/sépia</li>
+      <li><strong>3. Couche dessin</strong> — dessins superposés par Alexandra : silhouettes, annotations griffonnées, formes ambiguës</li>
+      <li><strong>4. Zones cliquables</strong> — couche SVG invisible par-dessus l'image traitée</li>
+    </ul>
+
+    <h3>Effets en jeu (CSS/JS)</h3>
+    <ul class="styled">
+      <li><strong>Scanlines</strong> — subtiles, rappel d'un écran qui ne devrait pas exister</li>
+      <li><strong>Grain animé</strong> — texture organique en canvas, bouge lentement</li>
+      <li><strong>Vignette</strong> — bords sombres permanents, se resserrent avec la progression</li>
+      <li><strong>Dégradation</strong> — plus le joueur inspecte, plus l'image se détériore progressivement</li>
+    </ul>
+
+    <h3>Typographie</h3>
+    <ul class="styled">
+      <li><strong>VT323</strong> — fragments narratifs, boîte de dialogue</li>
+      <li><strong>Press Start 2P</strong> — éléments d'interface rares</li>
+    </ul>
+
+    <h3>Son</h3>
+    <ul class="styled">
+      <li>Ambiance désertique — vent, sable, silence organique</li>
+      <li>Musique quasi-absente — drones lents et rares</li>
+      <li>Chaque clic produit un son différent selon la zone</li>
+    </ul>
+  </section>
+
+  <!-- ══ 5. LE MONDE ══ -->
+  <section id="monde">
+    <div class="section-number">05</div>
+    <h2>Le monde</h2>
+
+    <p>Un désert de sable rouge-sang, sans horizon clair, sans soleil visible. La lumière existe mais sans source. Les règles du monde sont cohérentes entre elles — ce sont les règles d'un inconscient, pas d'une physique.</p>
+
+    <p>Chaque scène est un lieu dans ce désert. Le joueur navigue de scène en scène en cliquant sur des passages qui se révèlent après suffisamment d'inspections.</p>
+
+    <h3>Scènes prévues</h3>
+
+    <div class="zones">
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Scène 01</div>
+          <div class="zone-name">Les Dunes</div>
+        </div>
+        <div class="zone-content">Scène de départ. Sable cramoisi à perte de vue. Silence total. Les premiers fragments parlent du joueur sans qu'il comprenne pourquoi.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Scène 02</div>
+          <div class="zone-name">Les Restes</div>
+        </div>
+        <div class="zone-content">Structures rocheuses, formes ambiguës dans le sable. Les fragments deviennent plus directs. Les dessins superposés bougent entre les inspections.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Scène 03</div>
+          <div class="zone-name">Le Centre</div>
+        </div>
+        <div class="zone-content">Image fortement dégradée. Le texte s'adresse au joueur sans détour. Dernière scène, dernière question.</div>
+      </div>
+      <div class="zone">
+        <div class="zone-id">
+          <div class="zone-num">Scène ██</div>
+          <div class="zone-name">█████</div>
+        </div>
+        <div class="zone-content">Visible dans l'image dès le début mais inaccessible. Se débloque à la toute fin. On ne sait pas encore ce qu'elle contient.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 6. TECHNIQUE & ROADMAP ══ -->
+  <section id="tech">
+    <div class="section-number">06</div>
+    <h2>Technique &amp; roadmap</h2>
+
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-icon">01</div>
+        <div>
+          <div class="stack-name">HTML + CSS + JS vanilla</div>
+          <div class="stack-desc">Pas de framework. Le jeu tourne dans le navigateur.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">02</div>
+        <div>
+          <div class="stack-name">Photos + SVG overlays</div>
+          <div class="stack-desc">Scènes = photos traitées + couches SVG pour les zones cliquables et les dessins.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">03</div>
+        <div>
+          <div class="stack-name">Audacity + samples libres</div>
+          <div class="stack-desc">Sound design — ambiances désert, sons d'interaction.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-icon">04</div>
+        <div>
+          <div class="stack-name">Git + GitHub + Vercel</div>
+          <div class="stack-desc">Versioning, hébergement et déploiement continu.</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Systèmes à implémenter</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Priorité</th><th>Système</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MVP</td><td>Moteur de scènes</td><td>Chargement des photos, zones cliquables, transitions</td></tr>
+        <tr><td>MVP</td><td>Inspections</td><td>Clic → fragment narratif avec typewriter, progression par inspections</td></tr>
+        <tr><td>MVP</td><td>Effets visuels</td><td>Scanlines, grain animé, vignette, curseur custom</td></tr>
+        <tr><td>Phase 2</td><td>Mutations de scène</td><td>Les inspections modifient la scène (éléments qui bougent, couleurs qui changent)</td></tr>
+        <tr><td>Phase 2</td><td>Dégradation</td><td>L'image se détériore progressivement avec le nombre d'inspections</td></tr>
+        <tr><td>Phase 3</td><td>Son &amp; polish</td><td>Ambiances, sons d'interaction, déploiement final</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Roadmap</h3>
+
+    <div class="roadmap">
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 0</div>
+        <div class="roadmap-obj">Prototype</div>
+        <div class="roadmap-del">1 scène CSS, hotspots, fragments, effets visuels de base — FAIT</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 1</div>
+        <div class="roadmap-obj">MVP avec photos</div>
+        <div class="roadmap-del">1 scène photo traitée + dessins, 7+ fragments, transitions, son basique</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 2</div>
+        <div class="roadmap-obj">Jeu complet</div>
+        <div class="roadmap-del">3 scènes + scène verrouillée, mutations visuelles, dégradation, progression complète</div>
+      </div>
+      <div class="roadmap-row">
+        <div class="roadmap-phase">Phase 3</div>
+        <div class="roadmap-obj">Finition</div>
+        <div class="roadmap-del">Son, polish, déploiement Vercel + itch.io</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-label">Scope MVP</div>
+      <p>Une scène photo complète avec dessins. 7 zones cliquables. Des fragments qui donnent envie de cliquer partout. Valider que le format marche — que le joueur ressent le malaise.</p>
+    </div>
+  </section>
+
+  <!-- ══ 7. ÉQUIPE ══ -->
+  <section id="equipe">
+    <div class="section-number">07</div>
+    <h2>Équipe</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Tâche</th><th>Qui</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Photos (repérage, prises de vue)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Traitement photo (contraste, grain, teinte)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Dessins superposés</td><td>Alexandra</td></tr>
+        <tr><td>Direction artistique</td><td>Alexandra</td></tr>
+        <tr><td>Textes narratifs (fragments)</td><td>Kenny + Alexandra</td></tr>
+        <tr><td>Développement (moteur web)</td><td>Kenny</td></tr>
+        <tr><td>Sound design</td><td>Kenny</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Assets à produire</h3>
+    <ul class="styled">
+      <li><strong>Photos brutes</strong> — 4 lieux minimum (déserts, ruines, structures)</li>
+      <li><strong>Photos traitées</strong> — 1 version post-traitée par scène</li>
+      <li><strong>Dessins</strong> — 1 couche minimum par scène</li>
+      <li><strong>Textes</strong> — 2 variantes par zone cliquable</li>
+      <li><strong>Sons</strong> — ambiances + sons d'interaction</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>DÉSERT CRAMOISI — GDD v1.0</span>
+    <span>Kenny + Alexandra</span>
+  </footer>
+
+</main>
 </div>
-
-<!-- GRAIN OVERLAY (canvas) -->
-<canvas id="grain"></canvas>
-
-<!-- DIALOGUE -->
-<div id="dialogue">
-  <div id="dialogue-inner">
-    <div id="dialogue-text"></div>
-    <div id="dialogue-hint">[ cliquer pour fermer ]</div>
-  </div>
-</div>
-
-<!-- INSPECT COUNTER -->
-<div id="counter"></div>
 
 <script>
-// ══════════════════════════
-// STATE
-// ══════════════════════════
-const state = {
-  started: false,
-  inspected: new Set(),
-  totalHotspots: 0,
-  dialogueOpen: false,
-  typing: false,
-};
+// Active nav link on scroll
+const sections = document.querySelectorAll('section, .hero');
+const navLinks = document.querySelectorAll('nav a');
 
-// ══════════════════════════
-// GRAIN CANVAS
-// ══════════════════════════
-const grainCanvas = document.getElementById('grain');
-const grainCtx = grainCanvas.getContext('2d');
-
-function resizeGrain() {
-  grainCanvas.width = window.innerWidth;
-  grainCanvas.height = window.innerHeight;
-}
-
-function renderGrain() {
-  const w = grainCanvas.width;
-  const h = grainCanvas.height;
-  const imageData = grainCtx.createImageData(w, h);
-  const data = imageData.data;
-
-  for (let i = 0; i < data.length; i += 4) {
-    const v = Math.random() * 40;
-    data[i] = v;
-    data[i + 1] = v * 0.8;
-    data[i + 2] = v * 0.7;
-    data[i + 3] = 30;
-  }
-
-  grainCtx.putImageData(imageData, 0, 0);
-  requestAnimationFrame(renderGrain);
-}
-
-window.addEventListener('resize', resizeGrain);
-resizeGrain();
-renderGrain();
-
-// ══════════════════════════
-// CUSTOM CURSOR
-// ══════════════════════════
-const cursor = document.getElementById('cursor');
-let cursorVisible = false;
-
-document.addEventListener('mousemove', (e) => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-  if (!cursorVisible) {
-    cursor.style.display = 'block';
-    cursorVisible = true;
-  }
-});
-
-// ══════════════════════════
-// FRAGMENTS
-// ══════════════════════════
-const FRAGMENTS = {
-  'hs-horizon': [
-    "L'horizon ne recule pas. Il n'existe pas.",
-    "Tu fixes un point qui n'a jamais été là. Le désert te regarde le chercher.",
-  ],
-  'hs-sable': [
-    "Le sable connaît leur poids par cœur. Pas le tien. Tu n'en as pas.",
-    "Chaque grain a été quelque chose avant. Toi aussi, peut-être.",
-  ],
-  'hs-os': [
-    "Ce ne sont pas des os. Ce sont des souvenirs de quelqu'un qui avait un squelette.",
-    "Ils pointent vers le haut. Comme des questions sans réponse.",
-  ],
-  'hs-cercle': [
-    "Le cercle était là avant toi. Ou alors tu l'as tracé sans t'en souvenir.",
-    "La cendre est encore tiède. Quelqu'un a brûlé quelque chose ici. Quelqu'un qui te ressemble.",
-  ],
-  'hs-ciel': [
-    "Il n'y a pas de soleil. La lumière vient de nulle part. Comme toi.",
-    "Le ciel n'est pas noir. Il est absent.",
-  ],
-  'hs-ombre': [
-    "L'ombre n'a pas de source. Elle est là parce qu'elle a décidé de rester.",
-    "Tu étais là avant que le sable existe.",
-  ],
-  'hs-pierre': [
-    "La pierre est tiède. Pas de soleil, mais elle est tiède quand même.",
-    "Si tu la retournes, tu trouveras ta propre empreinte en dessous.",
-  ],
-};
-
-// ══════════════════════════
-// HOTSPOTS
-// ══════════════════════════
-const hotspots = document.querySelectorAll('.hotspot');
-state.totalHotspots = hotspots.length;
-
-hotspots.forEach(hs => {
-  const fragments = FRAGMENTS[hs.id];
-
-  hs.addEventListener('mouseenter', () => {
-    cursor.classList.add('hover');
-  });
-
-  hs.addEventListener('mouseleave', () => {
-    cursor.classList.remove('hover');
-  });
-
-  hs.addEventListener('click', () => {
-    if (state.dialogueOpen || state.typing) return;
-
-    const text = fragments[Math.floor(Math.random() * fragments.length)];
-
-    if (!state.inspected.has(hs.id)) {
-      state.inspected.add(hs.id);
-      hs.classList.add('inspected');
-      updateCounter();
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const id = entry.target.id;
+      const active = document.querySelector(`nav a[href="#${id}"]`);
+      if (active) active.classList.add('active');
     }
-
-    showDialogue(text);
   });
-});
+}, { threshold: 0.3 });
 
-// ══════════════════════════
-// DIALOGUE
-// ══════════════════════════
-const dialogue = document.getElementById('dialogue');
-const dialogueText = document.getElementById('dialogue-text');
-
-function showDialogue(text) {
-  state.dialogueOpen = true;
-  state.typing = true;
-  dialogue.classList.add('visible');
-  dialogueText.textContent = '';
-
-  // Typewriter effect
-  let i = 0;
-  const speed = 30;
-
-  function typeChar() {
-    if (i < text.length) {
-      dialogueText.textContent += text[i];
-      i++;
-      setTimeout(typeChar, speed);
-    } else {
-      state.typing = false;
-    }
-  }
-
-  typeChar();
-}
-
-function hideDialogue() {
-  if (!state.dialogueOpen) return;
-
-  // If still typing, complete instantly
-  if (state.typing) {
-    state.typing = false;
-    return;
-  }
-
-  state.dialogueOpen = false;
-  dialogue.classList.remove('visible');
-}
-
-dialogue.addEventListener('click', hideDialogue);
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' || e.key === ' ') {
-    hideDialogue();
-  }
-});
-
-// ══════════════════════════
-// COUNTER
-// ══════════════════════════
-const counterEl = document.getElementById('counter');
-
-function updateCounter() {
-  const count = state.inspected.size;
-  counterEl.textContent = `${count} / ${state.totalHotspots}`;
-}
-
-// ══════════════════════════
-// INTRO
-// ══════════════════════════
-function startGame() {
-  if (state.started) return;
-  state.started = true;
-
-  const intro = document.getElementById('intro');
-  intro.classList.add('fade-out');
-
-  setTimeout(() => {
-    intro.style.display = 'none';
-  }, 1500);
-}
-
-// Hide native cursor everywhere
-document.body.style.cursor = 'none';
-document.querySelectorAll('button, a').forEach(el => {
-  el.style.cursor = 'none';
-});
+sections.forEach(s => { if (s.id) observer.observe(s); });
 </script>
 
 </body>

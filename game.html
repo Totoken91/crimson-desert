@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Désert Cramoisi</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --crimson: #8C1C1C;
+  --crimson-light: #BE372D;
+  --bone: #C6B29B;
+  --bone-dim: #8A7A6A;
+  --bg: #080506;
+  --bg-panel: #0f0a09;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  cursor: crosshair;
+}
+
+/* ══════════════════════════
+   SCENE
+══════════════════════════ */
+#scene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Desert landscape — layered CSS painting */
+.landscape {
+  position: absolute;
+  inset: 0;
+  background:
+    /* sky glow */
+    radial-gradient(ellipse 120% 60% at 50% 15%, rgba(140,28,28,0.12) 0%, transparent 100%),
+    /* horizon haze */
+    linear-gradient(to bottom,
+      #0a0506 0%,
+      #10080a 25%,
+      #1a0c0b 40%,
+      #251210 48%,
+      #2e1614 52%,
+      #1f0f0e 60%,
+      #150c0a 75%,
+      #0a0606 100%
+    );
+}
+
+/* Sand texture overlay */
+.landscape::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 0.7;
+  mix-blend-mode: overlay;
+}
+
+/* Dune shapes */
+.dune {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(46,22,20,0.6) 0%, transparent 70%);
+}
+.dune-1 { width: 160%; height: 45%; bottom: -10%; left: -30%; }
+.dune-2 { width: 80%; height: 30%; bottom: 5%; right: -10%; background: radial-gradient(ellipse, rgba(37,18,16,0.5) 0%, transparent 70%); }
+.dune-3 { width: 60%; height: 20%; bottom: 15%; left: 10%; background: radial-gradient(ellipse, rgba(30,14,12,0.4) 0%, transparent 70%); }
+
+/* Distant shapes — bones/rocks on horizon */
+.distant {
+  position: absolute;
+  bottom: 48%;
+  opacity: 0.15;
+}
+.distant-1 {
+  left: 20%;
+  width: 3px; height: 40px;
+  background: linear-gradient(to top, rgba(198,178,155,0.4), transparent);
+  transform: rotate(-3deg);
+}
+.distant-2 {
+  left: 22%;
+  width: 2px; height: 28px;
+  background: linear-gradient(to top, rgba(198,178,155,0.3), transparent);
+  transform: rotate(5deg);
+}
+.distant-3 {
+  right: 30%;
+  width: 50px; height: 8px;
+  border-radius: 50%;
+  background: rgba(198,178,155,0.15);
+  bottom: 46%;
+}
+
+/* ══════════════════════════
+   DRAWN OVERLAY — hand-drawn layer
+══════════════════════════ */
+.drawn-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+/* Circle ritual on ground */
+.ritual-circle {
+  position: absolute;
+  bottom: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 40px;
+  border: 1px solid var(--bone);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.ritual-circle::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 20px;
+  border: 1px solid var(--crimson-light);
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* Scratch marks */
+.scratch {
+  position: absolute;
+  background: var(--bone);
+  opacity: 0.08;
+}
+.scratch-1 { width: 1px; height: 80px; top: 30%; right: 25%; transform: rotate(15deg); }
+.scratch-2 { width: 1px; height: 50px; top: 35%; right: 26%; transform: rotate(-8deg); }
+.scratch-3 { width: 60px; height: 1px; bottom: 40%; left: 15%; transform: rotate(2deg); }
+
+/* ══════════════════════════
+   POST-PROCESSING FX
+══════════════════════════ */
+
+/* Scanlines */
+#scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Vignette */
+#scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, rgba(8,5,6,0.7) 100%);
+  pointer-events: none;
+  z-index: 51;
+}
+
+/* Animated grain */
+#grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.4;
+  mix-blend-mode: overlay;
+}
+
+/* ══════════════════════════
+   HOTSPOTS
+══════════════════════════ */
+.hotspot {
+  position: absolute;
+  z-index: 30;
+  cursor: none;
+  border: none;
+  background: transparent;
+  transition: opacity 0.3s;
+}
+
+.hotspot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.hotspot:hover::after {
+  border-color: rgba(190,55,45,0.25);
+  box-shadow: 0 0 20px rgba(140,28,28,0.15), inset 0 0 15px rgba(140,28,28,0.08);
+}
+
+.hotspot.inspected {
+  opacity: 0.4;
+}
+
+/* Custom cursor */
+#cursor {
+  position: fixed;
+  width: 20px; height: 20px;
+  pointer-events: none;
+  z-index: 200;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+}
+
+#cursor .ring {
+  width: 20px; height: 20px;
+  border: 1.5px solid var(--bone-dim);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+#cursor .dot {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px; height: 3px;
+  background: var(--crimson-light);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+#cursor.hover .ring {
+  width: 28px; height: 28px;
+  border-color: var(--crimson-light);
+  margin: -4px 0 0 -4px;
+}
+
+#cursor.hover .dot {
+  width: 5px; height: 5px;
+  background: var(--bone);
+}
+
+/* ══════════════════════════
+   DIALOGUE BOX
+══════════════════════════ */
+#dialogue {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+#dialogue.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+#dialogue-inner {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  background: rgba(8,5,6,0.92);
+  border: 1px solid rgba(140,28,28,0.3);
+  border-radius: 4px;
+  padding: 28px 36px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#dialogue-text {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: var(--bone);
+  line-height: 1.6;
+  letter-spacing: 0.03em;
+  min-height: 1.6em;
+}
+
+#dialogue-hint {
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: rgba(140,28,28,0.5);
+  margin-top: 16px;
+  text-align: right;
+  letter-spacing: 0.1em;
+}
+
+/* Typewriter cursor blink */
+#dialogue-text::after {
+  content: '█';
+  animation: blink 0.8s infinite;
+  color: var(--crimson-light);
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ══════════════════════════
+   TITLE INTRO
+══════════════════════════ */
+#intro {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: crosshair;
+  transition: opacity 1.5s;
+}
+
+#intro.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#intro h1 {
+  font-family: 'VT323', monospace;
+  font-size: clamp(36px, 6vw, 64px);
+  color: var(--crimson-light);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-shadow: 0 0 60px rgba(140,28,28,0.4);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+#intro p {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: var(--bone-dim);
+  letter-spacing: 0.1em;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* ══════════════════════════
+   INSPECT COUNTER (subtle)
+══════════════════════════ */
+#counter {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  font-family: 'VT323', monospace;
+  font-size: 14px;
+  color: rgba(140,28,28,0.3);
+  letter-spacing: 0.1em;
+  z-index: 150;
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO SCREEN -->
+<div id="intro" onclick="startGame()">
+  <h1>Désert Cramoisi</h1>
+  <p>[ cliquer pour entrer ]</p>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor">
+  <div class="ring"></div>
+  <div class="dot"></div>
+</div>
+
+<!-- SCENE -->
+<div id="scene">
+  <!-- Landscape -->
+  <div class="landscape">
+    <div class="dune dune-1"></div>
+    <div class="dune dune-2"></div>
+    <div class="dune dune-3"></div>
+    <div class="distant distant-1"></div>
+    <div class="distant distant-2"></div>
+    <div class="distant distant-3"></div>
+  </div>
+
+  <!-- Hand-drawn overlay -->
+  <div class="drawn-overlay">
+    <div class="ritual-circle"></div>
+    <div class="scratch scratch-1"></div>
+    <div class="scratch scratch-2"></div>
+    <div class="scratch scratch-3"></div>
+  </div>
+
+  <!-- HOTSPOTS -->
+  <button class="hotspot" id="hs-horizon" style="top:38%; left:35%; width:30%; height:10%;"></button>
+  <button class="hotspot" id="hs-sable" style="top:60%; left:20%; width:25%; height:15%;"></button>
+  <button class="hotspot" id="hs-os" style="top:42%; left:17%; width:12%; height:10%;"></button>
+  <button class="hotspot" id="hs-cercle" style="top:65%; left:40%; width:20%; height:12%;"></button>
+  <button class="hotspot" id="hs-ciel" style="top:8%; left:25%; width:50%; height:20%;"></button>
+  <button class="hotspot" id="hs-ombre" style="top:50%; left:70%; width:20%; height:18%;"></button>
+  <button class="hotspot" id="hs-pierre" style="top:75%; left:60%; width:18%; height:12%;"></button>
+</div>
+
+<!-- GRAIN OVERLAY (canvas) -->
+<canvas id="grain"></canvas>
+
+<!-- DIALOGUE -->
+<div id="dialogue">
+  <div id="dialogue-inner">
+    <div id="dialogue-text"></div>
+    <div id="dialogue-hint">[ cliquer pour fermer ]</div>
+  </div>
+</div>
+
+<!-- INSPECT COUNTER -->
+<div id="counter"></div>
+
+<script>
+// ══════════════════════════
+// STATE
+// ══════════════════════════
+const state = {
+  started: false,
+  inspected: new Set(),
+  totalHotspots: 0,
+  dialogueOpen: false,
+  typing: false,
+};
+
+// ══════════════════════════
+// GRAIN CANVAS
+// ══════════════════════════
+const grainCanvas = document.getElementById('grain');
+const grainCtx = grainCanvas.getContext('2d');
+
+function resizeGrain() {
+  grainCanvas.width = window.innerWidth;
+  grainCanvas.height = window.innerHeight;
+}
+
+function renderGrain() {
+  const w = grainCanvas.width;
+  const h = grainCanvas.height;
+  const imageData = grainCtx.createImageData(w, h);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const v = Math.random() * 40;
+    data[i] = v;
+    data[i + 1] = v * 0.8;
+    data[i + 2] = v * 0.7;
+    data[i + 3] = 30;
+  }
+
+  grainCtx.putImageData(imageData, 0, 0);
+  requestAnimationFrame(renderGrain);
+}
+
+window.addEventListener('resize', resizeGrain);
+resizeGrain();
+renderGrain();
+
+// ══════════════════════════
+// CUSTOM CURSOR
+// ══════════════════════════
+const cursor = document.getElementById('cursor');
+let cursorVisible = false;
+
+document.addEventListener('mousemove', (e) => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+  if (!cursorVisible) {
+    cursor.style.display = 'block';
+    cursorVisible = true;
+  }
+});
+
+// ══════════════════════════
+// FRAGMENTS
+// ══════════════════════════
+const FRAGMENTS = {
+  'hs-horizon': [
+    "L'horizon ne recule pas. Il n'existe pas.",
+    "Tu fixes un point qui n'a jamais été là. Le désert te regarde le chercher.",
+  ],
+  'hs-sable': [
+    "Le sable connaît leur poids par cœur. Pas le tien. Tu n'en as pas.",
+    "Chaque grain a été quelque chose avant. Toi aussi, peut-être.",
+  ],
+  'hs-os': [
+    "Ce ne sont pas des os. Ce sont des souvenirs de quelqu'un qui avait un squelette.",
+    "Ils pointent vers le haut. Comme des questions sans réponse.",
+  ],
+  'hs-cercle': [
+    "Le cercle était là avant toi. Ou alors tu l'as tracé sans t'en souvenir.",
+    "La cendre est encore tiède. Quelqu'un a brûlé quelque chose ici. Quelqu'un qui te ressemble.",
+  ],
+  'hs-ciel': [
+    "Il n'y a pas de soleil. La lumière vient de nulle part. Comme toi.",
+    "Le ciel n'est pas noir. Il est absent.",
+  ],
+  'hs-ombre': [
+    "L'ombre n'a pas de source. Elle est là parce qu'elle a décidé de rester.",
+    "Tu étais là avant que le sable existe.",
+  ],
+  'hs-pierre': [
+    "La pierre est tiède. Pas de soleil, mais elle est tiède quand même.",
+    "Si tu la retournes, tu trouveras ta propre empreinte en dessous.",
+  ],
+};
+
+// ══════════════════════════
+// HOTSPOTS
+// ══════════════════════════
+const hotspots = document.querySelectorAll('.hotspot');
+state.totalHotspots = hotspots.length;
+
+hotspots.forEach(hs => {
+  const fragments = FRAGMENTS[hs.id];
+
+  hs.addEventListener('mouseenter', () => {
+    cursor.classList.add('hover');
+  });
+
+  hs.addEventListener('mouseleave', () => {
+    cursor.classList.remove('hover');
+  });
+
+  hs.addEventListener('click', () => {
+    if (state.dialogueOpen || state.typing) return;
+
+    const text = fragments[Math.floor(Math.random() * fragments.length)];
+
+    if (!state.inspected.has(hs.id)) {
+      state.inspected.add(hs.id);
+      hs.classList.add('inspected');
+      updateCounter();
+    }
+
+    showDialogue(text);
+  });
+});
+
+// ══════════════════════════
+// DIALOGUE
+// ══════════════════════════
+const dialogue = document.getElementById('dialogue');
+const dialogueText = document.getElementById('dialogue-text');
+
+function showDialogue(text) {
+  state.dialogueOpen = true;
+  state.typing = true;
+  dialogue.classList.add('visible');
+  dialogueText.textContent = '';
+
+  // Typewriter effect
+  let i = 0;
+  const speed = 30;
+
+  function typeChar() {
+    if (i < text.length) {
+      dialogueText.textContent += text[i];
+      i++;
+      setTimeout(typeChar, speed);
+    } else {
+      state.typing = false;
+    }
+  }
+
+  typeChar();
+}
+
+function hideDialogue() {
+  if (!state.dialogueOpen) return;
+
+  // If still typing, complete instantly
+  if (state.typing) {
+    state.typing = false;
+    return;
+  }
+
+  state.dialogueOpen = false;
+  dialogue.classList.remove('visible');
+}
+
+dialogue.addEventListener('click', hideDialogue);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.key === ' ') {
+    hideDialogue();
+  }
+});
+
+// ══════════════════════════
+// COUNTER
+// ══════════════════════════
+const counterEl = document.getElementById('counter');
+
+function updateCounter() {
+  const count = state.inspected.size;
+  counterEl.textContent = `${count} / ${state.totalHotspots}`;
+}
+
+// ══════════════════════════
+// INTRO
+// ══════════════════════════
+function startGame() {
+  if (state.started) return;
+  state.started = true;
+
+  const intro = document.getElementById('intro');
+  intro.classList.add('fade-out');
+
+  setTimeout(() => {
+    intro.style.display = 'none';
+  }, 1500);
+}
+
+// Hide native cursor everywhere
+document.body.style.cursor = 'none';
+document.querySelectorAll('button, a').forEach(el => {
+  el.style.cursor = 'none';
+});
+</script>
+
+</body>
+</html>
