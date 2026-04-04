@@ -57,6 +57,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
 .vit-block.empty { background:var(--crimson); opacity:0.15; }
 
 /* ── RIGHT PANEL ── */
+#btn-reset { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--ash-l); background:transparent; border:1px solid var(--ash); padding:4px 6px; cursor:none; text-align:center; letter-spacing:0.1em; margin-top:auto; opacity:0.4; transition:opacity 0.2s; }
+#btn-reset:hover { opacity:0.8; border-color:var(--crimson); color:var(--crimson); }
 #btn-voir { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--crimson); background:transparent; border:1px solid var(--ash); padding:6px; cursor:none; text-align:center; letter-spacing:0.1em; text-shadow:2px 2px 0 #3A0000; }
 .recipe-item { padding:8px 0; border-bottom:1px dotted rgba(58,50,48,0.3); }
 .recipe-item:last-child { border-bottom:none; }
@@ -124,6 +126,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); fon
       <div class="res-row" id="res-s"><span class="res-label" style="color:var(--col-s)">S</span><div class="res-shapes" id="shapes-s"></div><span class="res-num" id="num-s"></span></div>
       <div class="res-row" id="res-o"><span class="res-label" style="color:var(--col-o)">O</span><div class="res-shapes" id="shapes-o"></div><span class="res-num" id="num-o"></span></div>
       <div id="vitality-bar"></div>
+      <button id="btn-reset">[ reset ]</button>
     </div>
   </div>
 
@@ -619,6 +622,9 @@ function loadScene(sceneId){
 function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x}%;top:${hs.y}%;width:${hs.w}%;height:${hs.h}%`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
 function handleHotspotClick(hs,el,sceneId){if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x}%;top:${exit.y}%;width:${exit.w}%;height:${exit.h}%`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else{el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
+
+// RESET
+$('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));loadScene('scene-01')});
 
 // VOIR
 $('btn-voir').addEventListener('click',()=>{hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='rgba(140,28,28,0.15)';el.style.borderColor='rgba(190,55,45,0.5)'});setTimeout(()=>hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='';el.style.borderColor=''}),3000)});
