@@ -933,6 +933,7 @@ footer {
     <a href="#vision">01 — Vision</a>
     <a href="#gameplay">02 — Gameplay</a>
     <a href="#craft" class="sub-link">Alchimie</a>
+    <a href="#ressources" class="sub-link">Ressources</a>
     <a href="#recettes" class="sub-link">Recettes</a>
     <a href="#narration">03 — Narration</a>
     <a href="#fins" class="sub-link">Les trois fins</a>
@@ -1124,9 +1125,116 @@ footer {
     </div>
   </section>
 
+  <!-- ══ RESSOURCES & COLLECTE ══ -->
+  <section id="ressources">
+    <div class="section-number">02.2</div>
+    <h2>Ressources &amp; collecte</h2>
+
+    <h3>Organique (O) — excroissances charnelles</h3>
+
+    <p>Des éléments dessinés par-dessus les photos de scène (couche SVG/canvas). Le désert est fait de chair. Ces éléments apparaissent comme des hotspots cliquables.</p>
+
+    <ul class="styled">
+      <li>Un œil qui perce la surface d'une dune, paupière à moitié fermée</li>
+      <li>Des doigts qui sortent d'une fissure dans la roche, immobiles</li>
+      <li>Une touffe de cheveux accrochée à une branche morte</li>
+      <li>Un kyste translucide gonflé sur un tronc</li>
+      <li>Des dents alignées dans le sable comme des cailloux</li>
+    </ul>
+
+    <p><strong>Collecte :</strong> clic simple → l'excroissance se contracte et disparaît (scale + fade, 0.4s) → <span style="color:#EF9F27">+1 O</span>. Ne revient pas.</p>
+
+    <div class="callout">
+      <div class="callout-label">Textes de collecte — Organique</div>
+      <p>« Ça se détache facilement. Trop facilement. »<br>« Tu ne sais pas si c'était vivant. Tu le prends quand même. »<br>« Le désert te le donne. Ce n'est pas un cadeau. »</p>
+    </div>
+
+    <h3>Essence (E) — traces de présences</h3>
+
+    <p>Des anomalies visuelles dans la scène. Pas d'objet physique — des impossibilités.</p>
+
+    <ul class="styled">
+      <li>Une ombre sans source, projetée dans la mauvaise direction</li>
+      <li>Un reflet dans une surface sèche — comme une flaque impossible</li>
+      <li>De la buée sur une roche par chaleur extrême</li>
+      <li>Un cercle de cendre parfait, non perturbé par le vent</li>
+      <li>Une zone de la photo légèrement surexposée, en forme vaguement humaine</li>
+    </ul>
+
+    <p><strong>Collecte :</strong> clic simple → l'anomalie se dissout (blur + fade, 0.4s) → <span style="color:#7F77DD">+1 E</span>. Certaines reviennent après 30s (ombres), d'autres sont définitives (cercles de cendre).</p>
+
+    <div class="callout">
+      <div class="callout-label">Textes de collecte — Essence</div>
+      <p>« L'ombre disparaît quand tu la regardes trop longtemps. »<br>« Tu t'es souvenu de quelque chose. Tu ne sais plus quoi. »<br>« Il y avait quelqu'un ici. La chaleur garde la forme. »</p>
+    </div>
+
+    <h3>Douleur (D) — deux modes de collecte</h3>
+
+    <h3>Mode A — objets dangereux (clic simple)</h3>
+
+    <p>Des objets dans la scène qui font mal au contact. Clic unique, effet immédiat.</p>
+
+    <ul class="styled">
+      <li>Un couteau fiché dans le sol, lame vers le haut</li>
+      <li>Une lame d'os acérée qui sort d'une dune</li>
+      <li>Des braises rougeoyantes au fond d'une fissure</li>
+      <li>Un fil de métal rouillé tendu entre deux rochers</li>
+      <li>Des éclats de verre à moitié enfouis</li>
+    </ul>
+
+    <p><strong>Collecte :</strong> clic simple → flash rouge 1 frame sur toute la scène → vignette s'intensifie → <span style="color:#E24B4A">+1 D</span>. Disparaît après collecte.</p>
+
+    <div class="callout">
+      <div class="callout-label">Textes de collecte — Douleur mode A</div>
+      <p>« Tu appuies. Ça compte. »<br>« La douleur est une ressource comme les autres. Tu l'as appris aujourd'hui. »<br>« Ça fait exactement autant que tu t'y attendais. »</p>
+    </div>
+
+    <h3>Mode B — objets de friction (clic maintenu)</h3>
+
+    <p>Certains objets nécessitent un effort volontaire et prolongé. Le joueur maintient le clic enfoncé. Plus il tient, plus il collecte.</p>
+
+    <ul class="styled">
+      <li>Un rocher saillant, arête vive</li>
+      <li>Un mur de pierre brut</li>
+      <li>Le sol de sable brûlant (zone centrale, plein soleil)</li>
+      <li>Une surface couverte de sel cristallisé</li>
+    </ul>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Durée maintenue</th><th>Récompense</th><th>Texte</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1 seconde</td><td style="color:#E24B4A">+1 D</td><td><em>La pierre ne ressent rien. Toi si.</em></td></tr>
+        <tr><td>2 secondes</td><td style="color:#E24B4A">+1 D</td><td><em>Tu continues. Pourquoi tu continues ?</em></td></tr>
+        <tr><td>3 secondes</td><td style="color:#E24B4A">+1 D</td><td><em>Tu pouvais t'arrêter. Tu ne l'as pas fait.</em></td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Pendant le maintien :</strong> la vignette se resserre progressivement, le curseur vibre (shake 2px), une barre de progression 1px apparaît sous le hotspot (<span style="color:#8C1C1C">#8C1C1C</span>, pas de label). Maximum 3 secondes — après, le hotspot résiste.</p>
+
+    <p><strong>Coût rituel (3s) :</strong> <code>painLevel += 0.05</code> supplémentaire. Le hotspot de friction reste toujours disponible — jamais consommé.</p>
+
+    <h3>Effets visuels de collecte</h3>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Type</th><th>Animation de disparition</th><th>Texte flottant</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span style="color:#EF9F27">Organique</span></td><td>Contraction (scale 1→0.6) + fade-out, 0.4s</td><td style="color:#EF9F27">+1</td></tr>
+        <tr><td><span style="color:#7F77DD">Essence</span></td><td>Dissolution (blur 0→4px) + fade-out, 0.4s</td><td style="color:#7F77DD">+1</td></tr>
+        <tr><td><span style="color:#E24B4A">Douleur A</span></td><td>Flash rouge sur toute la scène, 0.3s</td><td style="color:#E24B4A">+1</td></tr>
+        <tr><td><span style="color:#E24B4A">Douleur B</span></td><td>Vignette + shake progressifs pendant le maintien</td><td style="color:#E24B4A">+1 par palier</td></tr>
+      </tbody>
+    </table>
+
+    <p>Sur toute collecte, un texte flottant <code>+N</code> monte et disparaît (translateY -40px, fade-out, 1s) en couleur de la ressource.</p>
+  </section>
+
   <!-- ══ RECETTES ══ -->
   <section id="recettes">
-    <div class="section-number">02.2</div>
+    <div class="section-number">02.3</div>
     <h2>Recettes alchimiques</h2>
 
     <h3>Tier I — MVP</h3>
