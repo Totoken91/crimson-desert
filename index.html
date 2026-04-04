@@ -672,6 +672,210 @@ ul.styled li strong {
 .stack-name { font-size: 14px; color: var(--bone); font-weight: 600; margin-bottom: 2px; }
 .stack-desc { font-size: 12.5px; color: var(--text-dim); }
 
+/* Mockup interface */
+.mockup {
+  margin: 28px 0;
+  border: 1px solid var(--ash);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #050304;
+}
+
+.mockup-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(58,50,48,0.3);
+  border-bottom: 1px solid var(--ash);
+}
+
+.mockup-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--ash-l);
+  opacity: 0.5;
+}
+
+.mockup-bar span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  margin-left: 8px;
+}
+
+.mockup-screen {
+  display: grid;
+  grid-template-columns: 160px 1fr 160px;
+  min-height: 340px;
+}
+
+.mockup-panel {
+  padding: 20px 16px;
+  border-right: 1px solid rgba(58,50,48,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mockup-panel:last-child {
+  border-right: none;
+  border-left: 1px solid rgba(58,50,48,0.5);
+}
+
+.mockup-panel-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: var(--ash-l);
+  text-transform: uppercase;
+}
+
+.mockup-resource {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+
+.mockup-resource .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mockup-resource .label { color: var(--text-dim); }
+.mockup-resource .val { color: var(--bone); margin-left: auto; }
+
+.mockup-scene {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background:
+    radial-gradient(ellipse 100% 50% at 50% 40%, rgba(140,28,28,0.10) 0%, transparent 100%),
+    linear-gradient(to bottom, #080506 0%, #140a09 35%, #1e100e 50%, #140a09 65%, #080506 100%);
+  overflow: hidden;
+}
+
+.mockup-scene-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mockup-scene-content::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+  pointer-events: none;
+}
+
+.mockup-scene-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(140,28,28,0.35);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Hotspot indicators in mockup */
+.mockup-hotspot {
+  position: absolute;
+  border: 1px dashed rgba(190,55,45,0.25);
+  border-radius: 3px;
+}
+
+.mockup-dialogue {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(8,5,6,0.9);
+  border-top: 1px solid rgba(140,28,28,0.2);
+}
+
+.mockup-portrait {
+  width: 40px; height: 40px;
+  background: var(--bg3);
+  border: 1px solid var(--ash);
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  color: var(--crimson);
+  letter-spacing: 0.05em;
+}
+
+.mockup-dialogue-text {
+  font-family: 'VT323', 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--bone);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.mockup-dialogue-text .cursor {
+  color: var(--crimson-l);
+  animation: blink-cursor 0.8s infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.mockup-recipe {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  background: rgba(140,28,28,0.05);
+  border: 1px solid rgba(58,50,48,0.4);
+  border-radius: 3px;
+}
+
+.mockup-recipe-name {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--bone-dim);
+  letter-spacing: 0.05em;
+}
+
+.mockup-recipe-cost {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text-dim);
+}
+
+.mockup-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--crimson-l);
+  border: 1px solid var(--crimson);
+  background: rgba(140,28,28,0.06);
+  padding: 6px 12px;
+  text-align: center;
+  border-radius: 2px;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .mockup-screen { grid-template-columns: 1fr; min-height: auto; }
+  .mockup-panel { border-right: none; border-bottom: 1px solid rgba(58,50,48,0.5); }
+  .mockup-panel:last-child { border-left: none; border-top: 1px solid rgba(58,50,48,0.5); border-bottom: none; }
+  .mockup-scene-content { min-height: 180px; }
+}
+
 /* Footer */
 footer {
   padding: 40px 80px;
@@ -821,9 +1025,68 @@ footer {
 
     <p>Le jeu est en format 4/3. La scène occupe le centre, les panneaux UI sont sur les côtés.</p>
 
-    <div class="callout">
-      <div class="callout-label">Layout</div>
-      <p>[GAUCHE 180px] Ressources D/E/O, police JetBrains Mono &nbsp;|&nbsp; [CENTRE] Scène 4/3 — photo traitée + hotspots SVG, boîte dialogue en bas (portrait 48×48 + texte typé) &nbsp;|&nbsp; [DROITE 180px] Recettes disponibles, bouton VOIR</p>
+    <div class="mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <span>desert-cramoisi — scène 01</span>
+      </div>
+      <div class="mockup-screen">
+        <!-- Panneau gauche : ressources -->
+        <div class="mockup-panel">
+          <div class="mockup-panel-title">Ressources</div>
+          <div class="mockup-resource">
+            <div class="dot" style="background:#E24B4A"></div>
+            <span class="label">Douleur</span>
+            <span class="val">3</span>
+          </div>
+          <div class="mockup-resource">
+            <div class="dot" style="background:#7F77DD"></div>
+            <span class="label">Essence</span>
+            <span class="val">1</span>
+          </div>
+          <div class="mockup-resource">
+            <div class="dot" style="background:#EF9F27"></div>
+            <span class="label">Organique</span>
+            <span class="val">0</span>
+          </div>
+        </div>
+        <!-- Centre : scène -->
+        <div class="mockup-scene">
+          <div class="mockup-scene-content">
+            <div class="mockup-hotspot" style="top:20%;left:15%;width:25%;height:18%"></div>
+            <div class="mockup-hotspot" style="top:50%;left:55%;width:20%;height:15%"></div>
+            <div class="mockup-hotspot" style="top:35%;left:35%;width:15%;height:12%"></div>
+            <span class="mockup-scene-label">photo traitée bichrome + hotspots SVG</span>
+          </div>
+          <div class="mockup-dialogue">
+            <div class="mockup-portrait">48×48</div>
+            <div class="mockup-dialogue-text">
+              Le sable connaît leur poids par cœur. Pas le tien.<br>Tu n'en as pas.<span class="cursor">█</span>
+            </div>
+          </div>
+        </div>
+        <!-- Panneau droit : alchimie -->
+        <div class="mockup-panel">
+          <div class="mockup-panel-title">Alchimie</div>
+          <div class="mockup-recipe">
+            <div class="mockup-recipe-name">Lanterne d'os</div>
+            <div class="mockup-recipe-cost">D×2 + E×1</div>
+          </div>
+          <div class="mockup-recipe">
+            <div class="mockup-recipe-name">Tuile de mémoire</div>
+            <div class="mockup-recipe-cost">D×3 + E×2</div>
+          </div>
+          <div class="mockup-recipe" style="opacity:0.35">
+            <div class="mockup-recipe-name">Lien de nerf</div>
+            <div class="mockup-recipe-cost">D×3 + O×2</div>
+          </div>
+          <div style="margin-top:auto">
+            <div class="mockup-btn">[ VOIR ]</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <ul class="styled">
