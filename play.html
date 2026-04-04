@@ -203,15 +203,12 @@ body::before {
   max-height: 100%;
   max-width: calc(100% * 4 / 3);
   overflow: hidden;
-  image-rendering: pixelated;
-  image-rendering: -moz-crisp-edges;
 }
 
 #scene-bg {
   position: absolute; inset: 0;
-  background-size: cover;
+  background-size: 100% 100%;
   background-position: center;
-  image-rendering: pixelated;
   transition: opacity 0.8s;
 }
 
@@ -261,14 +258,21 @@ body::before {
 
 .hotspot {
   position: absolute;
-  background: transparent;
-  border: none;
+  background: rgba(140,28,28,0.06);
+  border: 1px dashed rgba(190,55,45,0.25);
   cursor: none;
   padding: 0;
+  border-radius: 2px;
+}
+
+.hotspot:hover {
+  background: rgba(140,28,28,0.12);
+  border-color: rgba(190,55,45,0.4);
 }
 
 .hotspot.revealed {
-  outline: 1px solid rgba(58,50,48,0.4);
+  border-color: rgba(58,50,48,0.5);
+  background: rgba(140,28,28,0.1);
 }
 
 /* Hold bar */
@@ -298,23 +302,6 @@ body::before {
 @keyframes float-up {
   from { transform: translateY(0); opacity: 1; }
   to   { transform: translateY(-40px); opacity: 0; }
-}
-
-/* Eclat */
-.eclat {
-  position: absolute;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--crimson-l);
-  box-shadow: 0 0 12px var(--crimson-l), 0 0 24px rgba(190,55,45,0.3);
-  z-index: 15;
-  cursor: none;
-  animation: eclat-pulse 0.6s ease-in-out infinite;
-  transform: translate(-50%, -50%);
-}
-@keyframes eclat-pulse {
-  0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.9; }
-  50%     { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
 }
 
 /* Exit zones */
@@ -631,7 +618,7 @@ const SCENES = {
       { id:'hs-couteau', type:'douleur', x:68,y:60,w:4,h:12, cursor:'hand', resource:{type:'douleur',amount:1}, collectMode:'click', flashOnCollect:true, texts:["Tu appuies. Ça compte.","La douleur est une ressource comme les autres."], collectible:true, visible:true, unlockedBy:null },
       { id:'hs-rocher', type:'douleur', x:28,y:58,w:14,h:20, cursor:'hand', collectMode:'hold', holdMax:3000, holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"La pierre ne ressent rien. Toi si."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. Pourquoi tu continues ?"},{ms:3000,resource:{type:'douleur',amount:1},text:"Tu pouvais t'arrêter. Tu ne l'as pas fait.",painDelta:0.05}], collectible:false, visible:true, unlockedBy:null },
       { id:'hs-alchimie', type:'alchimie', x:18,y:70,w:12,h:14, cursor:'flame', resource:null, collectMode:'click', texts:[], action:'open-alchemy', collectible:false, visible:true, unlockedBy:null },
-      { id:'hs-horizon', type:'inspect', x:0,y:25,w:100,h:15, cursor:'eye', resource:null, collectMode:'click', texts:["L'horizon devrait être là. Il y est. Mais pas pour toi.","Tu n'as pas de direction. Tu as une présence."], collectible:false, visible:true, unlockedBy:null, eclatEnabled:true, eclatResource:{type:'souffle',amount:1} },
+      { id:'hs-horizon', type:'inspect', x:0,y:25,w:100,h:15, cursor:'eye', resource:null, collectMode:'click', texts:["L'horizon devrait être là. Il y est. Mais pas pour toi.","Tu n'as pas de direction. Tu as une présence."], collectible:false, visible:true, unlockedBy:null },
       { id:'hs-fissure', type:'douleur', x:60,y:52,w:8,h:14, cursor:'eye', resource:{type:'douleur',amount:2}, collectMode:'click', texts:["La fissure saigne. Pas de sang — quelque chose d'autre.","Tu aurais dû voir ça depuis le début. Tu ne voulais pas."], collectible:true, visible:false, unlockedBy:'lanterne-os' },
       { id:'hs-empreinte', type:'organique', x:22,y:76,w:12,h:8, cursor:'hand', resource:{type:'organique',amount:1}, collectMode:'click', texts:["Une empreinte dans le sable. La forme est la tienne.","Tu étais là avant. Tu ne te souviens pas. Le sable, oui."], collectible:true, visible:false, unlockedBy:'tuile-memoire' },
     ],
@@ -1038,46 +1025,7 @@ function endHold() {
   updateVitalityEffects();
 }
 
-// ══════════════════════════════════════
-// ECLAT
-// ══════════════════════════════════════
-let eclatTimers = [];
-
-function startEclat(hs) {
-  const spawn = () => {
-    const delay = 8000 + Math.random() * 6000;
-    const timer = setTimeout(() => {
-      const el = document.createElement('div');
-      el.className = 'eclat';
-      el.style.left = (hs.x + hs.w / 2) + '%';
-      el.style.top = (hs.y + hs.h / 2) + '%';
-      hotspotLayer.appendChild(el);
-
-      const lifespan = state.painLevel >= 0.6 ? 1500 : 2500;
-      const removeTimer = setTimeout(() => el.remove(), lifespan);
-
-      el.addEventListener('click', e => {
-        e.stopPropagation();
-        clearTimeout(removeTimer);
-        el.remove();
-        if (hs.eclatResource) {
-          collectResource(hs.eclatResource.type, 3, hs.x + hs.w/2, hs.y + hs.h/2);
-          floatText(hs.x + hs.w/2, hs.y + hs.h/2 - 8, '+3!', RES_COLORS[hs.eclatResource.type]);
-        }
-      });
-
-      spawn(); // schedule next
-    }, delay);
-    eclatTimers.push(timer);
-  };
-  spawn();
-}
-
-function clearEclats() {
-  eclatTimers.forEach(t => clearTimeout(t));
-  eclatTimers = [];
-  hotspotLayer.querySelectorAll('.eclat').forEach(e => e.remove());
-}
+// (Éclat supprimé)
 
 // ══════════════════════════════════════
 // ORGANIC DECAY
@@ -1112,7 +1060,6 @@ function loadScene(sceneId) {
 
   state.currentScene = sceneId;
   activeAlchemyPoint = false;
-  clearEclats();
 
   // Background
   sceneBg.style.backgroundImage = `url('${scene.bg}')`;
@@ -1145,9 +1092,6 @@ function loadScene(sceneId) {
 
   // Render exits
   renderExits(scene);
-
-  // Start eclats
-  scene.hotspots.filter(h => h.eclatEnabled).forEach(h => startEclat(h));
 
   // Intro text
   if (!state.narrativeFlags['intro-' + sceneId]) {
