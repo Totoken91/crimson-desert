@@ -164,7 +164,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 // ══════════════════════════════════════
 // ORGANIC PANEL BACKGROUNDS
 // ══════════════════════════════════════
-function drawPanelBg(canvasId, side) {
+function drawPanelBg(canvasId) {
   const canvas = document.getElementById(canvasId);
   const rect = canvas.parentElement.getBoundingClientRect();
   canvas.width = rect.width; canvas.height = rect.height;
@@ -175,65 +175,29 @@ function drawPanelBg(canvasId, side) {
   ctx.fillStyle = '#100b0a';
   ctx.fillRect(0, 0, w, h);
 
-  // Irregular edge (the side facing the scene)
-  ctx.beginPath();
-  const edgeX = side === 'left' ? w : 0;
-  const steps = 20;
-  ctx.moveTo(edgeX, 0);
-  for (let i = 0; i <= steps; i++) {
-    const y = (h / steps) * i;
-    const wobble = Math.sin(i * 0.7) * 4 + Math.cos(i * 1.3) * 3 + (Math.random() - 0.5) * 2;
-    const x = side === 'left' ? w - 1 + wobble : 1 - wobble;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  // close with straight lines
-  ctx.lineTo(side === 'left' ? 0 : w, h);
-  ctx.lineTo(side === 'left' ? 0 : w, 0);
-  ctx.closePath();
-  ctx.fillStyle = '#100b0a';
-  ctx.fill();
-
-  // Draw the wobbly border line
-  ctx.beginPath();
-  for (let i = 0; i <= steps; i++) {
-    const y = (h / steps) * i;
-    const wobble = Math.sin(i * 0.7) * 4 + Math.cos(i * 1.3) * 3;
-    const x = side === 'left' ? w - 1 + wobble : 1 - wobble;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  }
-  ctx.strokeStyle = '#2a1210';
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-
-  // Stain spots
-  for (let i = 0; i < 5; i++) {
-    const sx = Math.random() * w;
-    const sy = Math.random() * h;
-    const sr = 15 + Math.random() * 30;
-    const grad = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr);
-    grad.addColorStop(0, `rgba(140,28,28,${0.03 + Math.random()*0.04})`);
-    grad.addColorStop(1, 'transparent');
-    ctx.fillStyle = grad;
-    ctx.fillRect(sx - sr, sy - sr, sr * 2, sr * 2);
-  }
-
-  // Noise texture
+  // Big chunky pixel grain — 4x4 blocks like the scene
   const imgData = ctx.getImageData(0, 0, w, h);
-  for (let i = 0; i < imgData.data.length; i += 4) {
-    const n = (Math.random() - 0.5) * 8;
-    imgData.data[i] += n;
-    imgData.data[i+1] += n;
-    imgData.data[i+2] += n;
+  const blockSize = 4;
+  for (let by = 0; by < h; by += blockSize) {
+    for (let bx = 0; bx < w; bx += blockSize) {
+      const noise = (Math.random() - 0.5) * 20;
+      const tint = Math.random() < 0.03 ? 8 + Math.random() * 12 : 0; // rare crimson speck
+      for (let dy = 0; dy < blockSize && by+dy < h; dy++) {
+        for (let dx = 0; dx < blockSize && bx+dx < w; dx++) {
+          const i = ((by+dy) * w + (bx+dx)) * 4;
+          imgData.data[i]   += noise + tint;
+          imgData.data[i+1] += noise;
+          imgData.data[i+2] += noise;
+        }
+      }
+    }
   }
   ctx.putImageData(imgData, 0, 0);
 }
 
-// Redraw on resize
 function drawPanels() {
-  drawPanelBg('panel-left-bg', 'left');
-  drawPanelBg('panel-right-bg', 'right');
+  drawPanelBg('panel-left-bg');
+  drawPanelBg('panel-right-bg');
 }
 
 // ══════════════════════════════════════
