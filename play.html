@@ -641,7 +641,7 @@ function flashPain(){const f=document.createElement('div');f.style.cssText='posi
 // ══════════════════════════════════════
 // RESOURCE + VITALITY + CRAFT
 // ══════════════════════════════════════
-function collectResource(type,amount,hx,hy){if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
+function collectResource(type,amount,hx,hy){if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}if(type==='organique')checkDecayStart();floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
 function loseVitality(n){state.vitality=Math.max(0,state.vitality-n);updateVitalityUI();saveState();if(state.vitality<state.vitalityMax)startPixelFlicker();if(state.vitality===0)triggerDeath()}
 function triggerDeath(){stopPixelFlicker();const ov=document.createElement('div');ov.style.cssText='position:absolute;inset:0;background:#000;opacity:0;z-index:50;pointer-events:none';hotspotLayer.parentElement.appendChild(ov);gsap.to(ov,{opacity:1,duration:3,ease:'power2.in'});setTimeout(()=>showDialogue("Tu t'es dissous avant d'avoir compris."),1500);setTimeout(()=>{resetState();ov.remove();loadScene(state.currentScene)},5000)}
 function craftRecipe(r){
@@ -677,9 +677,9 @@ const decayBar=$('decay-bar');
 
 function startDecayTimer(){
   stopDecayTimer();
-  decayStart=Date.now();
+  if(state.inventory.organique>0){decayStart=Date.now()}
   decayTimer=setInterval(()=>{
-    if(state.inventory.organique>ORGANIQUE_SAFE){
+    if(state.inventory.organique>0){
       state.inventory.organique--;
       if(!state.narrativeFlags['decay-warning']){
         showDialogue("Ça se décompose. La chair ne tient pas longtemps hors du corps. Tu aurais dû t'en douter.");
@@ -687,17 +687,25 @@ function startDecayTimer(){
       }else{
         showDialogue("Quelque chose de putréfié se détache de toi. Tu as perdu quelque chose.");
       }
-      decayStart=Date.now();
+      decayStart=state.inventory.organique>0?Date.now():null;
       updateResourceUI();saveState();
+    }else{
+      decayStart=null;
     }
   },ORGANIQUE_DECAY_MS);
 }
 function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=null}}
 
+// Call this whenever organique changes
+function checkDecayStart(){
+  if(state.inventory.organique>0&&!decayStart){decayStart=Date.now()}
+  if(state.inventory.organique<=0){decayStart=null}
+}
+
 // Decay bar — visible only when decomposition is active (organique > 5)
 const DECAY_BLOCKS=10;
 function updateDecayBar(){
-  const active=state.inventory.organique>ORGANIQUE_SAFE&&decayStart;
+  const active=state.inventory.organique>0&&decayStart;
   if(!active){decayBar.style.display='none';requestAnimationFrame(updateDecayBar);return}
   decayBar.style.display='block';
   decayBar.innerHTML='';
