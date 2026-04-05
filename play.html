@@ -506,7 +506,7 @@ const RECIPES = [
   {id:'memoire-cardiaque',name:"Mémoire cardiaque",cost:{douleur:1,souffle:1,organique:0},effect:"Un moment précis.",sceneReaction:"Un moment précis. Pas de douleur. Juste l'arrêt. Et après — le sable.",mechanic:'flag',flag:'memoire-cardiaque-craftee',category:'lore',availableAfter:'besoin-second-coeur'},
   {id:'second-coeur',name:"Second cœur",cost:{douleur:3,souffle:3,organique:2},effect:"Vitalité max +5.",sceneReaction:"Un battement. Puis deux. Désynchronisés.",mechanic:'divine',flag:'has-second-coeur',dissolutionDelta:0.15,vitalityMaxBonus:5,category:'divine',requires:'memoire-cardiaque-craftee',availableAfter:'memoire-cardiaque-craftee'},
   // ── Objets de lore ──
-  {id:'plume-memoire',name:"Plume de mémoire",cost:{douleur:1,souffle:0,organique:1},effect:"Souvenir du corbeau.",sceneReaction:"Tu te souviens d'un vol. Pas du tien. Un oiseau noir. Immobile dans un ciel qui n'existait pas encore.",mechanic:'flag',flag:'plume-memoire-craftee',category:'lore',requires:'plume-noire-collectee',availableAfter:'armure-craftee'},
+  {id:'plume-memoire',name:"Plume de mémoire",cost:{douleur:1,souffle:0,organique:1},effect:"Souvenir du corbeau.",sceneReaction:"Tu te souviens d'un vol. Pas du tien. Un oiseau noir. Immobile dans un ciel qui n'existait pas encore.",mechanic:'flag',flag:'plume-memoire-craftee',category:'lore',requires:'plume-noire-collectee',availableAfter:'plume-noire-collectee'},
   {id:'tuile-memoire',name:"Tuile de mémoire",cost:{douleur:3,souffle:2,organique:0},effect:"Fragment narratif majeur.",sceneReaction:"Un nom disparaît. Tu ne sais plus lequel.",mechanic:'flag',flag:'tuile-memoire',category:'lore',availableAfter:'trou-os-inspecte'},
   // ── Objets neutres ──
   {id:'filet-tendons',name:"Filet de tendons",cost:{douleur:1,souffle:0,organique:2},effect:"Collecte O donne ×2.",sceneReaction:"Tes doigts s'allongent. Ils attrapent mieux.",mechanic:'flag',flag:'has-filet',category:'neutre',availableAfter:'lien-nerfs-crafted'},
@@ -689,7 +689,8 @@ const ZOOM_SCENES = {
         ctx.beginPath();ctx.moveTo(w*0.35,h*0.65);ctx.bezierCurveTo(w*0.3,h*0.5,w*0.4,h*0.4,w*0.5,h*0.5);ctx.stroke();
         ctx.beginPath();ctx.moveTo(w*0.65,h*0.65);ctx.bezierCurveTo(w*0.7,h*0.5,w*0.6,h*0.4,w*0.5,h*0.5);ctx.stroke();
       }
-    },introText:null,hotspots:[],
+    },introText:"Elle se tient mal. Trop de choses poussent dans la mauvaise direction.",
+    hotspots:[{id:'hs-entite-souffle',x:30,y:20,w:40,h:60,cursor:'eye',action:'collect-entite-souffle',texts:["Quelque chose s'échappe d'elle. Un souffle. Le sien ou le tien."]}],
   },
   'coeur-zoom':{
     drawCanvas:(ctx,w,h)=>{
@@ -814,7 +815,22 @@ function enterZoom(zoomId){
         el.style.display='none';return;
       }
       if(hs.action==='inspect-coeur'){
-        state.narrativeFlags['coeur-inspecte']=true;saveState();updateRecipeUI();
+        state.narrativeFlags['coeur-inspecte']=true;
+        // O×1 with 30s cooldown
+        const lastPull=state.narrativeFlags['coeur-last-pull']||0;
+        if(Date.now()-lastPull<30000){showDialogue("La matière pulse encore. Mais elle n'est pas prête.");return}
+        const ok=collectResource('organique',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.narrativeFlags['coeur-last-pull']=Date.now()}
+        saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        return;
+      }
+      if(hs.action==='collect-entite-souffle'){
+        state.narrativeFlags['entite-inspectee']=true;
+        const key='scene-01c:hs-entite-souffle';
+        if(state.souffleCollected[key]){showDialogue("Il ne reste plus rien ici.");return}
+        const ok=collectResource('souffle',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.souffleCollected[key]=true;saveState();updateRecipeUI()}
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
         el.style.display='none';return;
       }
@@ -854,9 +870,13 @@ function enterZoom(zoomId){
         return;
       }
       if(hs.action==='smash-head'){
+        // Cooldown after 3 hits
+        const lastSmash=state.narrativeFlags['rocher-last-smash']||0;
+        if(rocherHits>=2&&Date.now()-lastSmash<60000){showDialogue("Tu ne ressens plus rien. Reviens plus tard.");return}
         const ok=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){
           rocherHits=Math.min(rocherHits+1,2);
+          state.narrativeFlags['rocher-last-smash']=Date.now();saveState();
           flashPain();
           // Screen shake
           const container=document.getElementById('pixi-container');
@@ -1124,6 +1144,15 @@ function loadScene(sceneId){
     }
   }
   updateResourceUI();updateVitalityUI();updateRecipeUI();saveState();
+  // Feedback: new recipes available in 01a
+  if(sceneId==='scene-01a'){
+    const visibleCount=RECIPES.filter(r=>{if(r.availableAfter&&!state.narrativeFlags[r.availableAfter])return false;if(r.requires&&!state.narrativeFlags[r.requires])return false;if(state.crafted.includes(r.id))return false;return true}).length;
+    const lastSeen=state.narrativeFlags['last-recipe-count']||1;
+    if(visibleCount>lastSeen){
+      state.narrativeFlags['last-recipe-count']=visibleCount;saveState();
+      setTimeout(()=>showDialogue("Quelque chose a changé. Tu sens de nouvelles possibilités."),1200);
+    }else{state.narrativeFlags['last-recipe-count']=visibleCount}
+  }
 }
 const SCENE_W=960,SCENE_H=720;
 function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot'+(hs.type==='zoom'?' zoom-hs':'')+(hs.cssClass?' '+hs.cssClass:'');el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
