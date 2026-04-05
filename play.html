@@ -316,7 +316,7 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 const RECIPES = [
   // ── Organes vitaux ──
   // Dispo dès le départ (01a)
-  {id:'armure-peau',name:"Armure de peau",cost:{douleur:0,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01a-droite',category:'vital',availableAfter:null},
+  {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01a-droite',category:'vital',availableAfter:null},
   // Dispo après visite Cimetière (scene-02)
   {id:'lien-nerfs',name:"Lien de nerfs",cost:{douleur:3,souffle:0,organique:2},effect:"Accès maison délabrée.",sceneReaction:"Tes mains tremblent. Quelque chose se reconnecte.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-maison',category:'vital',availableAfter:'visited-scene-02'},
   {id:'machoire',name:"Mâchoire osseuse",cost:{douleur:2,souffle:0,organique:2},effect:"Permet de manger.",sceneReaction:"Tu sens tes dents. Elles ne sont pas les tiennes.",mechanic:'flag',flag:'has-machoire',category:'vital',availableAfter:'visited-scene-02'},
