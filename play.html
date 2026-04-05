@@ -480,7 +480,7 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 // ══════════════════════════════════════
 const RECIPES = [
   // ── Organes vitaux ──
-  {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01c-cimetiere',category:'vital',availableAfter:null},
+  {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01a-cimetiere',category:'vital',availableAfter:null},
   {id:'poumons',name:"Poumon",cost:{douleur:2,souffle:1,organique:0},effect:"Respirer plus loin.",sceneReaction:"Tu inspires. Pour la première fois. L'air a un goût de cendre.",mechanic:'flag',flag:'poumons',category:'vital',availableAfter:'fatigue-01b'},
   {id:'lien-nerfs',name:"Lien de nerfs",cost:{douleur:3,souffle:0,organique:2},effect:"Accès maison délabrée.",sceneReaction:"Tes mains tremblent. Quelque chose se reconnecte.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-maison',category:'vital',availableAfter:'inspected-entite-difforme'},
   {id:'machoire',name:"Mâchoire osseuse",cost:{douleur:2,souffle:0,organique:2},effect:"Permet de manger.",sceneReaction:"Tu sens tes dents. Elles ne sont pas les tiennes.",mechanic:'flag',flag:'has-machoire',category:'vital',availableAfter:'inspected-machoire'},
@@ -513,7 +513,7 @@ const SCENES = {
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-horizon',type:'inspect',x:30,y:25,w:55,h:12,cursor:'eye',resource:null,collectMode:'click',texts:[],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
     ],exits:[
-      {id:'exit-01a-hint',targetScene:null,x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:null},
+      {id:'exit-01a-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
     ]},
 
   // ══════ 01b — Les Dunes (profondeur) ══════
@@ -538,7 +538,6 @@ const SCENES = {
       {id:'hs-coeur',type:'inspect',x:20,y:65,w:15,h:18,cursor:'eye',resource:null,collectMode:'click',texts:["Il bat encore. Pas vite. Pas régulièrement. Mais il bat. Comme s'il attendait que tu reviennes le chercher."],collectible:true,visible:true,unlockedBy:null,flag:'inspected-coeur',cssClass:'pulse-hotspot'},
     ],exits:[
       {id:'exit-01c-01b',targetScene:'scene-01b',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
-      {id:'exit-01c-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
     ]},
 
   // ══════ 02 — Le Cimetière d'os ══════
@@ -553,7 +552,7 @@ const SCENES = {
       {id:'hs-vertebre',type:'inspect',x:45,y:25,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Cette vertèbre appartient à quelque chose qui voulait être grand."],collectible:false,visible:true,unlockedBy:null},
       {id:'hs-os-divers',type:'organique',x:80,y:70,w:10,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Un os. Ordinaire. Sauf qu'il est tiède."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
     ],exits:[
-      {id:'exit-cimetiere-01c',targetScene:'scene-01c',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
+      {id:'exit-cimetiere-01a',targetScene:'scene-01a',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
       {id:'exit-cimetiere-maison',targetScene:'scene-03',x:88,y:15,w:12,h:40,locked:true,lockedText:"Quelque chose bloque ce passage. Il te manque des connexions.",unlockedBy:'lien-nerfs'},
       {id:'exit-cimetiere-grotte',targetScene:'scene-04',x:88,y:55,w:12,h:40,locked:true,lockedText:"Tu ne vois rien. Il fait trop sombre.",unlockedBy:'has-lanterne',visibleAfter:'oeil-crafted'},
     ]},
