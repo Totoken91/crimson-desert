@@ -282,31 +282,29 @@ function drawPlaceholderScene(ctx, w, h, id) {
     // Label
     drawSceneLabel(ctx, w, h, '01c — DUNES LOINTAINES');
 
-  } else if (id === 'desert-house-bg.png' || id === 'scene-02') {
-    // Cimetière d'os
-    const grd = ctx.createLinearGradient(0, 0, 0, h);
-    grd.addColorStop(0, '#060304'); grd.addColorStop(0.4, '#120808'); grd.addColorStop(1, '#1a0c0b');
-    ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
-    // Ground
-    ctx.fillStyle = '#140a09'; ctx.fillRect(0, h*0.5, w, h*0.5);
-    // Bones scattered
-    ctx.strokeStyle = '#3a2a24'; ctx.lineWidth = 2;
-    for (let i = 0; i < 15; i++) {
-      const bx = w*0.1 + Math.random()*w*0.8;
-      const by = h*0.45 + Math.random()*h*0.4;
-      const angle = Math.random() * Math.PI;
-      ctx.save(); ctx.translate(bx, by); ctx.rotate(angle);
-      ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(15, 0); ctx.stroke();
-      ctx.beginPath(); ctx.arc(-15, 0, 3, 0, Math.PI*2); ctx.arc(15, 0, 3, 0, Math.PI*2); ctx.fillStyle='#2a1a16'; ctx.fill();
-      ctx.restore();
-    }
-    // Skull
-    ctx.fillStyle = '#2a1a16';
-    ctx.beginPath(); ctx.arc(w*0.65, h*0.4, 20, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#0a0506';
-    ctx.beginPath(); ctx.arc(w*0.62, h*0.38, 4, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(w*0.68, h*0.38, 4, 0, Math.PI*2); ctx.fill();
-    drawSceneLabel(ctx, w, h, '02 — CIMETIÈRE D\'OS');
+  } else if (id === 'scene-02') {
+    // Cimetière d'os — dense bone field, colder atmosphere
+    const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,'#060304');grd.addColorStop(0.3,'#0a0606');grd.addColorStop(1,'#1a0c0b');
+    ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
+    ctx.fillStyle='#100808';ctx.fillRect(0,h*0.4,w,h*0.6);
+    // Bone scatter — 25 bones
+    ctx.strokeStyle='#C6B29B';ctx.lineWidth=2;
+    for(let i=0;i<25;i++){const bx=w*0.05+Math.random()*w*0.9;const by=h*0.35+Math.random()*h*0.55;const a=Math.random()*Math.PI;const l=8+Math.random()*20;
+      ctx.save();ctx.translate(bx,by);ctx.rotate(a);ctx.beginPath();ctx.moveTo(-l,0);ctx.lineTo(l,0);ctx.stroke();
+      ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(-l,0,2+Math.random()*2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(l,0,2+Math.random()*2,0,Math.PI*2);ctx.fill();ctx.restore()}
+    // Impossible bones — one too long
+    ctx.strokeStyle='#8A7A6A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.15,h*0.5);ctx.lineTo(w*0.15,h*0.85);ctx.stroke();
+    // Skull with excroissances (right area)
+    ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.65,h*0.38,16,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.63,h*0.36,3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.67,h*0.36,3,0,Math.PI*2);ctx.fill();
+    // Excroissances — bone spikes
+    ctx.strokeStyle='#8A7A6A';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(w*0.63,h*0.32);ctx.lineTo(w*0.61,h*0.22);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.67,h*0.32);ctx.lineTo(w*0.70,h*0.24);ctx.stroke();
+    // Amas d'os central
+    ctx.fillStyle='#C6B29B';for(let i=0;i<8;i++){ctx.beginPath();ctx.arc(w*0.4+Math.random()*w*0.08,h*0.55+Math.random()*h*0.08,4+Math.random()*6,0,Math.PI*2);ctx.fill()}
+    // Fissure organique bottom-left
+    ctx.strokeStyle='#4A1010';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(w*0.28,h*0.72);ctx.bezierCurveTo(w*0.32,h*0.74,w*0.34,h*0.78,w*0.30,h*0.82);ctx.stroke();
+    // Grotte fissure — faint red glow (bottom right)
+    const fg=ctx.createRadialGradient(w*0.85,h*0.75,0,w*0.85,h*0.75,30);fg.addColorStop(0,'rgba(140,28,28,0.15)');fg.addColorStop(1,'transparent');ctx.fillStyle=fg;ctx.fillRect(w*0.75,h*0.65,w*0.2,h*0.2);
 
   } else if (id === 'scene-03') {
     // Maison délabrée
@@ -549,11 +547,11 @@ const SCENES = {
   // ══════ 02 — Le Cimetière d'os ══════
   'scene-02':{id:'scene-02',label:'Le Cimetière d\'os',intro:"Des os. Partout. Certains ont des formes impossibles. Il y en a beaucoup. Trop pour être accidentel.",bg:'scene-02',
     hotspots:[
-      {id:'hs-amas',type:'organique',x:35,y:50,w:18,h:20,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["Il y en a beaucoup. Trop pour être accidentel."],collectible:true,visible:true,unlockedBy:null,flag:'trou-os-inspecte'},
-      {id:'hs-crane',type:'souffle',x:60,y:35,w:12,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["L'os a continué à pousser après. Après quoi — pas encore."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-amas',type:'zoom',zoomScene:'amas-zoom',x:30,y:48,w:22,h:18,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-crane',type:'zoom',zoomScene:'crane-zoom',x:58,y:28,w:16,h:20,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-os-tranchants',type:'douleur',x:15,y:40,w:12,h:50,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"L'os est tranchant. Tu le savais."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. L'os ne s'émousse pas."},{ms:3000,resource:{type:'douleur',amount:1},text:"Trois secondes. Tu as compté.",painDelta:0.05}],collectible:false,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
-      {id:'hs-machoire-sep',type:'inspect',x:50,y:60,w:12,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Elle est séparée du reste. Proprement. Comme si quelqu'un l'avait retirée avec soin."],collectible:true,visible:true,unlockedBy:null,flag:'machoire-inspectee'},
-      {id:'hs-fissure-organique',type:'inspect',x:30,y:70,w:15,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Quelque chose respire là-dedans. Ou c'est le souvenir de quelque chose qui respirait."],collectible:true,visible:true,unlockedBy:null,flag:'fissure-organique-inspectee'},
+      {id:'hs-machoire-sep',type:'zoom',zoomScene:'machoire-zoom',x:45,y:55,w:16,h:16,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-fissure-organique',type:'zoom',zoomScene:'fissure-org-zoom',x:22,y:68,w:18,h:15,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-fissure-pulsante',type:'inspect',x:75,y:60,w:10,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Elle bat. Comme si elle t'attendait. Comme si elle savait que tu reviendrais."],collectible:false,visible:true,unlockedBy:null},
       {id:'hs-vertebre',type:'inspect',x:45,y:25,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Cette vertèbre appartient à quelque chose qui voulait être grand."],collectible:false,visible:true,unlockedBy:null},
       {id:'hs-os-divers',type:'organique',x:80,y:70,w:10,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Un os. Ordinaire. Sauf qu'il est tiède."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
@@ -708,6 +706,11 @@ const ZOOM_SCENES = {
     },introText:"Il bat encore. Pas vite. Pas régulièrement. Mais il bat.",
     hotspots:[{id:'hs-coeur-inspect',x:25,y:20,w:50,h:50,cursor:'eye',action:'inspect-coeur',texts:["Il bat encore. Comme s'il attendait que tu reviennes le chercher."]}],
   },
+  // ── 02 close-ups ──
+  'amas-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.3,w,h*0.7);ctx.fillStyle='#C6B29B';for(let i=0;i<20;i++){const x=w*0.2+Math.random()*w*0.6,y=h*0.3+Math.random()*h*0.4;ctx.beginPath();ctx.ellipse(x,y,6+Math.random()*12,3+Math.random()*5,Math.random()*Math.PI,0,Math.PI*2);ctx.fill()}if(state.narrativeFlags['trou-os-inspecte']){ctx.fillStyle='#080506';ctx.beginPath();ctx.ellipse(w*0.5,h*0.55,25,15,0,0,Math.PI*2);ctx.fill();const g=ctx.createRadialGradient(w*0.5,h*0.55,0,w*0.5,h*0.55,20);g.addColorStop(0,'rgba(190,55,45,0.15)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(w*0.35,h*0.4,w*0.3,h*0.3)}},introText:"Il y en a beaucoup. Trop pour être accidentel.",hotspots:[{id:'hs-amas-grab',x:25,y:25,w:50,h:50,cursor:'hand',action:'collect-amas',texts:["Les os cèdent. En dessous, quelque chose brille."]}]},
+  'crane-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.5,h*0.45,50,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.42,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.58,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#8A7A6A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.42,h*0.35);ctx.lineTo(w*0.38,h*0.2);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.58,h*0.35);ctx.lineTo(w*0.64,h*0.22);ctx.stroke()},introText:"L'os a continué à pousser après. Après quoi — pas encore.",hotspots:[]},
+  'machoire-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.6,w,h*0.4);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.45,h*0.35,35,0,Math.PI,true);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.38,h*0.3,5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.52,h*0.3,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8A7A6A';ctx.beginPath();ctx.arc(w*0.6,h*0.65,18,0,Math.PI);ctx.fill()},introText:"Elle est séparée du reste. Proprement.",hotspots:[{id:'hs-machoire-inspect',x:40,y:50,w:30,h:30,cursor:'eye',action:'inspect-machoire',texts:["Comme si quelqu'un l'avait retirée avec soin."]}]},
+  'fissure-org-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.3,w,h*0.7);ctx.strokeStyle='#4A1010';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.3,h*0.3);ctx.bezierCurveTo(w*0.4,h*0.5,w*0.55,h*0.6,w*0.5,h*0.8);ctx.stroke();ctx.fillStyle='#2A0A08';ctx.beginPath();ctx.ellipse(w*0.45,h*0.55,20,35,0.2,0,Math.PI*2);ctx.fill()},introText:"Quelque chose respire là-dedans.",hotspots:[{id:'hs-fissure-org-inspect',x:25,y:30,w:40,h:50,cursor:'eye',action:'inspect-fissure-organique',texts:["Ou c'est le souvenir de quelque chose qui respirait."]}]},
 };
 
 function enterZoom(zoomId){
@@ -734,6 +737,22 @@ function enterZoom(zoomId){
     el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
+      if(hs.action==='collect-amas'){
+        const ok=collectResource('organique',2,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.narrativeFlags['trou-os-inspecte']=true;saveState();updateRecipeUI()}
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='inspect-machoire'){
+        state.narrativeFlags['machoire-inspectee']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='inspect-fissure-organique'){
+        state.narrativeFlags['fissure-organique-inspectee']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
       if(hs.action==='collect-couteau'){
         const ok=collectResource('douleur',2,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){state.narrativeFlags['inspected-couteau-01c']=true;state.narrativeFlags['entite-inspectee']=true;flashPain();saveState();updateRecipeUI();
