@@ -482,10 +482,12 @@ function enterZoom(zoomId){
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
       if(hs.action==='collect-organique'){
+        // Cooldown 60s between hair pulls
+        const lastPull=state.narrativeFlags['hair-last-pull']||0;
+        if(Date.now()-lastPull<60000){showDialogue("Ça repousse. Reviens plus tard.");return}
         const ok=collectResource('organique',1,hs.x+hs.w/2,hs.y+hs.h/2);
-        if(ok){state.inspected[state.currentScene+':hs-caillou']=true;saveState()}
+        if(ok){state.narrativeFlags['hair-last-pull']=Date.now();saveState()}
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
-        el.style.display='none';
         return;
       }
       if(hs.action==='collect-plume'){
