@@ -245,34 +245,40 @@ function setupPixiScene(imagePath) {
 // ══════════════════════════════════════
 // PLACEHOLDER SCENE DRAWINGS
 // ══════════════════════════════════════
+function addGrain(ctx,w,h){const d=ctx.getImageData(0,0,w,h);for(let i=0;i<d.data.length;i+=4){const n=(Math.random()-0.5)*10;d.data[i]+=n;d.data[i+1]+=n;d.data[i+2]+=n}ctx.putImageData(d,0,0)}
+
 function drawPlaceholderScene(ctx, w, h, id) {
   // Base — dark gradient
   ctx.fillStyle = '#080506';
   ctx.fillRect(0, 0, w, h);
 
-  if (id === 'scene-01c' || id === 'desert-bg-1.png-01c') {
-    // Dunes lointaines — flatter, distant shapes
-    const grd = ctx.createLinearGradient(0, h*0.3, 0, h);
-    grd.addColorStop(0, '#0a0506'); grd.addColorStop(0.3, '#1a0c0b'); grd.addColorStop(1, '#2a1210');
-    ctx.fillStyle = grd; ctx.fillRect(0, h*0.3, w, h*0.7);
-    // Horizon line
-    ctx.strokeStyle = '#3a1a14'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, h*0.35); ctx.lineTo(w, h*0.32); ctx.stroke();
-    // Couteau placeholder
-    ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(w*0.45, h*0.5); ctx.lineTo(w*0.45, h*0.68); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(w*0.43, h*0.68); ctx.lineTo(w*0.47, h*0.68); ctx.stroke();
-    // Entity silhouette — distant, deformed
+  if (id === 'scene-01c') {
+    // Dunes lointaines — darker, colder tones
+    const grd = ctx.createLinearGradient(0, h*0.25, 0, h);
+    grd.addColorStop(0, '#080506'); grd.addColorStop(0.2, '#100b0a'); grd.addColorStop(0.5, '#2A0A08'); grd.addColorStop(1, '#1a0c0b');
+    ctx.fillStyle = grd; ctx.fillRect(0, h*0.25, w, h*0.75);
+    // Dune shapes — soft curves
     ctx.fillStyle = '#1a0c0b';
-    ctx.beginPath(); ctx.moveTo(w*0.7, h*0.48); ctx.lineTo(w*0.68, h*0.2); ctx.lineTo(w*0.72, h*0.18);
-    ctx.lineTo(w*0.75, h*0.25); ctx.lineTo(w*0.78, h*0.15); ctx.lineTo(w*0.74, h*0.48); ctx.closePath(); ctx.fill();
-    // Heart semi-buried
-    ctx.fillStyle = '#4a1010';
-    ctx.beginPath();
-    ctx.moveTo(w*0.27, h*0.72);
-    ctx.bezierCurveTo(w*0.24,h*0.66, w*0.28,h*0.62, w*0.27,h*0.66);
-    ctx.bezierCurveTo(w*0.30,h*0.62, w*0.34,h*0.66, w*0.30,h*0.72);
-    ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(0,h*0.45); ctx.bezierCurveTo(w*0.2,h*0.35,w*0.4,h*0.42,w*0.6,h*0.38); ctx.bezierCurveTo(w*0.8,h*0.34,w,h*0.4,w,h*0.5); ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#2A0A08';
+    ctx.beginPath(); ctx.moveTo(0,h*0.6); ctx.bezierCurveTo(w*0.3,h*0.52,w*0.5,h*0.58,w*0.7,h*0.55); ctx.bezierCurveTo(w*0.9,h*0.52,w,h*0.58,w,h*0.65); ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath(); ctx.fill();
+    // Couteau — thin vertical line, too straight
+    ctx.strokeStyle = '#C6B29B'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(w*0.75,h*0.42); ctx.lineTo(w*0.75,h*0.58); ctx.stroke();
+    ctx.strokeStyle = '#8C1C1C'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(w*0.74,h*0.58); ctx.lineTo(w*0.76,h*0.58); ctx.stroke();
+    // Entity silhouette — distant, too many limbs
+    ctx.fillStyle = '#100b0a';
+    ctx.beginPath(); ctx.moveTo(w*0.55,h*0.38); ctx.lineTo(w*0.53,h*0.2); ctx.lineTo(w*0.55,h*0.18); ctx.lineTo(w*0.57,h*0.22); ctx.lineTo(w*0.59,h*0.15); ctx.lineTo(w*0.58,h*0.21); ctx.lineTo(w*0.61,h*0.19); ctx.lineTo(w*0.58,h*0.38); ctx.closePath(); ctx.fill();
+    // Heart semi-buried — left mid-ground, subtle red glow
+    ctx.fillStyle = '#4A1010';
+    ctx.beginPath(); ctx.arc(w*0.22, h*0.68, 12, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#8C1C1C';
+    ctx.beginPath(); ctx.arc(w*0.22, h*0.67, 6, 0, Math.PI*2); ctx.fill();
+    // Glow around heart
+    const hg = ctx.createRadialGradient(w*0.22,h*0.68,0,w*0.22,h*0.68,30);
+    hg.addColorStop(0,'rgba(140,28,28,0.1)'); hg.addColorStop(1,'transparent');
+    ctx.fillStyle = hg; ctx.fillRect(w*0.15,h*0.58,w*0.14,h*0.2);
     // Label
     drawSceneLabel(ctx, w, h, '01c — DUNES LOINTAINES');
 
@@ -533,9 +539,9 @@ const SCENES = {
   // ══════ 01c — Les Dunes lointaines ══════
   'scene-01c':{id:'scene-01c',label:'Les Dunes lointaines',intro:"Horizon atteint. Premiers signes que quelque chose d'autre est là.",bg:'scene-01c',
     hotspots:[
-      {id:'hs-couteau',type:'douleur',x:40,y:55,w:10,h:18,cursor:'hand',resource:{type:'douleur',amount:2},collectMode:'click',flashOnCollect:true,texts:["Le couteau était propre. Il ne l'est plus. Il n'y a plus grand chose à prendre ici."],collectible:true,visible:true,unlockedBy:null,flag:'inspected-couteau-01c'},
-      {id:'hs-entite',type:'inspect',x:60,y:20,w:25,h:35,cursor:'eye',resource:null,collectMode:'click',texts:["Elle se tient mal. Trop de choses poussent dans la mauvaise direction. Elle ne te regarde pas. Ou elle ne peut plus."],collectible:false,visible:true,unlockedBy:null,flag:'entite-inspectee'},
-      {id:'hs-coeur',type:'inspect',x:20,y:65,w:15,h:18,cursor:'eye',resource:null,collectMode:'click',texts:["Il bat encore. Pas vite. Pas régulièrement. Mais il bat. Comme s'il attendait que tu reviennes le chercher."],collectible:true,visible:true,unlockedBy:null,flag:'coeur-inspecte',cssClass:'pulse-hotspot'},
+      {id:'hs-couteau',type:'zoom',zoomScene:'couteau-zoom',x:65,y:38,w:20,h:30,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-entite',type:'zoom',zoomScene:'entite-zoom',x:40,y:15,w:25,h:30,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-coeur',type:'zoom',zoomScene:'coeur-zoom',x:14,y:58,w:16,h:20,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null,cssClass:'pulse-hotspot'},
     ],exits:[
       {id:'exit-01c-01b',targetScene:'scene-01b',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
     ]},
@@ -637,15 +643,86 @@ const ZOOM_SCENES = {
        texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."]},
     ],
   },
+  // ── 01c close-ups ──
+  'couteau-zoom':{
+    drawCanvas:(ctx,w,h)=>{
+      ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);
+      // Sand ground
+      const g=ctx.createLinearGradient(0,h*0.5,0,h);g.addColorStop(0,'#2A0A08');g.addColorStop(1,'#1a0c0b');
+      ctx.fillStyle=g;ctx.fillRect(0,h*0.5,w,h*0.5);
+      // Blade
+      ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.moveTo(w*0.48,h*0.15);ctx.lineTo(w*0.50,h*0.55);ctx.lineTo(w*0.52,h*0.15);ctx.closePath();ctx.fill();
+      // Handle
+      ctx.fillStyle='#4A1010';ctx.fillRect(w*0.475,h*0.55,w*0.05,h*0.12);
+      // Blood if state 2
+      if(state.narrativeFlags['inspected-couteau-01c']){
+        ctx.fillStyle='#8C1C1C';
+        ctx.beginPath();ctx.arc(w*0.50,h*0.35,8,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.moveTo(w*0.50,h*0.38);ctx.lineTo(w*0.49,h*0.55);ctx.strokeStyle='#8C1C1C';ctx.lineWidth=3;ctx.stroke();
+        // Blood on ground
+        const bg=ctx.createRadialGradient(w*0.50,h*0.65,0,w*0.50,h*0.65,40);
+        bg.addColorStop(0,'rgba(140,28,28,0.4)');bg.addColorStop(1,'transparent');ctx.fillStyle=bg;ctx.fillRect(w*0.35,h*0.55,w*0.3,h*0.2);
+      }
+    },introText:"Le couteau était propre. Fiché trop droit. Trop précis.",
+    hotspots:[{id:'hs-couteau-grab',x:35,y:10,w:30,h:60,cursor:'hand',action:'collect-couteau',texts:["Le couteau était propre. Il ne l'est plus. Il n'y a plus grand chose à prendre ici."]}],
+  },
+  'entite-zoom':{
+    drawCanvas:(ctx,w,h)=>{
+      ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);
+      const g=ctx.createRadialGradient(w*0.5,h*0.5,0,w*0.5,h*0.5,w*0.4);
+      g.addColorStop(0,'#2A0A08');g.addColorStop(1,'#080506');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+      if(!state.narrativeFlags['has-ailes']&&!state.narrativeFlags['has-second-coeur']){
+        // Entity — blurred impossible shape
+        ctx.fillStyle='#100b0a';ctx.globalAlpha=0.6;
+        ctx.beginPath();ctx.moveTo(w*0.45,h*0.8);ctx.lineTo(w*0.42,h*0.3);ctx.lineTo(w*0.46,h*0.25);ctx.lineTo(w*0.48,h*0.32);ctx.lineTo(w*0.52,h*0.2);ctx.lineTo(w*0.50,h*0.28);ctx.lineTo(w*0.55,h*0.22);ctx.lineTo(w*0.54,h*0.35);ctx.lineTo(w*0.58,h*0.3);ctx.lineTo(w*0.55,h*0.8);ctx.closePath();ctx.fill();
+        ctx.globalAlpha=1;
+      }else{
+        // Post-divines: imprint with wing shape
+        ctx.fillStyle='#1a0c0b';
+        ctx.beginPath();ctx.ellipse(w*0.5,h*0.7,60,15,0,0,Math.PI*2);ctx.fill();
+        ctx.strokeStyle='#4A1010';ctx.lineWidth=1;
+        ctx.beginPath();ctx.moveTo(w*0.35,h*0.65);ctx.bezierCurveTo(w*0.3,h*0.5,w*0.4,h*0.4,w*0.5,h*0.5);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(w*0.65,h*0.65);ctx.bezierCurveTo(w*0.7,h*0.5,w*0.6,h*0.4,w*0.5,h*0.5);ctx.stroke();
+      }
+    },introText:null,hotspots:[],
+  },
+  'coeur-zoom':{
+    drawCanvas:(ctx,w,h)=>{
+      ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);
+      const g=ctx.createLinearGradient(0,h*0.4,0,h);g.addColorStop(0,'#1a0c0b');g.addColorStop(1,'#2A0A08');
+      ctx.fillStyle=g;ctx.fillRect(0,h*0.4,w,h*0.6);
+      if(!state.narrativeFlags['coeur-inspecte']){
+        // Heart shape — organic mass
+        ctx.fillStyle='#4A1010';
+        ctx.beginPath();ctx.moveTo(w*0.5,h*0.35);ctx.bezierCurveTo(w*0.35,h*0.2,w*0.2,h*0.35,w*0.35,h*0.5);ctx.lineTo(w*0.5,h*0.65);ctx.lineTo(w*0.65,h*0.5);ctx.bezierCurveTo(w*0.8,h*0.35,w*0.65,h*0.2,w*0.5,h*0.35);ctx.closePath();ctx.fill();
+        ctx.fillStyle='#8C1C1C';
+        ctx.beginPath();ctx.arc(w*0.45,h*0.4,8,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(w*0.55,h*0.4,6,0,Math.PI*2);ctx.fill();
+        // Sand covering bottom half
+        ctx.fillStyle='#2A0A08';ctx.fillRect(0,h*0.55,w,h*0.45);
+      }else{
+        // Empty — trace in sand
+        ctx.fillStyle='#1a0c0b';
+        ctx.beginPath();ctx.ellipse(w*0.5,h*0.5,50,30,0,0,Math.PI*2);ctx.fill();
+      }
+    },introText:"Il bat encore. Pas vite. Pas régulièrement. Mais il bat.",
+    hotspots:[{id:'hs-coeur-inspect',x:25,y:20,w:50,h:50,cursor:'eye',action:'inspect-coeur',texts:["Il bat encore. Comme s'il attendait que tu reviennes le chercher."]}],
+  },
 };
 
 function enterZoom(zoomId){
   const zoom=ZOOM_SCENES[zoomId];if(!zoom)return;currentZoom=zoomId;
-  const imgSrc=zoom.getImage();
-  // Load image as PixiJS texture
   if(sceneSprite){app.stage.removeChild(sceneSprite);sceneSprite.destroy()}
-  const tex=PIXI.Texture.from(imgSrc);
-  sceneSprite=new PIXI.Sprite(tex);sceneSprite.width=960;sceneSprite.height=720;
+  // Canvas-generated or image-based
+  if(zoom.drawCanvas){
+    const c=document.createElement('canvas');c.width=960;c.height=720;
+    zoom.drawCanvas(c.getContext('2d'),960,720);
+    addGrain(c.getContext('2d'),960,720);
+    sceneSprite=new PIXI.Sprite(PIXI.Texture.from(c));
+  }else{
+    sceneSprite=new PIXI.Sprite(PIXI.Texture.from(zoom.getImage()));
+  }
+  sceneSprite.width=960;sceneSprite.height=720;
   app.stage.addChildAt(sceneSprite,0);
 
   hotspotLayer.querySelectorAll('.hotspot,.exit-zone').forEach(e=>e.remove());
@@ -657,6 +734,20 @@ function enterZoom(zoomId){
     el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
+      if(hs.action==='collect-couteau'){
+        const ok=collectResource('douleur',2,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.narrativeFlags['inspected-couteau-01c']=true;state.narrativeFlags['entite-inspectee']=true;flashPain();saveState();updateRecipeUI();
+          // Redraw with blood
+          if(currentZoom){const z=ZOOM_SCENES[currentZoom];if(z.drawCanvas){const c=document.createElement('canvas');c.width=960;c.height=720;z.drawCanvas(c.getContext('2d'),960,720);addGrain(c.getContext('2d'),960,720);sceneSprite.texture=PIXI.Texture.from(c)}}
+        }
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='inspect-coeur'){
+        state.narrativeFlags['coeur-inspecte']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
       if(hs.action==='collect-souffle'){
         const key='scene-01a:hs-trace-souffle';
         if(state.souffleCollected[key]){showDialogue("Il ne reste plus rien ici.");return}
