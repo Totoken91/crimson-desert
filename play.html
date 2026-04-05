@@ -481,14 +481,14 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 const RECIPES = [
   // ── Organes vitaux ──
   {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01c-cimetiere',category:'vital',availableAfter:null},
-  {id:'poumons',name:"Poumon",cost:{douleur:2,souffle:2,organique:0},effect:"Respirer plus loin.",sceneReaction:"Tu inspires. Pour la première fois. L'air a un goût de cendre.",mechanic:'unlock-exit',targetExit:'exit-01b-01c',category:'vital',availableAfter:'fatigue-01b'},
+  {id:'poumons',name:"Poumon",cost:{douleur:2,souffle:1,organique:0},effect:"Respirer plus loin.",sceneReaction:"Tu inspires. Pour la première fois. L'air a un goût de cendre.",mechanic:'flag',flag:'poumons',category:'vital',availableAfter:'fatigue-01b'},
   {id:'lien-nerfs',name:"Lien de nerfs",cost:{douleur:3,souffle:0,organique:2},effect:"Accès maison délabrée.",sceneReaction:"Tes mains tremblent. Quelque chose se reconnecte.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-maison',category:'vital',availableAfter:'inspected-entite-difforme'},
   {id:'machoire',name:"Mâchoire osseuse",cost:{douleur:2,souffle:0,organique:2},effect:"Permet de manger.",sceneReaction:"Tu sens tes dents. Elles ne sont pas les tiennes.",mechanic:'flag',flag:'has-machoire',category:'vital',availableAfter:'inspected-machoire'},
   {id:'estomac',name:"Estomac",cost:{douleur:0,souffle:1,organique:2},effect:"Permet de digérer.",sceneReaction:"Quelque chose se creuse en toi. Un vide utile.",mechanic:'flag',flag:'has-estomac',category:'vital',availableAfter:'inspected-fissure-organique'},
   // ── Objets vitaux ──
   {id:'coeur-reliquaire',name:"Coeur reliquaire",cost:{douleur:2,souffle:1,organique:2},effect:"Vitalité max +3.",sceneReaction:"Un battement s'ajoute. Pas le tien. Un autre.",mechanic:'flag',flag:'has-coeur-reliquaire',category:'vital',availableAfter:'inspected-coeur'},
-  {id:'memoire-cendreuse',name:"Mémoire cendreuse",cost:{douleur:1,souffle:1,organique:0},effect:"Souvenir de lumière.",sceneReaction:"Tu te souviens de la flamme. Pas de ce qu'elle éclairait.",mechanic:'flag',flag:'memoire-cendreuse',category:'lore',availableAfter:'inspected-cheminee'},
-  {id:'oeil-substitution',name:"Oeil de substitution",cost:{douleur:2,souffle:1,organique:1},effect:"Voir ce qui est caché.",sceneReaction:"Tu vois deux fois la même chose. Elles ne sont pas identiques.",mechanic:'flag',flag:'oeil-crafted',category:'vital',availableAfter:'inspected-oeil-mur'},
+  {id:'memoire-cendreuse',name:"Mémoire cendreuse",cost:{douleur:1,souffle:0,organique:0},effect:"Souvenir de lumière.",sceneReaction:"Tu te souviens de la flamme. Pas de ce qu'elle éclairait.",mechanic:'flag',flag:'memoire-cendreuse',category:'lore',availableAfter:'inspected-cheminee'},
+  {id:'oeil-substitution',name:"Oeil de substitution",cost:{douleur:2,souffle:0,organique:1},effect:"Voir ce qui est caché.",sceneReaction:"Tu vois deux fois la même chose. Elles ne sont pas identiques.",mechanic:'flag',flag:'oeil-crafted',category:'vital',availableAfter:'inspected-oeil-mur'},
   {id:'lanterne-os',name:"Lanterne d'os",cost:{douleur:2,souffle:1,organique:0},effect:"Voir dans la grotte.",sceneReaction:"La lumière ne vient pas de la flamme. Elle vient de l'os.",mechanic:'flag',flag:'has-lanterne',category:'vital',availableAfter:'memoire-cendreuse'},
   // ── Organes divins ──
   {id:'ailes',name:"Ailes",cost:{douleur:4,souffle:3,organique:2},effect:"Accès au Ciel. Vitalité max +3.",sceneReaction:"Elles poussent. Pas sur ton dos. Depuis ton dos.",mechanic:'divine',flag:'has-ailes',dissolutionDelta:0.15,category:'divine',requires:'plume-memoire',availableAfter:'plume-memoire'},
@@ -968,7 +968,7 @@ function handleHotspotClick(hs,el,sceneId){
   if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
   if(hs.action==='goto-01b'){transitionToScene('scene-01b');return}
   if(hs.action==='goto-01c'){
-    if(!state.crafted.includes('poumons')){showDialogue("Trop loin. Quelque chose manque à l'intérieur.");return}
+    if(!state.narrativeFlags['poumons']){showDialogue("Trop loin. Quelque chose manque à l'intérieur.");return}
     transitionToScene('scene-01c');return;
   }
   if(hs.action==='open-alchemy'){updateRecipeUI();return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
