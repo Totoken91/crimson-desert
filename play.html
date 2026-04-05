@@ -354,7 +354,7 @@ const SCENES = {
       // Empreinte au sol — zoom, souffle clic
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       // Horizon — porte vers 01b (bande de ciel noir au-dessus, ne chevauche pas le rocher)
-      {id:'hs-horizon',type:'inspect',x:30,y:25,w:55,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
+      {id:'hs-horizon',type:'inspect',x:30,y:25,w:55,h:12,cursor:'eye',resource:null,collectMode:'click',texts:[],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
     ],exits:[
       // Sortie droite — bloquée par le froid, débloquée par armure de peau
       {id:'exit-01a-droite',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
@@ -768,10 +768,7 @@ function handleHotspotClick(hs,el,sceneId){
     setTimeout(()=>{resetState();loadScene('scene-01a')},5000);return;
   }
   if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
-  if(hs.action==='goto-01b'){
-    if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
-    setTimeout(()=>transitionToScene('scene-01b'),1500);return;
-  }
+  if(hs.action==='goto-01b'){transitionToScene('scene-01b');return}
   if(hs.action==='open-alchemy'){updateRecipeUI();return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
