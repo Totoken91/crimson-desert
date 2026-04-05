@@ -508,9 +508,10 @@ const SCENES = {
       {id:'hs-caillou',type:'zoom',zoomScene:'hairrock-zoom',x:70,y:55,w:25,h:35,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-plume',type:'zoom',zoomScene:'plume-zoom',x:25,y:35,w:25,h:30,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-anomalie-01b',type:'souffle',x:50,y:40,w:12,h:12,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["La cendre forme un cercle. Personne ne l'a tracé."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      // Horizon — porte vers 01c (comme l'horizon de 01a vers 01b)
+      {id:'hs-horizon-01b',type:'inspect',x:20,y:15,w:60,h:12,cursor:'eye',resource:null,collectMode:'click',texts:[],collectible:false,visible:true,unlockedBy:null,action:'goto-01c'},
     ],exits:[
       {id:'exit-01b-01a',targetScene:'scene-01a',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
-      {id:'exit-01b-01c',targetScene:'scene-01c',x:30,y:0,w:50,h:15,locked:true,lockedText:"Trop loin. Quelque chose manque à l'intérieur.",unlockedBy:'poumons'},
     ]},
 
   // ══════ 01c — Les Dunes lointaines ══════
@@ -520,7 +521,7 @@ const SCENES = {
       {id:'hs-entite',type:'inspect',x:60,y:20,w:25,h:35,cursor:'eye',resource:null,collectMode:'click',texts:["Elle se tient mal. Trop de choses poussent dans la mauvaise direction. Elle ne te regarde pas. Ou elle ne peut plus."],collectible:false,visible:true,unlockedBy:null,flag:'inspected-entite-difforme'},
     ],exits:[
       {id:'exit-01c-01b',targetScene:'scene-01b',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
-      {id:'exit-01c-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Quelque chose dans cet endroit demande plus que ce que tu es pour l'instant.",unlockedBy:'armure-peau'},
+      {id:'exit-01c-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
     ]},
 
   // ══════ 02 — Le Cimetière d'os ══════
@@ -949,6 +950,10 @@ function handleHotspotClick(hs,el,sceneId){
   }
   if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
   if(hs.action==='goto-01b'){transitionToScene('scene-01b');return}
+  if(hs.action==='goto-01c'){
+    if(!state.crafted.includes('poumons')){showDialogue("Trop loin. Quelque chose manque à l'intérieur.");return}
+    transitionToScene('scene-01c');return;
+  }
   if(hs.action==='open-alchemy'){updateRecipeUI();return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
