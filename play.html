@@ -361,24 +361,19 @@ function drawPlaceholderScene(ctx, w, h, id) {
     }
 
   } else if (id === 'scene-05') {
-    // Le Ciel
-    ctx.fillStyle = '#060308'; ctx.fillRect(0, 0, w, h);
-    // Stars/failles
-    for (let i = 0; i < 30; i++) {
-      ctx.fillStyle = `rgba(190,55,45,${0.1+Math.random()*0.3})`;
-      ctx.fillRect(Math.random()*w, Math.random()*h*0.6, 1+Math.random()*2, 1+Math.random()*2);
-    }
-    // 3 failles
-    ctx.strokeStyle = '#8C1C1C'; ctx.lineWidth = 2;
-    [[w*0.25,h*0.25],[w*0.55,h*0.3],[w*0.8,h*0.2]].forEach(([fx,fy]) => {
-      ctx.beginPath(); ctx.moveTo(fx-10,fy-15); ctx.lineTo(fx+5,fy+15); ctx.stroke();
-      const g = ctx.createRadialGradient(fx,fy,0,fx,fy,25);
-      g.addColorStop(0,'rgba(190,55,45,0.15)'); g.addColorStop(1,'transparent');
-      ctx.fillStyle = g; ctx.fillRect(fx-25,fy-25,50,50);
-    });
-    // Desert below
-    ctx.fillStyle = '#1a0c0b'; ctx.fillRect(0, h*0.75, w, h*0.25);
-    drawSceneLabel(ctx, w, h, '05 — LE CIEL');
+    // Le Ciel — crimson void, desert below
+    const sg=ctx.createLinearGradient(0,0,0,h);sg.addColorStop(0,'#080506');sg.addColorStop(0.4,'#2A0A08');sg.addColorStop(0.7,'#4A1010');sg.addColorStop(1,'#1a0c0b');
+    ctx.fillStyle=sg;ctx.fillRect(0,0,w,h);
+    // 3 failles — luminous tears
+    [[w*0.2,h*0.2],[w*0.5,h*0.28],[w*0.78,h*0.18]].forEach(([fx,fy])=>{
+      ctx.strokeStyle='#BE372D';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(fx-8,fy-20);ctx.bezierCurveTo(fx+3,fy-5,fx-3,fy+5,fx+8,fy+20);ctx.stroke();
+      const fg=ctx.createRadialGradient(fx,fy,0,fx,fy,35);fg.addColorStop(0,'rgba(190,55,45,0.2)');fg.addColorStop(1,'transparent');ctx.fillStyle=fg;ctx.fillRect(fx-35,fy-35,70,70)});
+    // Desert below — flat, infinite, with geometric circles
+    ctx.fillStyle='#1a0c0b';ctx.fillRect(0,h*0.72,w,h*0.28);
+    ctx.strokeStyle='#4A1010';ctx.lineWidth=0.5;
+    for(let i=0;i<6;i++){const cx=w*0.2+Math.random()*w*0.6;const cy=h*0.78+Math.random()*h*0.12;ctx.beginPath();ctx.ellipse(cx,cy,15+Math.random()*20,5+Math.random()*8,0,0,Math.PI*2);ctx.stroke()}
+    // Miniature scene shapes in the desert
+    ctx.fillStyle='#2A0A08';ctx.fillRect(w*0.35,h*0.82,8,4);ctx.fillRect(w*0.55,h*0.85,6,3);ctx.fillRect(w*0.45,h*0.88,4,4);
 
   } else {
     // Generic fallback
