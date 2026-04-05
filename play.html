@@ -308,26 +308,27 @@ function drawPlaceholderScene(ctx, w, h, id) {
 
   } else if (id === 'scene-03') {
     // Maison délabrée
-    const grd = ctx.createLinearGradient(0, 0, 0, h);
-    grd.addColorStop(0, '#060304'); grd.addColorStop(1, '#1a0c0b');
-    ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
-    // Ground
-    ctx.fillStyle = '#140a09'; ctx.fillRect(0, h*0.65, w, h*0.35);
-    // House shape
-    ctx.fillStyle = '#1a100e';
-    ctx.fillRect(w*0.25, h*0.25, w*0.5, h*0.4);
-    // Roof
-    ctx.beginPath(); ctx.moveTo(w*0.2, h*0.25); ctx.lineTo(w*0.5, h*0.08); ctx.lineTo(w*0.8, h*0.25); ctx.closePath();
-    ctx.fillStyle = '#1e1210'; ctx.fill();
-    // Door
-    ctx.fillStyle = '#0a0506'; ctx.fillRect(w*0.45, h*0.4, w*0.1, h*0.25);
-    // Window
-    ctx.fillStyle = '#2a1210'; ctx.fillRect(w*0.6, h*0.32, w*0.08, h*0.08);
-    ctx.strokeStyle = '#0a0506'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(w*0.64, h*0.32); ctx.lineTo(w*0.64, h*0.4); ctx.stroke();
+    const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,'#060304');grd.addColorStop(0.5,'#0a0606');grd.addColorStop(1,'#2A0A08');
+    ctx.fillStyle=grd;ctx.fillRect(0,0,w,h);
+    // Sand ground rising on walls
+    ctx.fillStyle='#2A0A08';ctx.fillRect(0,h*0.6,w,h*0.4);
+    ctx.fillStyle='#1a0c0b';ctx.beginPath();ctx.moveTo(0,h*0.55);ctx.bezierCurveTo(w*0.3,h*0.58,w*0.7,h*0.62,w,h*0.56);ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fill();
+    // House — blackened wood, derelict
+    ctx.fillStyle='#100808';ctx.fillRect(w*0.2,h*0.2,w*0.6,h*0.45);
+    // Roof — sagging
+    ctx.beginPath();ctx.moveTo(w*0.15,h*0.2);ctx.bezierCurveTo(w*0.3,h*0.05,w*0.7,h*0.04,w*0.85,h*0.2);ctx.closePath();ctx.fillStyle='#1a0c0b';ctx.fill();
+    // Door — ajar, dark slit
+    ctx.fillStyle='#080506';ctx.fillRect(w*0.42,h*0.35,w*0.08,h*0.3);
+    ctx.fillStyle='#4A1010';ctx.fillRect(w*0.42,h*0.35,w*0.02,h*0.3); // door edge
+    // Window — broken, right side
+    ctx.fillStyle='#2A0A08';ctx.fillRect(w*0.6,h*0.28,w*0.1,h*0.1);
+    ctx.strokeStyle='#C6B29B';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(w*0.62,h*0.31);ctx.lineTo(w*0.65,h*0.34);ctx.stroke(); // crack
     // Chimney
-    ctx.fillStyle = '#1e1210'; ctx.fillRect(w*0.35, h*0.08, w*0.04, h*0.17);
-    drawSceneLabel(ctx, w, h, '03 — MAISON DÉLABRÉE');
+    ctx.fillStyle='#100808';ctx.fillRect(w*0.32,h*0.04,w*0.05,h*0.16);
+    // Vegetation left
+    ctx.fillStyle='#2A0A08';for(let i=0;i<6;i++){ctx.beginPath();ctx.moveTo(w*0.08+Math.random()*w*0.1,h*0.65);ctx.bezierCurveTo(w*0.05+Math.random()*w*0.08,h*0.3,w*0.12+Math.random()*w*0.08,h*0.25,w*0.1+Math.random()*w*0.05,h*0.2);ctx.strokeStyle='#4A1010';ctx.lineWidth=1+Math.random()*2;ctx.stroke()}
+    // Oeil dans le mur — subtle spot on right wall
+    ctx.fillStyle='#8C1C1C';ctx.beginPath();ctx.arc(w*0.68,h*0.38,3,0,Math.PI*2);ctx.fill();
 
   } else if (id === 'scene-04') {
     // Grotte
@@ -564,11 +565,11 @@ const SCENES = {
   // ══════ 03 — La Maison délabrée ══════
   'scene-03':{id:'scene-03',label:'La Maison délabrée',intro:"Une maison. Elle ne devrait pas être là.",bg:'scene-03',
     hotspots:[
-      {id:'hs-porte',type:'organique',x:40,y:30,w:20,h:40,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["La porte grince. Derrière, quelque chose respire."],collectible:true,visible:true,unlockedBy:null},
-      {id:'hs-fenetre',type:'douleur',x:70,y:25,w:12,h:30,cursor:'hand',collectMode:'hold',holdMax:2000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"Le verre est ancien. Il cède."},{ms:2000,resource:{type:'douleur',amount:1},text:"Le sang sur le rebord n'est pas le tien. Ou alors si."}],collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-chose-informe',type:'inspect',x:35,y:50,w:25,h:25,cursor:'eye',resource:null,collectMode:'click',texts:["C'est immonde. C'est la chose la plus réelle que tu aies faite depuis le début."],collectible:false,visible:false,unlockedBy:'porte-ouverte',action:'manger-chose'},
-      {id:'hs-cheminee',type:'inspect',x:15,y:30,w:15,h:25,cursor:'eye',resource:null,collectMode:'click',texts:["Les os brûlent différemment des autres matières. Ils gardent la lumière plus longtemps. Tu te souviens de l'avoir observé."],collectible:true,visible:true,unlockedBy:null,flag:'cheminee-inspectee'},
-      {id:'hs-oeil-mur',type:'inspect',x:65,y:35,w:10,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Il est intact. Quelqu'un l'a mis là. Avec soin. Comme pour quelqu'un qui reviendrait le chercher."],collectible:true,visible:true,unlockedBy:null,flag:'oeil-mur-inspecte'},
+      {id:'hs-porte',type:'zoom',zoomScene:'porte-zoom',x:35,y:30,w:18,h:38,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-fenetre',type:'zoom',zoomScene:'fenetre-zoom',x:55,y:24,w:18,h:16,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-chose-informe',type:'zoom',zoomScene:'chose-zoom',x:35,y:50,w:25,h:25,cursor:'eye',collectMode:'click',visible:false,unlockedBy:'porte-ouverte'},
+      {id:'hs-cheminee',type:'zoom',zoomScene:'cheminee-zoom',x:25,y:2,w:15,h:20,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-oeil-mur',type:'zoom',zoomScene:'oeil-mur-zoom',x:62,y:32,w:12,h:14,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-jardin',type:'organique',x:10,y:60,w:15,h:20,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Le jardin a poussé dans le mauvais sens."],collectible:true,visible:true,unlockedBy:null},
       {id:'hs-sol-empreintes',type:'souffle',x:50,y:75,w:20,h:12,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Une paire s'arrête au seuil et ne repart pas."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
       {id:'hs-grenier',type:'inspect',x:45,y:5,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Quelqu'un vivait ici. Pas toi. Quelqu'un que tu connaissais. Les photos sont brûlées du mauvais côté — de l'intérieur."],collectible:false,visible:false,unlockedBy:'has-ailes'},
@@ -706,6 +707,12 @@ const ZOOM_SCENES = {
     },introText:"Il bat encore. Pas vite. Pas régulièrement. Mais il bat.",
     hotspots:[{id:'hs-coeur-inspect',x:25,y:20,w:50,h:50,cursor:'eye',action:'inspect-coeur',texts:["Il bat encore. Comme s'il attendait que tu reviennes le chercher."]}],
   },
+  // ── 03 close-ups ──
+  'porte-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(w*0.1,0,w*0.8,h);ctx.fillStyle='#1a0c0b';ctx.fillRect(w*0.15,h*0.05,w*0.3,h*0.9);ctx.fillStyle='#080506';ctx.fillRect(w*0.44,h*0.05,w*0.02,h*0.9);if(state.narrativeFlags['porte-ouverte']){ctx.fillStyle='#060304';ctx.fillRect(w*0.46,h*0.1,w*0.35,h*0.8);ctx.fillStyle='#2A0A08';ctx.fillRect(w*0.55,h*0.6,w*0.15,h*0.1);ctx.fillStyle='#4A1010';ctx.beginPath();ctx.arc(w*0.7,h*0.7,20,0,Math.PI*2);ctx.fill()}},introText:"Tu reconnais cette pièce. Comme on reconnaît ses propres mains.",hotspots:[{id:'hs-porte-grab',x:10,y:10,w:35,h:80,cursor:'hand',action:'collect-porte',texts:["La porte grince. Derrière, quelque chose respire."]}]},
+  'chose-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#060304';ctx.fillRect(0,0,w,h);if(!state.narrativeFlags['chose-mangee']){ctx.fillStyle='#4A1010';ctx.beginPath();ctx.moveTo(w*0.3,h*0.7);ctx.bezierCurveTo(w*0.2,h*0.4,w*0.4,h*0.3,w*0.5,h*0.35);ctx.bezierCurveTo(w*0.6,h*0.3,w*0.8,h*0.4,w*0.7,h*0.7);ctx.closePath();ctx.fill();ctx.fillStyle='#8C1C1C';for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(w*0.35+Math.random()*w*0.3,h*0.4+Math.random()*h*0.2,5+Math.random()*10,0,Math.PI*2);ctx.fill()}}else{ctx.fillStyle='#2A0A08';ctx.beginPath();ctx.ellipse(w*0.5,h*0.6,60,20,0,0,Math.PI*2);ctx.fill()}},introText:null,hotspots:[{id:'hs-chose-eat',x:20,y:25,w:60,h:50,cursor:'hand',action:'manger-chose',texts:["C'est immonde. C'est la chose la plus réelle que tu aies faite depuis le début."]}]},
+  'fenetre-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(w*0.15,h*0.1,w*0.7,h*0.8);ctx.strokeStyle='#C6B29B';ctx.lineWidth=3;ctx.strokeRect(w*0.2,h*0.15,w*0.6,h*0.7);ctx.beginPath();ctx.moveTo(w*0.5,h*0.15);ctx.lineTo(w*0.5,h*0.85);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.2,h*0.5);ctx.lineTo(w*0.8,h*0.5);ctx.stroke();ctx.strokeStyle='#4A1010';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(w*0.35,h*0.3);ctx.lineTo(w*0.45,h*0.48);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.55,h*0.55);ctx.lineTo(w*0.7,h*0.45);ctx.stroke()},introText:null,hotspots:[]},
+  'cheminee-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(w*0.2,h*0.1,w*0.6,h*0.85);ctx.fillStyle='#2A0A08';ctx.fillRect(w*0.25,h*0.7,w*0.5,h*0.2);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.ellipse(w*0.45,h*0.78,15,8,0.3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8A7A6A';ctx.beginPath();ctx.ellipse(w*0.55,h*0.75,10,5,0,0,Math.PI*2);ctx.fill()},introText:"Les os brûlent différemment des autres matières. Ils gardent la lumière plus longtemps.",hotspots:[{id:'hs-cheminee-inspect',x:20,y:60,w:60,h:30,cursor:'eye',action:'inspect-cheminee',texts:["Tu te souviens de l'avoir observé."]}]},
+  'oeil-mur-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#100808';ctx.fillRect(0,0,w,h);for(let i=0;i<30;i++){ctx.fillStyle=`rgba(42,10,8,${0.3+Math.random()*0.3})`;ctx.fillRect(Math.random()*w,Math.random()*h,20+Math.random()*40,10+Math.random()*20)}ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.ellipse(w*0.5,h*0.45,30,20,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8C1C1C';ctx.beginPath();ctx.arc(w*0.5,h*0.45,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.5,h*0.45,5,0,Math.PI*2);ctx.fill()},introText:"Il est intact. Quelqu'un l'a mis là. Avec soin.",hotspots:[{id:'hs-oeil-inspect',x:30,y:25,w:40,h:40,cursor:'eye',action:'inspect-oeil',texts:["Comme pour quelqu'un qui reviendrait le chercher."]}]},
   // ── 02 close-ups ──
   'amas-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.3,w,h*0.7);ctx.fillStyle='#C6B29B';for(let i=0;i<20;i++){const x=w*0.2+Math.random()*w*0.6,y=h*0.3+Math.random()*h*0.4;ctx.beginPath();ctx.ellipse(x,y,6+Math.random()*12,3+Math.random()*5,Math.random()*Math.PI,0,Math.PI*2);ctx.fill()}if(state.narrativeFlags['trou-os-inspecte']){ctx.fillStyle='#080506';ctx.beginPath();ctx.ellipse(w*0.5,h*0.55,25,15,0,0,Math.PI*2);ctx.fill();const g=ctx.createRadialGradient(w*0.5,h*0.55,0,w*0.5,h*0.55,20);g.addColorStop(0,'rgba(190,55,45,0.15)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(w*0.35,h*0.4,w*0.3,h*0.3)}},introText:"Il y en a beaucoup. Trop pour être accidentel.",hotspots:[{id:'hs-amas-grab',x:25,y:25,w:50,h:50,cursor:'hand',action:'collect-amas',texts:["Les os cèdent. En dessous, quelque chose brille."]}]},
   'crane-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.5,h*0.45,50,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.42,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.58,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#8A7A6A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.42,h*0.35);ctx.lineTo(w*0.38,h*0.2);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.58,h*0.35);ctx.lineTo(w*0.64,h*0.22);ctx.stroke()},introText:"L'os a continué à pousser après. Après quoi — pas encore.",hotspots:[]},
@@ -737,6 +744,25 @@ function enterZoom(zoomId){
     el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
+      if(hs.action==='collect-porte'){
+        const ok=collectResource('organique',2,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.narrativeFlags['porte-ouverte']=true;saveState();
+          // Redraw porte with interior visible
+          if(currentZoom){const z=ZOOM_SCENES[currentZoom];if(z.drawCanvas){const c=document.createElement('canvas');c.width=960;c.height=720;z.drawCanvas(c.getContext('2d'),960,720);addGrain(c.getContext('2d'),960,720);sceneSprite.texture=PIXI.Texture.from(c)}}
+        }
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='inspect-cheminee'){
+        state.narrativeFlags['cheminee-inspectee']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='inspect-oeil'){
+        state.narrativeFlags['oeil-mur-inspecte']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
       if(hs.action==='collect-amas'){
         const ok=collectResource('organique',2,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){state.narrativeFlags['trou-os-inspecte']=true;saveState();updateRecipeUI()}
