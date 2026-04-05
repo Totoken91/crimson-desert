@@ -39,10 +39,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .res-row.cap .res-num { animation:blink-hard 1s step-start infinite; }
 @keyframes blink-hard { 0%,100%{visibility:visible} 50%{visibility:hidden} }
 
-/* ── DECAY BAR ── */
-#decay-bar { height:3px; background:#111; margin:2px 0 4px; display:none; }
-#decay-bar.active { display:block; }
-#decay-bar-fill { height:100%; background:var(--amber); width:100%; }
+/* ── DECAY BAR (same style as vitality, yellow) ── */
+#decay-bar { margin-top:4px; font-size:8px; letter-spacing:1px; line-height:1; }
+.decay-dash { color:#331A00; }
+.decay-dash.full { color:var(--amber); }
+.decay-dash.low { animation:blink-hard 0.5s step-start infinite; }
 
 /* ── VITALITY ── */
 #vitality-bar { margin-top:12px; padding-top:8px; border-top:1px solid #333; font-size:8px; letter-spacing:1px; line-height:1; }
@@ -129,8 +130,8 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
       <div class="res-row" id="res-d"><span class="res-label" style="color:var(--col-d)">D</span><div class="res-shapes" id="shapes-d"></div><span class="res-num" id="num-d"></span></div>
       <div class="res-row" id="res-s"><span class="res-label" style="color:var(--col-s)">S</span><div class="res-shapes" id="shapes-s"></div><span class="res-num" id="num-s"></span></div>
       <div class="res-row" id="res-o"><span class="res-label" style="color:var(--col-o)">O</span><div class="res-shapes" id="shapes-o"></div><span class="res-num" id="num-o"></span></div>
-      <div id="decay-bar"></div>
       <div id="vitality-bar"></div>
+      <div id="decay-bar"></div>
       <button id="btn-reset" class="btn-dos">[ reset ]</button>
     </div>
   </div>
@@ -679,20 +680,29 @@ function startDecayTimer(){
 }
 function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=null}}
 
-// Decay bar animation
+// Decay bar — 10 blocks like vitality, shows time until next decomposition
+const DECAY_BLOCKS=10;
 function updateDecayBar(){
+  decayBar.innerHTML='';
   if(state.inventory.organique>ORGANIQUE_SAFE&&decayStart){
-    decayBar.classList.add('active');
-    if(!decayBar.querySelector('#decay-bar-fill')){
-      decayBar.innerHTML='<div id="decay-bar-fill"></div>';
-    }
     const elapsed=Date.now()-decayStart;
-    const pct=Math.max(0,100-elapsed/ORGANIQUE_DECAY_MS*100);
-    decayBar.querySelector('#decay-bar-fill').style.width=pct+'%';
-    if(pct<30)decayBar.querySelector('#decay-bar-fill').style.background='#FF0000';
-    else decayBar.querySelector('#decay-bar-fill').style.background='var(--amber)';
+    const pct=Math.max(0,1-elapsed/ORGANIQUE_DECAY_MS);
+    const filled=Math.ceil(pct*DECAY_BLOCKS);
+    for(let i=0;i<DECAY_BLOCKS;i++){
+      const s=document.createElement('span');
+      s.className='decay-dash';
+      s.textContent=i<filled?'█':'░';
+      if(i<filled){s.classList.add('full');if(filled<=2)s.classList.add('low')}
+      decayBar.appendChild(s);
+    }
   }else{
-    decayBar.classList.remove('active');
+    // Empty bar — all dim
+    for(let i=0;i<DECAY_BLOCKS;i++){
+      const s=document.createElement('span');
+      s.className='decay-dash';
+      s.textContent='░';
+      decayBar.appendChild(s);
+    }
   }
   requestAnimationFrame(updateDecayBar);
 }
