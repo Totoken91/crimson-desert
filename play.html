@@ -682,29 +682,22 @@ function startDecayTimer(){
 }
 function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=null}}
 
-// Decay bar — 10 blocks like vitality, shows time until next decomposition
+// Decay bar — visible only when decomposition is active (organique > 5)
 const DECAY_BLOCKS=10;
 function updateDecayBar(){
+  const active=state.inventory.organique>ORGANIQUE_SAFE&&decayStart;
+  if(!active){decayBar.style.display='none';requestAnimationFrame(updateDecayBar);return}
+  decayBar.style.display='block';
   decayBar.innerHTML='';
-  if(state.inventory.organique>ORGANIQUE_SAFE&&decayStart){
-    const elapsed=Date.now()-decayStart;
-    const pct=Math.max(0,1-elapsed/ORGANIQUE_DECAY_MS);
-    const filled=Math.ceil(pct*DECAY_BLOCKS);
-    for(let i=0;i<DECAY_BLOCKS;i++){
-      const s=document.createElement('span');
-      s.className='decay-dash';
-      s.textContent=i<filled?'█':'░';
-      if(i<filled){s.classList.add('full');if(filled<=2)s.classList.add('low')}
-      decayBar.appendChild(s);
-    }
-  }else{
-    // Empty bar — all dim
-    for(let i=0;i<DECAY_BLOCKS;i++){
-      const s=document.createElement('span');
-      s.className='decay-dash';
-      s.textContent='░';
-      decayBar.appendChild(s);
-    }
+  const elapsed=Date.now()-decayStart;
+  const pct=Math.max(0,1-elapsed/ORGANIQUE_DECAY_MS);
+  const filled=Math.ceil(pct*DECAY_BLOCKS);
+  for(let i=0;i<DECAY_BLOCKS;i++){
+    const s=document.createElement('span');
+    s.className='decay-dash';
+    s.textContent=i<filled?'█':'░';
+    if(i<filled){s.classList.add('full');if(filled<=2)s.classList.add('low')}
+    decayBar.appendChild(s);
   }
   requestAnimationFrame(updateDecayBar);
 }
