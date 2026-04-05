@@ -383,6 +383,17 @@ function enterZoom(zoomId){
         if(ok){
           rocherHits=Math.min(rocherHits+1,2);
           flashPain();
+          // Screen shake
+          const container=document.getElementById('pixi-container');
+          const intensity=rocherHits===1?6:10;
+          let shakeCount=0;
+          const shakeInterval=setInterval(()=>{
+            const dx=(Math.random()-0.5)*intensity;
+            const dy=(Math.random()-0.5)*intensity;
+            container.style.transform=`translate(${dx}px,${dy}px)`;
+            shakeCount++;
+            if(shakeCount>8){clearInterval(shakeInterval);container.style.transform=''}
+          },30);
           // Swap to bloodier image
           const newTex=PIXI.Texture.from(ROCHER_IMAGES[rocherHits]);
           sceneSprite.texture=newTex;
