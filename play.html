@@ -343,11 +343,11 @@ const SCENES = {
   'scene-01a':{id:'scene-01a',label:'Les Dunes plates',intro:"Tu existes. C'est la seule certitude. Tout le reste est du sable.",bg:'desert-bg-1.png',
     hotspots:[
       // Rocher saillant — zoom, douleur hold
-      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:2,y:10,w:35,h:55,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:0,y:18,w:30,h:52,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
       // Empreinte au sol — zoom, souffle clic
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
-      // Horizon — porte vers 01b (pas une exit classique, c'est un hotspot)
-      {id:'hs-horizon',type:'inspect',x:10,y:5,w:80,h:25,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
+      // Horizon — porte vers 01b (bande de ciel noir au-dessus, ne chevauche pas le rocher)
+      {id:'hs-horizon',type:'inspect',x:30,y:0,w:70,h:18,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
       // Cercle d'alchimie — le seul du jeu
       {id:'hs-alchimie',type:'alchimie',x:45,y:75,w:12,h:15,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
     ],exits:[
