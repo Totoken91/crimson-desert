@@ -443,7 +443,10 @@ const ZOOM_SCENES = {
   'trace-zoom':{
     getImage: () => 'empreinte-sable.png',
     introText:"Quelqu'un s'est allongé ici. La forme est encore tiède.",
-    hotspots:[],
+    hotspots:[
+      {id:'hs-trace-collect',x:20,y:20,w:60,h:60,cursor:'eye',action:'collect-souffle',
+       texts:["La forme est la tienne. Les griffures aussi."]},
+    ],
   },
   'hairrock-zoom':{
     getImage: () => 'hair-rock.png',
@@ -481,6 +484,15 @@ function enterZoom(zoomId){
     el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
+      if(hs.action==='collect-souffle'){
+        const key='scene-01a:hs-trace-souffle';
+        if(state.souffleCollected[key]){showDialogue("Il ne reste plus rien ici.");return}
+        const ok=collectResource('souffle',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.souffleCollected[key]=true;saveState()}
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';
+        return;
+      }
       if(hs.action==='collect-organique'){
         // Cooldown 60s between hair pulls
         const lastPull=state.narrativeFlags['hair-last-pull']||0;
