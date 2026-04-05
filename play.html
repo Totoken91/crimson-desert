@@ -315,7 +315,7 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 // ══════════════════════════════════════
 const RECIPES = [
   // ── Organes vitaux (obligatoires) ──
-  {id:'armure-peau',name:"Armure de peau",cost:{douleur:0,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01b-cimetiere',category:'vital'},
+  {id:'armure-peau',name:"Armure de peau",cost:{douleur:0,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01a-droite',category:'vital'},
   {id:'lien-nerfs',name:"Lien de nerfs",cost:{douleur:3,souffle:0,organique:2},effect:"Accès maison délabrée.",sceneReaction:"Tes mains tremblent. Quelque chose se reconnecte.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-maison',category:'vital'},
   {id:'machoire',name:"Mâchoire osseuse",cost:{douleur:2,souffle:0,organique:2},effect:"Permet de manger.",sceneReaction:"Tu sens tes dents. Elles ne sont pas les tiennes.",mechanic:'flag',flag:'has-machoire',category:'vital'},
   {id:'estomac',name:"Estomac",cost:{douleur:0,souffle:1,organique:2},effect:"Permet de digérer.",sceneReaction:"Quelque chose se creuse en toi. Un vide utile.",mechanic:'flag',flag:'has-estomac',category:'vital'},
@@ -340,23 +340,29 @@ const SCENES = {
   // ══════ 01a — Les Dunes plates (départ, hub, cercle d'alchimie) ══════
   'scene-01a':{id:'scene-01a',label:'Les Dunes plates',intro:"Tu existes. C'est la seule certitude. Tout le reste est du sable.",bg:'desert-bg-1.png',
     hotspots:[
+      // Rocher saillant — zoom, douleur hold
       {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:2,y:10,w:35,h:55,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      // Empreinte au sol — zoom, souffle clic
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      // Horizon — porte vers 01b (pas une exit classique, c'est un hotspot)
+      {id:'hs-horizon',type:'inspect',x:10,y:5,w:80,h:25,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
+      // Cercle d'alchimie — le seul du jeu
       {id:'hs-alchimie',type:'alchimie',x:45,y:75,w:12,h:15,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
     ],exits:[
-      {id:'exit-01a-01b',targetScene:'scene-01b',x:88,y:15,w:12,h:80,locked:false,lockedText:null,unlockedBy:null},
+      // Sortie droite — bloquée par le froid, débloquée par armure de peau
+      {id:'exit-01a-droite',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
     ]},
 
   // ══════ 01b — Les Dunes (profondeur) ══════
   'scene-01b':{id:'scene-01b',label:'Les Dunes — profondeur',intro:"Le désert continue. Rien de spectaculaire. Juste plus de sable.",bg:'desert-bg-1.png',
     hotspots:[
-      {id:'hs-plume',type:'inspect',x:30,y:60,w:10,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."],collectible:true,visible:true,unlockedBy:null,flag:'plume-noire'},
-      {id:'hs-caillou',type:'organique',x:55,y:55,w:12,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Quelque chose s'est accroché ici en passant. Vite."],collectible:true,souffleUnique:false,visible:true,unlockedBy:null},
-      {id:'hs-anomalie-01b',type:'souffle',x:70,y:40,w:10,h:10,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["La cendre forme un cercle. Personne ne l'a tracé. Personne de visible."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
-      {id:'hs-horizon',type:'inspect',x:0,y:15,w:100,h:20,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null},
+      // Rocher aux cheveux — organique unique
+      {id:'hs-caillou',type:'organique',x:30,y:50,w:15,h:20,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Quelque chose s'est accroché ici en passant. Vite."],collectible:true,visible:true,unlockedBy:null},
+      // Plume noire — flag, débloque Plume de mémoire (optionnel)
+      {id:'hs-plume',type:'inspect',x:65,y:60,w:10,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."],collectible:true,visible:true,unlockedBy:null,flag:'plume-noire'},
     ],exits:[
+      // Retour 01a — libre
       {id:'exit-01b-01a',targetScene:'scene-01a',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
-      {id:'exit-01b-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
     ]},
 
   // ══════ 02 — Le Cimetière d'os ══════
@@ -657,6 +663,10 @@ function handleHotspotClick(hs,el,sceneId){
     setTimeout(()=>{resetState();loadScene('scene-01a')},5000);return;
   }
   if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
+  if(hs.action==='goto-01b'){
+    if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+    setTimeout(()=>transitionToScene('scene-01b'),1500);return;
+  }
   if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
