@@ -39,6 +39,11 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
 .res-row.cap .res-num { animation:blink-hard 1s step-start infinite; }
 @keyframes blink-hard { 0%,100%{visibility:visible} 50%{visibility:hidden} }
 
+/* ── DECAY BAR ── */
+#decay-bar { height:3px; background:#111; margin:2px 0 4px; display:none; }
+#decay-bar.active { display:block; }
+#decay-bar-fill { height:100%; background:var(--amber); width:100%; }
+
 /* ── VITALITY ── */
 #vitality-bar { margin-top:12px; padding-top:8px; border-top:1px solid #333; font-size:8px; letter-spacing:1px; line-height:1; }
 .vit-dash { color:#330000; }
@@ -124,6 +129,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#000; font-fam
       <div class="res-row" id="res-d"><span class="res-label" style="color:var(--col-d)">D</span><div class="res-shapes" id="shapes-d"></div><span class="res-num" id="num-d"></span></div>
       <div class="res-row" id="res-s"><span class="res-label" style="color:var(--col-s)">S</span><div class="res-shapes" id="shapes-s"></div><span class="res-num" id="num-s"></span></div>
       <div class="res-row" id="res-o"><span class="res-label" style="color:var(--col-o)">O</span><div class="res-shapes" id="shapes-o"></div><span class="res-num" id="num-o"></span></div>
+      <div id="decay-bar"></div>
       <div id="vitality-bar"></div>
       <button id="btn-reset" class="btn-dos">[ reset ]</button>
     </div>
@@ -445,7 +451,7 @@ const ZOOM_SCENES = {
     introText:"Quelque chose s'est accroché ici en passant. Vite.",
     hotspots:[
       {id:'hs-hair-collect',x:20,y:25,w:50,h:55,cursor:'hand',action:'collect-organique',
-       texts:["Quelque chose pousse sur la pierre. Tu prends une mèche."]},
+       texts:["Quelque chose pousse sur la pierre. Tu prends une mèche. Ça ramollit déjà entre tes doigts."]},
     ],
   },
   'plume-zoom':{
@@ -653,8 +659,46 @@ function endHold(){if(holdTimer){clearInterval(holdTimer);holdTimer=null}if(hold
 // DECAY
 // ══════════════════════════════════════
 let decayTimer=null;
-function startDecayTimer(){stopDecayTimer();decayTimer=setInterval(()=>{if(state.inventory.organique>ORGANIQUE_SAFE){state.inventory.organique--;if(!state.narrativeFlags['decay-warning']){showDialogue("Ça ne se conserve pas. Tu aurais dû t'en douter.");state.narrativeFlags['decay-warning']=true}updateResourceUI();saveState()}},ORGANIQUE_DECAY_MS)}
+let decayStart=null;
+const decayBar=$('decay-bar');
+
+function startDecayTimer(){
+  stopDecayTimer();
+  decayStart=Date.now();
+  decayTimer=setInterval(()=>{
+    if(state.inventory.organique>ORGANIQUE_SAFE){
+      state.inventory.organique--;
+      if(!state.narrativeFlags['decay-warning']){
+        showDialogue("Ça se décompose. La chair ne tient pas longtemps hors du corps. Tu aurais dû t'en douter.");
+        state.narrativeFlags['decay-warning']=true;
+      }else if(Math.random()<0.3){
+        showDialogue("Ça pourrit. Utilise-le ou perds-le.");
+      }
+      decayStart=Date.now();
+      updateResourceUI();saveState();
+    }
+  },ORGANIQUE_DECAY_MS);
+}
 function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=null}}
+
+// Decay bar animation
+function updateDecayBar(){
+  if(state.inventory.organique>ORGANIQUE_SAFE&&decayStart){
+    decayBar.classList.add('active');
+    if(!decayBar.querySelector('#decay-bar-fill')){
+      decayBar.innerHTML='<div id="decay-bar-fill"></div>';
+    }
+    const elapsed=Date.now()-decayStart;
+    const pct=Math.max(0,100-elapsed/ORGANIQUE_DECAY_MS*100);
+    decayBar.querySelector('#decay-bar-fill').style.width=pct+'%';
+    if(pct<30)decayBar.querySelector('#decay-bar-fill').style.background='#FF0000';
+    else decayBar.querySelector('#decay-bar-fill').style.background='var(--amber)';
+  }else{
+    decayBar.classList.remove('active');
+  }
+  requestAnimationFrame(updateDecayBar);
+}
+updateDecayBar();
 
 // ══════════════════════════════════════
 // SCENE TRANSITION (noise dissolve)
