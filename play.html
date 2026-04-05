@@ -672,12 +672,25 @@ function endHold(){if(holdTimer){clearInterval(holdTimer);holdTimer=null}if(hold
 // DECAY
 // ══════════════════════════════════════
 let decayTimer=null;
-let decayStart=null;
 const decayBar=$('decay-bar');
+
+function getDecayStart(){return state.organicDecayStart}
+function setDecayStart(v){state.organicDecayStart=v;saveState()}
 
 function startDecayTimer(){
   stopDecayTimer();
-  if(state.inventory.organique>0){decayStart=Date.now()}
+  // Restore from saved state or init
+  if(state.inventory.organique>0&&!state.organicDecayStart){setDecayStart(Date.now())}
+  // Calculate missed decays since last save
+  if(state.organicDecayStart&&state.inventory.organique>0){
+    const missed=Math.floor((Date.now()-state.organicDecayStart)/ORGANIQUE_DECAY_MS);
+    if(missed>0){
+      const lost=Math.min(missed,state.inventory.organique);
+      state.inventory.organique-=lost;
+      setDecayStart(state.inventory.organique>0?Date.now():null);
+      updateResourceUI();saveState();
+    }
+  }
   decayTimer=setInterval(()=>{
     if(state.inventory.organique>0){
       state.inventory.organique--;
@@ -687,29 +700,28 @@ function startDecayTimer(){
       }else{
         showDialogue("Quelque chose de putréfié se détache de toi. Tu as perdu quelque chose.");
       }
-      decayStart=state.inventory.organique>0?Date.now():null;
+      setDecayStart(state.inventory.organique>0?Date.now():null);
       updateResourceUI();saveState();
     }else{
-      decayStart=null;
+      setDecayStart(null);
     }
   },ORGANIQUE_DECAY_MS);
 }
 function stopDecayTimer(){if(decayTimer){clearInterval(decayTimer);decayTimer=null}}
 
-// Call this whenever organique changes
 function checkDecayStart(){
-  if(state.inventory.organique>0&&!decayStart){decayStart=Date.now()}
-  if(state.inventory.organique<=0){decayStart=null}
+  if(state.inventory.organique>0&&!state.organicDecayStart){setDecayStart(Date.now())}
+  if(state.inventory.organique<=0){setDecayStart(null)}
 }
 
 // Decay bar — visible only when decomposition is active (organique > 5)
 const DECAY_BLOCKS=10;
 function updateDecayBar(){
-  const active=state.inventory.organique>0&&decayStart;
+  const active=state.inventory.organique>0&&state.organicDecayStart;
   if(!active){decayBar.style.display='none';requestAnimationFrame(updateDecayBar);return}
   decayBar.style.display='block';
   decayBar.innerHTML='';
-  const elapsed=Date.now()-decayStart;
+  const elapsed=Date.now()-state.organicDecayStart;
   const pct=Math.max(0,1-elapsed/ORGANIQUE_DECAY_MS);
   const filled=Math.ceil(pct*DECAY_BLOCKS);
   for(let i=0;i<DECAY_BLOCKS;i++){
