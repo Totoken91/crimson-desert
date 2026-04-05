@@ -897,8 +897,10 @@ function enterZoom(zoomId){
         // Cooldown after 3 hits
         const lastSmash=state.narrativeFlags['rocher-last-smash']||0;
         if(rocherHits>=2&&Date.now()-lastSmash<60000){showDialogue("Tu ne ressens plus rien. Reviens plus tard.");return}
-        const ok=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
-        if(ok){
+        // Always smash — collect D if possible, lose vitality regardless
+        const gotD=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(!gotD){loseVitality(1);flashPain()} // D full but still hurts
+        {
           rocherHits=Math.min(rocherHits+1,2);
           state.narrativeFlags['rocher-last-smash']=Date.now();saveState();
           flashPain();
@@ -1028,7 +1030,7 @@ function flashPain(){const f=document.createElement('div');f.style.cssText='posi
 // ══════════════════════════════════════
 // RESOURCE + VITALITY + CRAFT
 // ══════════════════════════════════════
-function collectResource(type,amount,hx,hy){if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}if(type==='organique')checkDecayStart();floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
+function collectResource(type,amount,hx,hy){if(state.inventory[type]<0)state.inventory[type]=0;if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}if(type==='organique')checkDecayStart();floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
 function loseVitality(n){state.vitality=Math.max(0,state.vitality-n);updateVitalityUI();saveState();if(state.vitality<state.vitalityMax)startPixelFlicker();
   // Second coeur trigger — low life with coeur reliquaire
   if(state.vitality<=5&&state.narrativeFlags['has-coeur-reliquaire']&&!state.narrativeFlags['besoin-second-coeur']){
@@ -1091,7 +1093,7 @@ function startDecayTimer(){
   }
   decayTimer=setInterval(()=>{
     if(state.inventory.organique>0){
-      state.inventory.organique--;
+      state.inventory.organique=Math.max(0,state.inventory.organique-1);
       if(!state.narrativeFlags['decay-warning']){
         showDialogue("Ça se décompose. La chair ne tient pas longtemps hors du corps. Tu aurais dû t'en douter.");
         state.narrativeFlags['decay-warning']=true;
