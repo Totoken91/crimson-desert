@@ -218,13 +218,160 @@ app.view.style.zIndex = '0';
 
 let sceneSprite = null;
 
+// Scenes that have real images
+const REAL_IMAGES = {'desert-bg-1.png':true, '01b.png':true};
+
 function setupPixiScene(imagePath) {
   if (sceneSprite) { app.stage.removeChild(sceneSprite); sceneSprite.destroy(); }
-  const tex = PIXI.Texture.from(imagePath);
-  sceneSprite = new PIXI.Sprite(tex);
-  sceneSprite.width = 960;
-  sceneSprite.height = 720;
+
+  if (REAL_IMAGES[imagePath]) {
+    const tex = PIXI.Texture.from(imagePath);
+    sceneSprite = new PIXI.Sprite(tex);
+  } else {
+    // Generate placeholder canvas
+    const c = document.createElement('canvas'); c.width=960; c.height=720;
+    const ctx = c.getContext('2d');
+    drawPlaceholderScene(ctx, 960, 720, imagePath);
+    sceneSprite = new PIXI.Sprite(PIXI.Texture.from(c));
+  }
+  sceneSprite.width = 960; sceneSprite.height = 720;
   app.stage.addChildAt(sceneSprite, 0);
+}
+
+// ══════════════════════════════════════
+// PLACEHOLDER SCENE DRAWINGS
+// ══════════════════════════════════════
+function drawPlaceholderScene(ctx, w, h, id) {
+  // Base — dark gradient
+  ctx.fillStyle = '#080506';
+  ctx.fillRect(0, 0, w, h);
+
+  if (id === 'scene-01c' || id === 'desert-bg-1.png-01c') {
+    // Dunes lointaines — flatter, distant shapes
+    const grd = ctx.createLinearGradient(0, h*0.3, 0, h);
+    grd.addColorStop(0, '#0a0506'); grd.addColorStop(0.3, '#1a0c0b'); grd.addColorStop(1, '#2a1210');
+    ctx.fillStyle = grd; ctx.fillRect(0, h*0.3, w, h*0.7);
+    // Horizon line
+    ctx.strokeStyle = '#3a1a14'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, h*0.35); ctx.lineTo(w, h*0.32); ctx.stroke();
+    // Couteau placeholder
+    ctx.strokeStyle = '#666'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(w*0.45, h*0.5); ctx.lineTo(w*0.45, h*0.68); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w*0.43, h*0.68); ctx.lineTo(w*0.47, h*0.68); ctx.stroke();
+    // Entity silhouette — distant, deformed
+    ctx.fillStyle = '#1a0c0b';
+    ctx.beginPath(); ctx.moveTo(w*0.7, h*0.48); ctx.lineTo(w*0.68, h*0.2); ctx.lineTo(w*0.72, h*0.18);
+    ctx.lineTo(w*0.75, h*0.25); ctx.lineTo(w*0.78, h*0.15); ctx.lineTo(w*0.74, h*0.48); ctx.closePath(); ctx.fill();
+    // Label
+    drawSceneLabel(ctx, w, h, '01c — DUNES LOINTAINES');
+
+  } else if (id === 'desert-house-bg.png' || id === 'scene-02') {
+    // Cimetière d'os
+    const grd = ctx.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, '#060304'); grd.addColorStop(0.4, '#120808'); grd.addColorStop(1, '#1a0c0b');
+    ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+    // Ground
+    ctx.fillStyle = '#140a09'; ctx.fillRect(0, h*0.5, w, h*0.5);
+    // Bones scattered
+    ctx.strokeStyle = '#3a2a24'; ctx.lineWidth = 2;
+    for (let i = 0; i < 15; i++) {
+      const bx = w*0.1 + Math.random()*w*0.8;
+      const by = h*0.45 + Math.random()*h*0.4;
+      const angle = Math.random() * Math.PI;
+      ctx.save(); ctx.translate(bx, by); ctx.rotate(angle);
+      ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(15, 0); ctx.stroke();
+      ctx.beginPath(); ctx.arc(-15, 0, 3, 0, Math.PI*2); ctx.arc(15, 0, 3, 0, Math.PI*2); ctx.fillStyle='#2a1a16'; ctx.fill();
+      ctx.restore();
+    }
+    // Skull
+    ctx.fillStyle = '#2a1a16';
+    ctx.beginPath(); ctx.arc(w*0.65, h*0.4, 20, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#0a0506';
+    ctx.beginPath(); ctx.arc(w*0.62, h*0.38, 4, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w*0.68, h*0.38, 4, 0, Math.PI*2); ctx.fill();
+    drawSceneLabel(ctx, w, h, '02 — CIMETIÈRE D\'OS');
+
+  } else if (id === 'scene-03') {
+    // Maison délabrée
+    const grd = ctx.createLinearGradient(0, 0, 0, h);
+    grd.addColorStop(0, '#060304'); grd.addColorStop(1, '#1a0c0b');
+    ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
+    // Ground
+    ctx.fillStyle = '#140a09'; ctx.fillRect(0, h*0.65, w, h*0.35);
+    // House shape
+    ctx.fillStyle = '#1a100e';
+    ctx.fillRect(w*0.25, h*0.25, w*0.5, h*0.4);
+    // Roof
+    ctx.beginPath(); ctx.moveTo(w*0.2, h*0.25); ctx.lineTo(w*0.5, h*0.08); ctx.lineTo(w*0.8, h*0.25); ctx.closePath();
+    ctx.fillStyle = '#1e1210'; ctx.fill();
+    // Door
+    ctx.fillStyle = '#0a0506'; ctx.fillRect(w*0.45, h*0.4, w*0.1, h*0.25);
+    // Window
+    ctx.fillStyle = '#2a1210'; ctx.fillRect(w*0.6, h*0.32, w*0.08, h*0.08);
+    ctx.strokeStyle = '#0a0506'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(w*0.64, h*0.32); ctx.lineTo(w*0.64, h*0.4); ctx.stroke();
+    // Chimney
+    ctx.fillStyle = '#1e1210'; ctx.fillRect(w*0.35, h*0.08, w*0.04, h*0.17);
+    drawSceneLabel(ctx, w, h, '03 — MAISON DÉLABRÉE');
+
+  } else if (id === 'scene-04') {
+    // Grotte
+    ctx.fillStyle = '#030202'; ctx.fillRect(0, 0, w, h);
+    // Cave opening
+    ctx.beginPath();
+    ctx.moveTo(0, 0); ctx.lineTo(w*0.2, 0); ctx.bezierCurveTo(w*0.25, h*0.3, w*0.15, h*0.6, 0, h*0.7);
+    ctx.closePath(); ctx.fillStyle = '#0a0506'; ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(w, 0); ctx.lineTo(w*0.8, 0); ctx.bezierCurveTo(w*0.75, h*0.25, w*0.85, h*0.55, w, h*0.65);
+    ctx.closePath(); ctx.fill();
+    // Stalactites
+    ctx.fillStyle = '#1a100e';
+    for (let i = 0; i < 8; i++) {
+      const sx = w*0.2 + Math.random()*w*0.6;
+      const sh = 20 + Math.random()*40;
+      ctx.beginPath(); ctx.moveTo(sx-4, 0); ctx.lineTo(sx, sh); ctx.lineTo(sx+4, 0); ctx.closePath(); ctx.fill();
+    }
+    drawSceneLabel(ctx, w, h, '04 — LA GROTTE');
+
+  } else if (id === 'scene-05') {
+    // Le Ciel
+    ctx.fillStyle = '#060308'; ctx.fillRect(0, 0, w, h);
+    // Stars/failles
+    for (let i = 0; i < 30; i++) {
+      ctx.fillStyle = `rgba(190,55,45,${0.1+Math.random()*0.3})`;
+      ctx.fillRect(Math.random()*w, Math.random()*h*0.6, 1+Math.random()*2, 1+Math.random()*2);
+    }
+    // 3 failles
+    ctx.strokeStyle = '#8C1C1C'; ctx.lineWidth = 2;
+    [[w*0.25,h*0.25],[w*0.55,h*0.3],[w*0.8,h*0.2]].forEach(([fx,fy]) => {
+      ctx.beginPath(); ctx.moveTo(fx-10,fy-15); ctx.lineTo(fx+5,fy+15); ctx.stroke();
+      const g = ctx.createRadialGradient(fx,fy,0,fx,fy,25);
+      g.addColorStop(0,'rgba(190,55,45,0.15)'); g.addColorStop(1,'transparent');
+      ctx.fillStyle = g; ctx.fillRect(fx-25,fy-25,50,50);
+    });
+    // Desert below
+    ctx.fillStyle = '#1a0c0b'; ctx.fillRect(0, h*0.75, w, h*0.25);
+    drawSceneLabel(ctx, w, h, '05 — LE CIEL');
+
+  } else {
+    // Generic fallback
+    drawSceneLabel(ctx, w, h, 'SCENE PLACEHOLDER');
+  }
+
+  // Grain on all placeholders
+  const imgData = ctx.getImageData(0, 0, w, h);
+  for (let i = 0; i < imgData.data.length; i += 4) {
+    const n = (Math.random()-0.5)*8;
+    imgData.data[i]+=n; imgData.data[i+1]+=n; imgData.data[i+2]+=n;
+  }
+  ctx.putImageData(imgData, 0, 0);
+}
+
+function drawSceneLabel(ctx, w, h, text) {
+  ctx.font = '10px "Press Start 2P", monospace';
+  ctx.fillStyle = '#333';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, w/2, h - 12);
 }
 
 // ══════════════════════════════════════
@@ -367,7 +514,7 @@ const SCENES = {
     ]},
 
   // ══════ 01c — Les Dunes lointaines ══════
-  'scene-01c':{id:'scene-01c',label:'Les Dunes lointaines',intro:"Horizon atteint. Premiers signes que quelque chose d'autre est là.",bg:'desert-bg-1.png',
+  'scene-01c':{id:'scene-01c',label:'Les Dunes lointaines',intro:"Horizon atteint. Premiers signes que quelque chose d'autre est là.",bg:'scene-01c',
     hotspots:[
       {id:'hs-couteau',type:'douleur',x:40,y:55,w:10,h:18,cursor:'hand',resource:{type:'douleur',amount:2},collectMode:'click',flashOnCollect:true,texts:["Le couteau était propre. Il ne l'est plus. Il n'y a plus grand chose à prendre ici."],collectible:true,visible:true,unlockedBy:null,flag:'inspected-couteau-01c'},
       {id:'hs-entite',type:'inspect',x:60,y:20,w:25,h:35,cursor:'eye',resource:null,collectMode:'click',texts:["Elle se tient mal. Trop de choses poussent dans la mauvaise direction. Elle ne te regarde pas. Ou elle ne peut plus."],collectible:false,visible:true,unlockedBy:null,flag:'inspected-entite-difforme'},
@@ -377,7 +524,7 @@ const SCENES = {
     ]},
 
   // ══════ 02 — Le Cimetière d'os ══════
-  'scene-02':{id:'scene-02',label:'Le Cimetière d\'os',intro:"Des os. Partout. Certains ont des formes impossibles. Il y en a beaucoup. Trop pour être accidentel.",bg:'desert-house-bg.png',
+  'scene-02':{id:'scene-02',label:'Le Cimetière d\'os',intro:"Des os. Partout. Certains ont des formes impossibles. Il y en a beaucoup. Trop pour être accidentel.",bg:'scene-02',
     hotspots:[
       {id:'hs-amas',type:'organique',x:35,y:50,w:18,h:20,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["Il y en a beaucoup. Trop pour être accidentel."],collectible:true,visible:true,unlockedBy:null,flag:'inspected-amas-trou'},
       {id:'hs-crane',type:'souffle',x:60,y:35,w:12,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["L'os a continué à pousser après. Après quoi — pas encore."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
@@ -393,7 +540,7 @@ const SCENES = {
     ]},
 
   // ══════ 03 — La Maison délabrée ══════
-  'scene-03':{id:'scene-03',label:'La Maison délabrée',intro:"Une maison. Elle ne devrait pas être là.",bg:'desert-house-bg.png',
+  'scene-03':{id:'scene-03',label:'La Maison délabrée',intro:"Une maison. Elle ne devrait pas être là.",bg:'scene-03',
     hotspots:[
       {id:'hs-porte',type:'organique',x:40,y:30,w:20,h:40,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["La porte grince. Derrière, quelque chose respire."],collectible:true,visible:true,unlockedBy:null},
       {id:'hs-fenetre',type:'douleur',x:70,y:25,w:12,h:30,cursor:'hand',collectMode:'hold',holdMax:2000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"Le verre est ancien. Il cède."},{ms:2000,resource:{type:'douleur',amount:1},text:"Le sang sur le rebord n'est pas le tien. Ou alors si."}],collectible:false,visible:true,unlockedBy:null},
@@ -407,7 +554,7 @@ const SCENES = {
     ]},
 
   // ══════ 04 — La Grotte ══════
-  'scene-04':{id:'scene-04',label:'La Grotte',intro:"L'obscurité est totale.",bg:'desert-bg-1.png',
+  'scene-04':{id:'scene-04',label:'La Grotte',intro:"L'obscurité est totale.",bg:'scene-04',
     hotspots:[
       {id:'hs-stalactite',type:'douleur',x:30,y:15,w:10,h:25,cursor:'hand',resource:{type:'douleur',amount:1},collectMode:'click',flashOnCollect:true,texts:["La stalactite est aiguisée. Par quoi."],collectible:true,visible:false,unlockedBy:'has-lanterne'},
       {id:'hs-feu',type:'souffle',x:50,y:60,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Le feu est récent. Quelqu'un était là. Peut-être toi."],collectible:true,souffleUnique:true,visible:false,unlockedBy:'has-lanterne'},
@@ -418,7 +565,7 @@ const SCENES = {
     ]},
 
   // ══════ 05 — Le Ciel (Ailes uniquement) ══════
-  'scene-05':{id:'scene-05',label:'Le Ciel',intro:"Ce monde est fermé. Ou complet. Tu ne sais pas si c'est la même chose.",bg:'desert-bg-1.png',
+  'scene-05':{id:'scene-05',label:'Le Ciel',intro:"Ce monde est fermé. Ou complet. Tu ne sais pas si c'est la même chose.",bg:'scene-05',
     hotspots:[
       {id:'hs-faille-1',type:'souffle',x:20,y:20,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:2},collectMode:'click',texts:["La faille respire. Tu respires avec."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
       {id:'hs-faille-2',type:'souffle',x:50,y:30,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:2},collectMode:'click',texts:["La lumière ne traverse pas. Elle remplace."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
