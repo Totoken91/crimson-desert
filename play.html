@@ -211,135 +211,13 @@ app.view.style.zIndex = '0';
 
 let sceneSprite = null;
 
-function setupPixiScene(imagePath, sceneId) {
+function setupPixiScene(imagePath) {
   if (sceneSprite) { app.stage.removeChild(sceneSprite); sceneSprite.destroy(); }
-
-  const img = new Image();
-  img.onload = () => {
-    const c = document.createElement('canvas');
-    c.width = 960; c.height = 720;
-    const ctx = c.getContext('2d');
-    ctx.drawImage(img, 0, 0, 960, 720);
-
-    // Draw scene elements on top
-    if (sceneId === 'scene-01') {
-      drawRocherOnScene(ctx);
-      drawTraceOnScene(ctx);
-      drawAlchemyCircleOnScene(ctx);
-    }
-
-    const tex = PIXI.Texture.from(c);
-    sceneSprite = new PIXI.Sprite(tex);
-    sceneSprite.width = 960; sceneSprite.height = 720;
-    app.stage.addChildAt(sceneSprite, 0);
-  };
-  img.src = imagePath;
-}
-
-// ── Rock on scene (small, at hotspot position) ──
-function drawRocherOnScene(ctx) {
-  const ox = 960 * 0.20, oy = 720 * 0.45; // hotspot origin
-  const w = 960 * 0.18, h = 720 * 0.25;
-  ctx.save();
-  ctx.translate(ox, oy);
-  // Shadow
-  ctx.beginPath();
-  ctx.ellipse(w*0.5, h*0.9, w*0.4, h*0.08, 0, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.fill();
-  // Rock body — irregular shape
-  ctx.beginPath();
-  ctx.moveTo(w*0.15, h*0.85);
-  ctx.bezierCurveTo(w*0.05, h*0.55, w*0.2, h*0.2, w*0.4, h*0.1);
-  ctx.bezierCurveTo(w*0.55, h*0.05, w*0.75, h*0.15, w*0.85, h*0.35);
-  ctx.bezierCurveTo(w*0.95, h*0.55, w*0.88, h*0.75, w*0.82, h*0.85);
-  ctx.closePath();
-  ctx.fillStyle = '#1e1412';
-  ctx.fill();
-  // Lighter face
-  ctx.beginPath();
-  ctx.moveTo(w*0.25, h*0.7);
-  ctx.bezierCurveTo(w*0.2, h*0.4, w*0.35, h*0.2, w*0.5, h*0.15);
-  ctx.bezierCurveTo(w*0.6, h*0.12, w*0.7, h*0.2, w*0.72, h*0.35);
-  ctx.lineTo(w*0.65, h*0.7);
-  ctx.closePath();
-  ctx.fillStyle = '#2a1c18';
-  ctx.fill();
-  // Edge highlight
-  ctx.beginPath();
-  ctx.moveTo(w*0.3, h*0.35);
-  ctx.bezierCurveTo(w*0.4, h*0.15, w*0.6, h*0.12, w*0.7, h*0.25);
-  ctx.strokeStyle = '#3a2c24';
-  ctx.lineWidth = 1;
-  ctx.stroke();
-  // Crack
-  ctx.beginPath();
-  ctx.moveTo(w*0.5, h*0.25); ctx.lineTo(w*0.48, h*0.45); ctx.lineTo(w*0.52, h*0.6);
-  ctx.strokeStyle = '#0c0806';
-  ctx.lineWidth = 0.8;
-  ctx.stroke();
-  ctx.restore();
-}
-
-// ── Body trace on scene (silhouette in sand) ──
-function drawTraceOnScene(ctx) {
-  const ox = 960 * 0.45, oy = 720 * 0.65;
-  const w = 960 * 0.25, h = 720 * 0.15;
-  ctx.save();
-  ctx.translate(ox + w*0.5, oy + h*0.5);
-  ctx.globalAlpha = 0.25;
-  // Lying figure — simple silhouette pressed into sand
-  ctx.fillStyle = '#0a0504';
-  // Head
-  ctx.beginPath();
-  ctx.ellipse(-w*0.35, 0, h*0.25, h*0.22, 0, 0, Math.PI*2);
-  ctx.fill();
-  // Torso
-  ctx.beginPath();
-  ctx.ellipse(-w*0.1, 0, h*0.55, h*0.3, 0.05, 0, Math.PI*2);
-  ctx.fill();
-  // Legs
-  ctx.beginPath();
-  ctx.ellipse(w*0.25, -h*0.08, h*0.45, h*0.15, -0.1, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(w*0.25, h*0.12, h*0.45, h*0.15, 0.1, 0, Math.PI*2);
-  ctx.fill();
-  // Arms
-  ctx.beginPath();
-  ctx.ellipse(-w*0.15, -h*0.35, h*0.35, h*0.1, -0.3, 0, Math.PI*2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(-w*0.1, h*0.35, h*0.3, h*0.1, 0.2, 0, Math.PI*2);
-  ctx.fill();
-  ctx.globalAlpha = 1;
-  ctx.restore();
-}
-
-// ── Alchemy circle on scene ──
-function drawAlchemyCircleOnScene(ctx) {
-  const cx = 960 * 0.75, cy = 720 * 0.76;
-  ctx.save();
-  ctx.globalAlpha = 0.2;
-  ctx.strokeStyle = '#8C1C1C';
-  ctx.lineWidth = 1;
-  // Outer circle
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, 35, 20, 0.1, 0, Math.PI*2);
-  ctx.stroke();
-  // Inner circle
-  ctx.beginPath();
-  ctx.ellipse(cx, cy, 18, 10, -0.05, 0, Math.PI*2);
-  ctx.stroke();
-  // Cross lines
-  ctx.beginPath();
-  ctx.moveTo(cx-30, cy); ctx.lineTo(cx+30, cy);
-  ctx.moveTo(cx, cy-18); ctx.lineTo(cx, cy+18);
-  ctx.strokeStyle = '#6B2416';
-  ctx.lineWidth = 0.5;
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-  ctx.restore();
+  const tex = PIXI.Texture.from(imagePath);
+  sceneSprite = new PIXI.Sprite(tex);
+  sceneSprite.width = 960;
+  sceneSprite.height = 720;
+  app.stage.addChildAt(sceneSprite, 0);
 }
 
 // ══════════════════════════════════════
@@ -445,8 +323,8 @@ const RECIPES = [
 const SCENES = {
   'scene-01':{id:'scene-01',label:'Les Dunes plates',intro:"Tu étais là avant que le sable existe.",bg:'desert-bg-1.png',
     hotspots:[
-      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:20,y:45,w:18,h:25,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
-      {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:45,y:65,w:25,h:15,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:2,y:10,w:35,h:55,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-alchimie',type:'alchimie',x:70,y:70,w:10,h:12,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
     ],exits:[{id:'exit-droite',targetScene:null,x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu as froid. Il faut que tu trouves un moyen de rester au chaud.",unlockedBy:null}]},
   'scene-02':{id:'scene-02',label:'Les Ossements',intro:"Tu as déjà été ici. Pas toi. Quelque chose de toi.",bg:'desert-house-bg.png',
@@ -459,61 +337,41 @@ const SCENES = {
 };
 
 // ══════════════════════════════════════
-// ZOOM SCENES
+// ZOOM SCENES — real images
 // ══════════════════════════════════════
-let rocherBloodied = false;
+let rocherHits = 0; // 0=clean, 1=sang, 2=sang-2
+let currentZoom = null;
 
-function drawRocher(ctx, w, h, bloodied) {
-  ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);
-  ctx.fillStyle='#1a0c0b';ctx.fillRect(0,h*0.7,w,h*0.3);
-  ctx.beginPath();ctx.moveTo(w*0.2,h*0.7);
-  ctx.bezierCurveTo(w*0.15,h*0.4,w*0.3,h*0.2,w*0.45,h*0.18);
-  ctx.bezierCurveTo(w*0.55,h*0.16,w*0.7,h*0.25,w*0.75,h*0.35);
-  ctx.bezierCurveTo(w*0.82,h*0.5,w*0.78,h*0.65,w*0.8,h*0.7);
-  ctx.closePath();ctx.fillStyle='#2a1a16';ctx.fill();
-  ctx.strokeStyle='#3a2a24';ctx.lineWidth=2;ctx.stroke();
-  ctx.beginPath();ctx.moveTo(w*0.3,h*0.45);
-  ctx.bezierCurveTo(w*0.4,h*0.28,w*0.55,h*0.22,w*0.65,h*0.3);
-  ctx.strokeStyle='#4a3a30';ctx.lineWidth=1;ctx.stroke();
-  ctx.beginPath();ctx.moveTo(w*0.45,h*0.35);ctx.lineTo(w*0.48,h*0.5);ctx.lineTo(w*0.44,h*0.6);
-  ctx.strokeStyle='#1a0c0b';ctx.lineWidth=1;ctx.stroke();
-  if(bloodied){for(let i=0;i<8;i++){const bx=w*0.3+Math.random()*w*0.4,by=h*0.25+Math.random()*h*0.3,br=5+Math.random()*15;const g=ctx.createRadialGradient(bx,by,0,bx,by,br);g.addColorStop(0,'rgba(140,28,28,0.7)');g.addColorStop(1,'rgba(140,28,28,0)');ctx.fillStyle=g;ctx.fillRect(bx-br,by-br,br*2,br*2)}
-    ctx.beginPath();ctx.moveTo(w*0.5,h*0.3);ctx.bezierCurveTo(w*0.5,h*0.4,w*0.48,h*0.5,w*0.49,h*0.6);ctx.strokeStyle='#8C1C1C';ctx.lineWidth=2;ctx.stroke()}
-  const id=ctx.getImageData(0,0,w,h);for(let i=0;i<id.data.length;i+=4){const n=(Math.random()-0.5)*10;id.data[i]+=n;id.data[i+1]+=n;id.data[i+2]+=n}ctx.putImageData(id,0,0);
-}
-
-function drawTrace(ctx, w, h) {
-  ctx.fillStyle='#1a0c0b';ctx.fillRect(0,0,w,h);
-  const g=ctx.createRadialGradient(w*0.5,h*0.45,0,w*0.5,h*0.45,w*0.4);g.addColorStop(0,'#251210');g.addColorStop(1,'#1a0c0b');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-  ctx.save();ctx.translate(w*0.5,h*0.45);ctx.scale(1.2,1);ctx.fillStyle='#100808';
-  ctx.beginPath();ctx.arc(0,-h*0.18,25,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(0,-h*0.02,40,70,0,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(-55,h*0.02,12,50,0.3,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(50,-h*0.01,12,45,-0.2,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(-18,h*0.18,14,55,0.05,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.ellipse(18,h*0.19,14,55,-0.05,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-  const gl=ctx.createRadialGradient(w*0.5,h*0.45,50,w*0.5,h*0.45,180);gl.addColorStop(0,'rgba(140,28,28,0.04)');gl.addColorStop(1,'transparent');ctx.fillStyle=gl;ctx.fillRect(0,0,w,h);
-  const id=ctx.getImageData(0,0,w,h);for(let i=0;i<id.data.length;i+=4){const n=(Math.random()-0.5)*8;id.data[i]+=n;id.data[i+1]+=n;id.data[i+2]+=n}ctx.putImageData(id,0,0);
-}
+const ROCHER_IMAGES = ['rocher-saillant.png', 'rocher-saillant-sang.png', 'rocher-saillant-sang-2.png'];
 
 const ZOOM_SCENES = {
-  'rocher-zoom':{draw:drawRocher,introText:null,hotspots:[
-    {id:'hs-smash',x:25,y:20,w:50,h:45,cursor:'hand',action:'smash-head',texts:["Tu écrases ta tête contre la pierre. Le son est mat.","Le rocher ne bronche pas. Toi si."]},
-  ]},
-  'trace-zoom':{draw:drawTrace,introText:"Quelqu'un s'est allongé ici. La forme est encore tiède.",hotspots:[]},
+  'rocher-zoom':{
+    getImage: () => ROCHER_IMAGES[Math.min(rocherHits, 2)],
+    introText:null,
+    hotspots:[
+      {id:'hs-smash',x:10,y:5,w:55,h:75,cursor:'hand',action:'smash-head',
+       texts:["Tu écrases ta tête contre la pierre. Le son est mat.","Le rocher ne bronche pas. Toi si."]},
+    ],
+  },
+  'trace-zoom':{
+    getImage: () => 'empreinte-sable.png',
+    introText:"Quelqu'un s'est allongé ici. La forme est encore tiède.",
+    hotspots:[],
+  },
 };
-
-let currentZoom = null;
 
 function enterZoom(zoomId){
   const zoom=ZOOM_SCENES[zoomId];if(!zoom)return;currentZoom=zoomId;
-  const c=document.createElement('canvas');c.width=960;c.height=720;const ctx=c.getContext('2d');
-  if(zoomId==='rocher-zoom')zoom.draw(ctx,960,720,rocherBloodied);else zoom.draw(ctx,960,720);
-  const tex=PIXI.Texture.from(c);
+  const imgSrc=zoom.getImage();
+  // Load image as PixiJS texture
   if(sceneSprite){app.stage.removeChild(sceneSprite);sceneSprite.destroy()}
-  sceneSprite=new PIXI.Sprite(tex);sceneSprite.width=960;sceneSprite.height=720;app.stage.addChildAt(sceneSprite,0);
+  const tex=PIXI.Texture.from(imgSrc);
+  sceneSprite=new PIXI.Sprite(tex);sceneSprite.width=960;sceneSprite.height=720;
+  app.stage.addChildAt(sceneSprite,0);
+
   hotspotLayer.querySelectorAll('.hotspot,.exit-zone').forEach(e=>e.remove());
+
+  // Zoom hotspots
   zoom.hotspots.forEach(hs=>{
     const el=document.createElement('button');el.className='hotspot';el.id='hs-el-'+hs.id;
     el.style.cssText=`left:${hs.x/100*960}px;top:${hs.y/100*720}px;width:${hs.w/100*960}px;height:${hs.h/100*720}px`;
@@ -522,20 +380,27 @@ function enterZoom(zoomId){
     el.addEventListener('click',()=>{
       if(hs.action==='smash-head'){
         const ok=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
-        if(ok){rocherBloodied=true;flashPain();
-          const c2=document.createElement('canvas');c2.width=960;c2.height=720;
-          drawRocher(c2.getContext('2d'),960,720,true);sceneSprite.texture=PIXI.Texture.from(c2)}
+        if(ok){
+          rocherHits=Math.min(rocherHits+1,2);
+          flashPain();
+          // Swap to bloodier image
+          const newTex=PIXI.Texture.from(ROCHER_IMAGES[rocherHits]);
+          sceneSprite.texture=newTex;
+        }
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
       }
     });
     hotspotLayer.appendChild(el);
   });
+
+  // Return zone — bottom 20%
   const ret=document.createElement('button');ret.className='exit-zone';
   ret.style.cssText=`left:0;top:${720*0.8}px;width:960px;height:${720*0.2}px`;
   ret.addEventListener('mouseenter',()=>setCursor('exit'));
   ret.addEventListener('mouseleave',()=>setCursor('default'));
   ret.addEventListener('click',()=>exitZoom());
   hotspotLayer.appendChild(ret);
+
   if(zoom.introText)setTimeout(()=>showDialogue(zoom.introText),300);
 }
 
@@ -655,7 +520,7 @@ function transitionToScene(tid){const ov=document.createElement('canvas');ov.sty
 // ══════════════════════════════════════
 function loadScene(sceneId){
   const scene=SCENES[sceneId];if(!scene)return;state.currentScene=sceneId;activeAlchemyPoint=false;
-  setupPixiScene(scene.bg, sceneId);
+  setupPixiScene(scene.bg);
   hotspotLayer.querySelectorAll('.hotspot,.exit-zone').forEach(e=>e.remove());
   scene.hotspots.forEach(hs=>{const key=sceneId+':'+hs.id;
     if(hs.collectible&&hs.type==='souffle'&&state.souffleCollected[key])return;
