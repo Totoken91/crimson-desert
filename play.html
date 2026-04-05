@@ -356,14 +356,13 @@ const SCENES = {
     ]},
 
   // ══════ 01b — Les Dunes (profondeur) ══════
-  'scene-01b':{id:'scene-01b',label:'Les Dunes — profondeur',intro:"Le désert continue. Rien de spectaculaire. Juste plus de sable.",bg:'desert-bg-1.png',
+  'scene-01b':{id:'scene-01b',label:'Les Dunes — profondeur',intro:"Le désert continue. Rien de spectaculaire. Juste plus de sable.",bg:'01b.png',
     hotspots:[
-      // Rocher aux cheveux — organique unique
-      {id:'hs-caillou',type:'organique',x:30,y:50,w:15,h:20,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Quelque chose s'est accroché ici en passant. Vite."],collectible:true,visible:true,unlockedBy:null},
-      // Plume noire — flag, débloque Plume de mémoire (optionnel)
-      {id:'hs-plume',type:'inspect',x:65,y:60,w:10,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."],collectible:true,visible:true,unlockedBy:null,flag:'plume-noire'},
+      // Rocher aux cheveux — zoom, organique unique (en bas-droite de l'image)
+      {id:'hs-caillou',type:'zoom',zoomScene:'hairrock-zoom',x:70,y:55,w:25,h:35,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
+      // Plume noire sous les os — zoom, flag (au centre-gauche)
+      {id:'hs-plume',type:'zoom',zoomScene:'plume-zoom',x:25,y:35,w:25,h:30,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
     ],exits:[
-      // Retour 01a — libre
       {id:'exit-01b-01a',targetScene:'scene-01a',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
     ]},
 
@@ -441,6 +440,22 @@ const ZOOM_SCENES = {
     introText:"Quelqu'un s'est allongé ici. La forme est encore tiède.",
     hotspots:[],
   },
+  'hairrock-zoom':{
+    getImage: () => 'hair-rock.png',
+    introText:"Quelque chose s'est accroché ici en passant. Vite.",
+    hotspots:[
+      {id:'hs-hair-collect',x:20,y:25,w:50,h:55,cursor:'hand',action:'collect-organique',
+       texts:["Ça se détache facilement. Trop facilement.","Tu ne sais pas si c'était vivant. Tu le prends quand même."]},
+    ],
+  },
+  'plume-zoom':{
+    getImage: () => 'plume-memoire.png',
+    introText:"Des os. En dessous, quelque chose de noir. Trop propre pour être ici.",
+    hotspots:[
+      {id:'hs-plume-collect',x:30,y:30,w:40,h:45,cursor:'eye',action:'collect-plume',
+       texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."]},
+    ],
+  },
 };
 
 function enterZoom(zoomId){
@@ -461,6 +476,21 @@ function enterZoom(zoomId){
     el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));
     el.addEventListener('mouseleave',()=>setCursor('default'));
     el.addEventListener('click',()=>{
+      if(hs.action==='collect-organique'){
+        const ok=collectResource('organique',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.inspected[state.currentScene+':hs-caillou']=true;saveState()}
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';
+        return;
+      }
+      if(hs.action==='collect-plume'){
+        state.narrativeFlags['plume-noire']=true;
+        state.inspected[state.currentScene+':hs-plume']=true;
+        saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';
+        return;
+      }
       if(hs.action==='smash-head'){
         const ok=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){
