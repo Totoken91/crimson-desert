@@ -300,7 +300,7 @@ const ORGANIQUE_SAFE = 5;
 const ORGANIQUE_DECAY_MS = 120000;
 const ORGANIQUE_RESPAWN_MS = 480000;
 const DEFAULT_STATE = {
-  currentScene:'scene-01', inventory:{douleur:0,souffle:0,organique:0},
+  currentScene:'scene-01a', inventory:{douleur:0,souffle:0,organique:0},
   vitality:10, vitalityMax:10, painLevel:0.0, crafted:[], inspected:{},
   exits:{}, souffleCollected:{}, organicRespawn:{},
   organicDecayStart:null, painAbsorbActive:false, narrativeFlags:{},
@@ -314,26 +314,101 @@ function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...stat
 // RECIPES
 // ══════════════════════════════════════
 const RECIPES = [
-  {id:'armure-peau',name:"Armure de peau",cost:{douleur:1,souffle:0,organique:0},effect:"Te protège du froid.",sceneReaction:"Quelque chose enveloppe ce qui reste de toi. Tu as moins froid.",mechanic:'pain-absorb'},
+  // ── Organes vitaux (obligatoires) ──
+  {id:'armure-peau',name:"Armure de peau",cost:{douleur:0,souffle:1,organique:1},effect:"Résiste au froid.",sceneReaction:"Quelque chose t'enveloppe. Tu ne sais pas si c'est chaud ou si tu as juste oublié ce que froid voulait dire.",mechanic:'unlock-exit',targetExit:'exit-01b-cimetiere',category:'vital'},
+  {id:'lien-nerfs',name:"Lien de nerfs",cost:{douleur:3,souffle:0,organique:2},effect:"Accès maison délabrée.",sceneReaction:"Tes mains tremblent. Quelque chose se reconnecte.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-maison',category:'vital'},
+  {id:'machoire',name:"Mâchoire osseuse",cost:{douleur:2,souffle:0,organique:2},effect:"Permet de manger.",sceneReaction:"Tu sens tes dents. Elles ne sont pas les tiennes.",mechanic:'flag',flag:'has-machoire',category:'vital'},
+  {id:'estomac',name:"Estomac",cost:{douleur:0,souffle:1,organique:2},effect:"Permet de digérer.",sceneReaction:"Quelque chose se creuse en toi. Un vide utile.",mechanic:'flag',flag:'has-estomac',category:'vital'},
+  {id:'poumons',name:"Poumons",cost:{douleur:2,souffle:2,organique:0},effect:"Accès grotte.",sceneReaction:"Tu inspires. Pour la première fois. L'air a un goût de cendre.",mechanic:'unlock-exit',targetExit:'exit-cimetiere-grotte',category:'vital'},
+  // ── Objet vital ──
+  {id:'lanterne-os',name:"Lanterne d'os",cost:{douleur:2,souffle:1,organique:0},effect:"Voir dans la grotte.",sceneReaction:"La lumière ne vient pas de la flamme. Elle vient de l'os.",mechanic:'flag',flag:'has-lanterne',category:'vital'},
+  // ── Organes divins (optionnels, dissolution +0.15) ──
+  {id:'ailes',name:"Ailes",cost:{douleur:4,souffle:3,organique:2},effect:"Accès au Ciel. Vitalité max +3.",sceneReaction:"Elles poussent. Pas sur ton dos. Depuis ton dos.",mechanic:'divine',flag:'has-ailes',dissolutionDelta:0.15,category:'divine',requires:'plume-memoire'},
+  {id:'second-coeur',name:"Second cœur",cost:{douleur:3,souffle:3,organique:2},effect:"Vitalité max ×2.",sceneReaction:"Un battement. Puis deux. Désynchronisés.",mechanic:'divine',flag:'has-second-coeur',dissolutionDelta:0.15,category:'divine',requires:'fissure-pulsante'},
+  // ── Objets de lore (optionnels, effacent un souvenir) ──
+  {id:'plume-memoire',name:"Plume de mémoire",cost:{douleur:0,souffle:2,organique:1},effect:"Souvenir du corbeau.",sceneReaction:"Tu te souviens d'un vol. Pas du tien.",mechanic:'flag',flag:'plume-memoire',category:'lore',requires:'plume-noire'},
+  {id:'tuile-memoire',name:"Tuile de mémoire",cost:{douleur:3,souffle:2,organique:0},effect:"Fragment narratif majeur.",sceneReaction:"Un nom disparaît. Tu ne sais plus lequel.",mechanic:'flag',flag:'tuile-memoire',category:'lore'},
+  // ── Objets neutres (optionnels) ──
+  {id:'filet-tendons',name:"Filet de tendons",cost:{douleur:1,souffle:0,organique:2},effect:"Collecte O donne ×2.",sceneReaction:"Tes doigts s'allongent. Ils attrapent mieux.",mechanic:'flag',flag:'has-filet',category:'neutre'},
+  {id:'sablier-cendre',name:"Sablier de cendre",cost:{douleur:0,souffle:2,organique:1},effect:"Décomposition O ralentie.",sceneReaction:"Le temps s'épaissit autour de tes mains.",mechanic:'flag',flag:'has-sablier',category:'neutre'},
 ];
 
 // ══════════════════════════════════════
 // SCENE DATA
 // ══════════════════════════════════════
 const SCENES = {
-  'scene-01':{id:'scene-01',label:'Les Dunes plates',intro:"Tu étais là avant que le sable existe.",bg:'desert-bg-1.png',
+  // ══════ 01a — Les Dunes plates (départ, hub, cercle d'alchimie) ══════
+  'scene-01a':{id:'scene-01a',label:'Les Dunes plates',intro:"Tu existes. C'est la seule certitude. Tout le reste est du sable.",bg:'desert-bg-1.png',
     hotspots:[
-      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:2,y:10,w:35,h:55,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
+      {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:2,y:10,w:35,h:55,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
-      {id:'hs-alchimie',type:'alchimie',x:70,y:70,w:10,h:12,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
-    ],exits:[{id:'exit-droite',targetScene:null,x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu as froid. Il faut que tu trouves un moyen de rester au chaud.",unlockedBy:null}]},
-  'scene-02':{id:'scene-02',label:'Les Ossements',intro:"Tu as déjà été ici. Pas toi. Quelque chose de toi.",bg:'desert-house-bg.png',
+      {id:'hs-alchimie',type:'alchimie',x:45,y:75,w:12,h:15,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
+    ],exits:[
+      {id:'exit-01a-01b',targetScene:'scene-01b',x:88,y:15,w:12,h:80,locked:false,lockedText:null,unlockedBy:null},
+    ]},
+
+  // ══════ 01b — Les Dunes (profondeur) ══════
+  'scene-01b':{id:'scene-01b',label:'Les Dunes — profondeur',intro:"Le désert continue. Rien de spectaculaire. Juste plus de sable.",bg:'desert-bg-1.png',
     hotspots:[
-      {id:'hs-kyste',type:'organique',x:55,y:45,w:8,h:10,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["Le kyste cède sous la pression.","Tu ne sais pas si c'était douloureux pour lui."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
-      {id:'hs-reflet',type:'souffle',x:30,y:55,w:20,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["La roche réfléchit quelque chose qui n'est pas là.","Tu t'es souvenu de quelque chose. Tu ne sais plus quoi."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
-      {id:'hs-mur',type:'douleur',x:5,y:20,w:10,h:70,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"La pierre absorbe."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu presses plus fort."},{ms:3000,resource:{type:'douleur',amount:1},text:"Il ne reste pas de trace. Mais tu sais.",painDelta:0.05}],collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-alchimie-2',type:'alchimie',x:42,y:75,w:16,h:10,cursor:'flame',resource:null,collectMode:'click',texts:[],action:'open-alchemy',collectible:false,visible:true,unlockedBy:null},
-    ],exits:[{id:'exit-gauche',targetScene:'scene-01',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null}]},
+      {id:'hs-plume',type:'inspect',x:30,y:60,w:10,h:12,cursor:'eye',resource:null,collectMode:'click',texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."],collectible:true,visible:true,unlockedBy:null,flag:'plume-noire'},
+      {id:'hs-caillou',type:'organique',x:55,y:55,w:12,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Quelque chose s'est accroché ici en passant. Vite."],collectible:true,souffleUnique:false,visible:true,unlockedBy:null},
+      {id:'hs-anomalie-01b',type:'souffle',x:70,y:40,w:10,h:10,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["La cendre forme un cercle. Personne ne l'a tracé. Personne de visible."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-horizon',type:'inspect',x:0,y:15,w:100,h:20,cursor:'eye',resource:null,collectMode:'click',texts:["L'horizon devrait être là. Il y est. Mais pas pour toi."],collectible:false,visible:true,unlockedBy:null},
+    ],exits:[
+      {id:'exit-01b-01a',targetScene:'scene-01a',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
+      {id:'exit-01b-cimetiere',targetScene:'scene-02',x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:'armure-peau'},
+    ]},
+
+  // ══════ 02 — Le Cimetière d'os ══════
+  'scene-02':{id:'scene-02',label:'Le Cimetière d\'os',intro:"Des os. Partout. Certains ont des formes impossibles.",bg:'desert-house-bg.png',
+    hotspots:[
+      {id:'hs-amas',type:'organique',x:35,y:50,w:18,h:20,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["L'amas cède. En dessous, un reflet. Le tien."],collectible:true,visible:true,unlockedBy:null},
+      {id:'hs-crane',type:'souffle',x:60,y:35,w:12,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Le crâne a des excroissances. Comme des cornes qui n'ont pas fini de pousser."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-os-tranchants',type:'douleur',x:15,y:40,w:12,h:50,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"L'os est tranchant. Tu le savais."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. L'os ne s'émousse pas."},{ms:3000,resource:{type:'douleur',amount:1},text:"Trois secondes. Tu as compté.",painDelta:0.05}],collectible:false,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
+      {id:'hs-fissure-pulsante',type:'inspect',x:75,y:60,w:10,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["La fissure pulse. Comme un cœur. Comme deux cœurs."],collectible:true,visible:true,unlockedBy:null,flag:'fissure-pulsante'},
+      {id:'hs-vertebre',type:'inspect',x:45,y:25,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["La vertèbre est trop grande pour un seul corps."],collectible:false,visible:true,unlockedBy:null},
+      {id:'hs-os-divers',type:'organique',x:80,y:70,w:10,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Un os. Ordinaire. Sauf qu'il est tiède."],collectible:true,respawnDelay:ORGANIQUE_RESPAWN_MS,visible:true,unlockedBy:null},
+      {id:'hs-plume-02',type:'inspect',x:20,y:70,w:8,h:10,cursor:'eye',resource:null,collectMode:'click',texts:["Une plume. Tu te souviens d'un oiseau. Noir. Immobile."],collectible:true,visible:true,unlockedBy:null,flag:'plume-noire'},
+    ],exits:[
+      {id:'exit-cimetiere-01b',targetScene:'scene-01b',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
+      {id:'exit-cimetiere-maison',targetScene:'scene-03',x:88,y:15,w:12,h:80,locked:true,lockedText:"Quelque chose bloque ce passage. Il te manque des connexions.",unlockedBy:'lien-nerfs'},
+    ]},
+
+  // ══════ 03 — La Maison délabrée ══════
+  'scene-03':{id:'scene-03',label:'La Maison délabrée',intro:"Une maison. Elle ne devrait pas être là.",bg:'desert-house-bg.png',
+    hotspots:[
+      {id:'hs-porte',type:'organique',x:40,y:30,w:20,h:40,cursor:'hand',resource:{type:'organique',amount:2},collectMode:'click',texts:["La porte grince. Derrière, quelque chose respire."],collectible:true,visible:true,unlockedBy:null},
+      {id:'hs-fenetre',type:'douleur',x:70,y:25,w:12,h:30,cursor:'hand',collectMode:'hold',holdMax:2000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"Le verre est ancien. Il cède."},{ms:2000,resource:{type:'douleur',amount:1},text:"Le sang sur le rebord n'est pas le tien. Ou alors si."}],collectible:false,visible:true,unlockedBy:null},
+      {id:'hs-chose-informe',type:'inspect',x:35,y:50,w:25,h:25,cursor:'eye',resource:null,collectMode:'click',texts:["C'est immonde. C'est la chose la plus réelle que tu aies faite depuis le début."],collectible:false,visible:false,unlockedBy:'porte-ouverte',action:'manger-chose'},
+      {id:'hs-jardin',type:'organique',x:10,y:60,w:15,h:20,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Le jardin a poussé dans le mauvais sens."],collectible:true,visible:true,unlockedBy:null},
+      {id:'hs-sol-empreintes',type:'souffle',x:50,y:75,w:20,h:12,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Des empreintes. Elles vont dans les deux sens. Toutes les mêmes."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-grenier',type:'inspect',x:45,y:5,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Quelqu'un vivait ici. Pas toi. Quelqu'un que tu connaissais."],collectible:false,visible:false,unlockedBy:'has-ailes'},
+    ],exits:[
+      {id:'exit-maison-cimetiere',targetScene:'scene-02',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
+    ]},
+
+  // ══════ 04 — La Grotte ══════
+  'scene-04':{id:'scene-04',label:'La Grotte',intro:"L'obscurité est totale.",bg:'desert-bg-1.png',
+    hotspots:[
+      {id:'hs-stalactite',type:'douleur',x:30,y:15,w:10,h:25,cursor:'hand',resource:{type:'douleur',amount:1},collectMode:'click',flashOnCollect:true,texts:["La stalactite est aiguisée. Par quoi."],collectible:true,visible:false,unlockedBy:'has-lanterne'},
+      {id:'hs-feu',type:'souffle',x:50,y:60,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Le feu est récent. Quelqu'un était là. Peut-être toi."],collectible:true,souffleUnique:true,visible:false,unlockedBy:'has-lanterne'},
+      {id:'hs-outils',type:'organique',x:70,y:65,w:12,h:15,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Des outils. Faits de chair et d'os. Pas de métal."],collectible:true,visible:false,unlockedBy:'has-lanterne'},
+      {id:'hs-mur',type:'inspect',x:20,y:20,w:60,h:50,cursor:'eye',resource:null,collectMode:'click',texts:["Les rochers. Le sable. Les ombres. Les traces. C'est toi. Tout ce que tu as ramassé depuis le début. C'est toi."],collectible:false,visible:false,unlockedBy:'has-lanterne',action:'fin'},
+    ],exits:[
+      {id:'exit-grotte-cimetiere',targetScene:'scene-02',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
+    ]},
+
+  // ══════ 05 — Le Ciel (Ailes uniquement) ══════
+  'scene-05':{id:'scene-05',label:'Le Ciel',intro:"Ce monde est fermé. Ou complet. Tu ne sais pas si c'est la même chose.",bg:'desert-bg-1.png',
+    hotspots:[
+      {id:'hs-faille-1',type:'souffle',x:20,y:20,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:2},collectMode:'click',texts:["La faille respire. Tu respires avec."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-faille-2',type:'souffle',x:50,y:30,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:2},collectMode:'click',texts:["La lumière ne traverse pas. Elle remplace."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-faille-3',type:'souffle',x:75,y:25,w:15,h:15,cursor:'eye',resource:{type:'souffle',amount:2},collectMode:'click',texts:["Trois failles. Trois respirations. Aucune n'est la tienne."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-desert-dessous',type:'inspect',x:20,y:60,w:60,h:20,cursor:'eye',resource:null,collectMode:'click',texts:["Le désert vu d'en haut. Des cercles dans le sable. Les quatre scènes en minuscule."],collectible:false,visible:true,unlockedBy:null},
+      {id:'hs-corbeau',type:'inspect',x:80,y:10,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["L'espace du corbeau. Vide. Mais la forme de l'air est différente."],collectible:false,visible:true,unlockedBy:null},
+    ],exits:[
+      {id:'exit-ciel-retour',targetScene:'scene-01a',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
+    ]},
 };
 
 // ══════════════════════════════════════
@@ -460,15 +535,19 @@ function updateVitalityUI(){
 }
 function updateRecipeUI(){
   recipeListEl.innerHTML='';const onAlch=activeAlchemyPoint;
-  RECIPES.forEach(r=>{const canAfford=Object.entries(r.cost).every(([k,v])=>state.inventory[k]>=v);const done=state.crafted.includes(r.id);const can=canAfford&&onAlch&&!done;
+  RECIPES.forEach(r=>{
+    // Hide recipes that require unfound flags
+    if(r.requires&&!state.narrativeFlags[r.requires])return;
+    const canAfford=Object.entries(r.cost).every(([k,v])=>state.inventory[k]>=v);
+    const done=state.crafted.includes(r.id);
+    const can=canAfford&&onAlch&&!done;
     const div=document.createElement('div');div.className='recipe-item';
     const costs=[];if(r.cost.douleur)costs.push('D×'+r.cost.douleur);if(r.cost.souffle)costs.push('S×'+r.cost.souffle);if(r.cost.organique)costs.push('O×'+r.cost.organique);
-    div.innerHTML=`<div class="recipe-name">${done?'* ':''}${r.name}</div><div class="recipe-cost">Cout: ${costs.join(' ')}</div><button class="recipe-btn btn-dos" ${can?'':'disabled'}>${done?'[ accompli ]':'[ accomplir ]'}</button>`;
+    const catLabel=r.category==='divine'?'[DIV] ':r.category==='lore'?'[LORE] ':r.category==='neutre'?'[OPT] ':'';
+    div.innerHTML=`<div class="recipe-name">${done?'* ':''}${catLabel}${r.name}</div><div class="recipe-cost">Cout: ${costs.join(' ')}</div><button class="recipe-btn btn-dos" ${can?'':'disabled'}>${done?'[ accompli ]':'[ accomplir ]'}</button>`;
     if(can)div.querySelector('.recipe-btn').addEventListener('click',()=>craftRecipe(r));
     recipeListEl.appendChild(div);
-    // Organic separator
     const sep=document.createElement('div');sep.className='recipe-sep';sep.textContent='──────────────';recipeListEl.appendChild(sep)});
-  // Remove last separator
   const lastSep=recipeListEl.querySelector('.recipe-sep:last-child');if(lastSep)lastSep.remove();
   alchemyMsg.textContent=onAlch?'':'— trouve un point d\'invocation';alchemyMsg.style.display=onAlch?'none':'block';
 }
@@ -504,7 +583,21 @@ function flashPain(){const f=document.createElement('div');f.style.cssText='posi
 function collectResource(type,amount,hx,hy){if(state.inventory[type]>=CAPS[type]){if(type==='douleur')showDialogue("Tu ne peux pas porter plus que ça.");return false}const actual=Math.min(amount,CAPS[type]-state.inventory[type]);state.inventory[type]+=actual;if(type==='douleur'){loseVitality(actual);flashPain()}floatText(hx+2,hy-5,'+'+actual,RES_COLORS[type]);updateResourceUI();saveState();return true}
 function loseVitality(n){state.vitality=Math.max(0,state.vitality-n);updateVitalityUI();saveState();if(state.vitality<state.vitalityMax)startPixelFlicker();if(state.vitality===0)triggerDeath()}
 function triggerDeath(){stopPixelFlicker();const ov=document.createElement('div');ov.style.cssText='position:absolute;inset:0;background:#000;opacity:0;z-index:50;pointer-events:none';hotspotLayer.parentElement.appendChild(ov);gsap.to(ov,{opacity:1,duration:3,ease:'power2.in'});setTimeout(()=>showDialogue("Tu t'es dissous avant d'avoir compris."),1500);setTimeout(()=>{resetState();ov.remove();loadScene(state.currentScene)},5000)}
-function craftRecipe(r){for(const[k,v]of Object.entries(r.cost))state.inventory[k]-=v;state.crafted.push(r.id);if(r.mechanic==='reveal-hotspots'||r.mechanic==='unlock-narrative')revealConditionalHotspots(r.id);else if(r.mechanic==='pain-absorb')state.painAbsorbActive=true;else if(r.mechanic==='unlock-exit'){const scene=SCENES[state.currentScene];const exit=scene.exits.find(e=>e.id===r.targetExit);if(exit){state.exits[exit.id]=true;renderExits(scene)}}showDialogue(r.sceneReaction);updateResourceUI();updateRecipeUI();saveState()}
+function craftRecipe(r){
+  for(const[k,v]of Object.entries(r.cost))state.inventory[k]-=v;
+  state.crafted.push(r.id);
+  // Set flag
+  if(r.flag)state.narrativeFlags[r.flag]=true;
+  // Dissolution for divines
+  if(r.dissolutionDelta){state.painLevel=Math.min(1,state.painLevel+(r.dissolutionDelta||0))}
+  // Mechanic
+  if(r.mechanic==='unlock-exit'){
+    // Search all scenes for the target exit
+    for(const sid in SCENES){const scene=SCENES[sid];const exit=scene.exits.find(e=>e.id===r.targetExit);if(exit){state.exits[exit.id]=true;if(sid===state.currentScene)renderExits(scene);break}}
+  }
+  if(r.mechanic==='pain-absorb')state.painAbsorbActive=true;
+  showDialogue(r.sceneReaction);updateResourceUI();updateRecipeUI();saveState();
+}
 function revealConditionalHotspots(rid){SCENES[state.currentScene].hotspots.forEach(hs=>{if(hs.unlockedBy===rid){const el=document.getElementById('hs-el-'+hs.id);if(el){el.style.display='block';gsap.fromTo(el,{opacity:0},{opacity:1,duration:1.5,ease:'expo.out'})}}})}
 
 // ══════════════════════════════════════
@@ -546,7 +639,25 @@ function loadScene(sceneId){
 }
 const SCENE_W=960,SCENE_H=720;
 function createHotspotEl(hs,sceneId){const el=document.createElement('button');el.className='hotspot'+(hs.type==='zoom'?' zoom-hs':'');el.id='hs-el-'+hs.id;el.style.cssText=`left:${hs.x/100*SCENE_W}px;top:${hs.y/100*SCENE_H}px;width:${hs.w/100*SCENE_W}px;height:${hs.h/100*SCENE_H}px`;el.addEventListener('mouseenter',()=>setCursor(hs.cursor||'eye'));el.addEventListener('mouseleave',()=>setCursor('default'));if(hs.collectMode==='hold'){el.addEventListener('mousedown',e=>{e.preventDefault();startHold(hs,el)});el.addEventListener('mouseup',()=>endHold());el.addEventListener('mouseleave',()=>endHold())}else el.addEventListener('click',()=>handleHotspotClick(hs,el,sceneId));hotspotLayer.appendChild(el);return el}
-function handleHotspotClick(hs,el,sceneId){if(hs.type==='zoom'&&hs.zoomScene){enterZoom(hs.zoomScene);return}if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
+function handleHotspotClick(hs,el,sceneId){
+  if(hs.type==='zoom'&&hs.zoomScene){enterZoom(hs.zoomScene);return}
+  if(hs.action==='manger-chose'){
+    if(!state.narrativeFlags['has-machoire']){showDialogue("Tu ne peux pas. Il te manque quelque chose pour broyer.");return}
+    if(!state.narrativeFlags['has-estomac']){showDialogue("Tu ne peux pas. Il n'y a nulle part où ça irait.");return}
+    state.vitality=Math.min(state.vitalityMax,state.vitality+4);
+    CAPS.douleur=7;
+    state.narrativeFlags['chose-mangee']=true;
+    showDialogue("C'est immonde. C'est la chose la plus réelle que tu aies faite depuis le début.");
+    el.style.display='none';
+    updateVitalityUI();updateResourceUI();saveState();return;
+  }
+  if(hs.action==='fin'){
+    if(state.painLevel>=0.15){showDialogue("Ce n'est pas une punition. C'est une récolte. Tu avais planté plus que prévu.")}
+    else{showDialogue("Quelque chose te reconnaît. Tu t'effaces.")}
+    setTimeout(()=>{resetState();loadScene('scene-01a')},5000);return;
+  }
+  if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
+  if(hs.action==='open-alchemy'){activeAlchemyPoint=true;updateRecipeUI();showDialogue("Le cercle attend.");return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
 function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(e=>e.remove());scene.exits.forEach(exit=>{const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
 // RESET
