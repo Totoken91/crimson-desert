@@ -506,7 +506,7 @@ const RECIPES = [
   {id:'memoire-cardiaque',name:"Mémoire cardiaque",cost:{douleur:1,souffle:1,organique:0},effect:"Un moment précis.",sceneReaction:"Un moment précis. Pas de douleur. Juste l'arrêt. Et après — le sable.",mechanic:'flag',flag:'memoire-cardiaque-craftee',category:'lore',availableAfter:'besoin-second-coeur'},
   {id:'second-coeur',name:"Second cœur",cost:{douleur:3,souffle:3,organique:2},effect:"Vitalité max +5.",sceneReaction:"Un battement. Puis deux. Désynchronisés.",mechanic:'divine',flag:'has-second-coeur',dissolutionDelta:0.15,vitalityMaxBonus:5,category:'divine',requires:'memoire-cardiaque-craftee',availableAfter:'memoire-cardiaque-craftee'},
   // ── Objets de lore ──
-  {id:'plume-memoire',name:"Plume de mémoire",cost:{douleur:1,souffle:0,organique:1},effect:"Souvenir du corbeau.",sceneReaction:"Tu te souviens d'un vol. Pas du tien. Un oiseau noir. Immobile dans un ciel qui n'existait pas encore.",mechanic:'flag',flag:'plume-memoire-craftee',category:'lore',requires:'plume-noire-collectee',availableAfter:'plume-noire-collectee'},
+  {id:'plume-memoire',name:"Plume de mémoire",cost:{douleur:1,souffle:0,organique:1},effect:"Souvenir du corbeau.",sceneReaction:"Tu te souviens d'un vol. Pas du tien. Un oiseau noir. Immobile dans un ciel qui n'existait pas encore.",mechanic:'flag',flag:'plume-memoire-craftee',category:'lore',requires:'plume-noire-collectee',availableAfter:'armure-craftee'},
   {id:'tuile-memoire',name:"Tuile de mémoire",cost:{douleur:3,souffle:2,organique:0},effect:"Fragment narratif majeur.",sceneReaction:"Un nom disparaît. Tu ne sais plus lequel.",mechanic:'flag',flag:'tuile-memoire',category:'lore',availableAfter:'trou-os-inspecte'},
   // ── Objets neutres ──
   {id:'filet-tendons',name:"Filet de tendons",cost:{douleur:1,souffle:0,organique:2},effect:"Collecte O donne ×2.",sceneReaction:"Tes doigts s'allongent. Ils attrapent mieux.",mechanic:'flag',flag:'has-filet',category:'neutre',availableAfter:'lien-nerfs-crafted'},
@@ -734,7 +734,7 @@ const ZOOM_SCENES = {
   'oeil-mur-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#100808';ctx.fillRect(0,0,w,h);for(let i=0;i<30;i++){ctx.fillStyle=`rgba(42,10,8,${0.3+Math.random()*0.3})`;ctx.fillRect(Math.random()*w,Math.random()*h,20+Math.random()*40,10+Math.random()*20)}ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.ellipse(w*0.5,h*0.45,30,20,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8C1C1C';ctx.beginPath();ctx.arc(w*0.5,h*0.45,12,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.5,h*0.45,5,0,Math.PI*2);ctx.fill()},introText:"Il est intact. Quelqu'un l'a mis là. Avec soin.",hotspots:[{id:'hs-oeil-inspect',x:30,y:25,w:40,h:40,cursor:'eye',action:'inspect-oeil',texts:["Comme pour quelqu'un qui reviendrait le chercher."]}]},
   // ── 02 close-ups ──
   'amas-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.3,w,h*0.7);ctx.fillStyle='#C6B29B';for(let i=0;i<20;i++){const x=w*0.2+Math.random()*w*0.6,y=h*0.3+Math.random()*h*0.4;ctx.beginPath();ctx.ellipse(x,y,6+Math.random()*12,3+Math.random()*5,Math.random()*Math.PI,0,Math.PI*2);ctx.fill()}if(state.narrativeFlags['trou-os-inspecte']){ctx.fillStyle='#080506';ctx.beginPath();ctx.ellipse(w*0.5,h*0.55,25,15,0,0,Math.PI*2);ctx.fill();const g=ctx.createRadialGradient(w*0.5,h*0.55,0,w*0.5,h*0.55,20);g.addColorStop(0,'rgba(190,55,45,0.15)');g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(w*0.35,h*0.4,w*0.3,h*0.3)}},introText:"Il y en a beaucoup. Trop pour être accidentel.",hotspots:[{id:'hs-amas-grab',x:25,y:25,w:50,h:50,cursor:'hand',action:'collect-amas',texts:["Les os cèdent. En dessous, quelque chose brille."]}]},
-  'crane-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.5,h*0.45,50,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.42,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.58,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#8A7A6A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.42,h*0.35);ctx.lineTo(w*0.38,h*0.2);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.58,h*0.35);ctx.lineTo(w*0.64,h*0.22);ctx.stroke()},introText:"L'os a continué à pousser après. Après quoi — pas encore.",hotspots:[]},
+  'crane-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.5,h*0.45,50,0,Math.PI*2);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.42,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.58,h*0.4,8,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#8A7A6A';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.42,h*0.35);ctx.lineTo(w*0.38,h*0.2);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.58,h*0.35);ctx.lineTo(w*0.64,h*0.22);ctx.stroke()},introText:"L'os a continué à pousser après. Après quoi — pas encore.",hotspots:[{id:'hs-crane-collect',x:25,y:25,w:50,h:50,cursor:'eye',action:'collect-crane-souffle',texts:["Quelque chose s'échappe du crâne. Un souffle."]}]},
   'machoire-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.6,w,h*0.4);ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.arc(w*0.45,h*0.35,35,0,Math.PI,true);ctx.fill();ctx.fillStyle='#080506';ctx.beginPath();ctx.arc(w*0.38,h*0.3,5,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.52,h*0.3,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8A7A6A';ctx.beginPath();ctx.arc(w*0.6,h*0.65,18,0,Math.PI);ctx.fill()},introText:"Elle est séparée du reste. Proprement.",hotspots:[{id:'hs-machoire-inspect',x:40,y:50,w:30,h:30,cursor:'eye',action:'inspect-machoire',texts:["Comme si quelqu'un l'avait retirée avec soin."]}]},
   'fissure-org-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.3,w,h*0.7);ctx.strokeStyle='#4A1010';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.3,h*0.3);ctx.bezierCurveTo(w*0.4,h*0.5,w*0.55,h*0.6,w*0.5,h*0.8);ctx.stroke();ctx.fillStyle='#2A0A08';ctx.beginPath();ctx.ellipse(w*0.45,h*0.55,20,35,0.2,0,Math.PI*2);ctx.fill()},introText:"Quelque chose respire là-dedans.",hotspots:[{id:'hs-fissure-org-inspect',x:25,y:30,w:40,h:50,cursor:'eye',action:'inspect-fissure-organique',texts:["Ou c'est le souvenir de quelque chose qui respirait."]}]},
 };
@@ -799,7 +799,13 @@ function enterZoom(zoomId){
         el.style.display='none';return;
       }
       if(hs.action==='collect-couteau'){
-        const ok=collectResource('douleur',2,hs.x+hs.w/2,hs.y+hs.h/2);
+        // D×2 for only 1 vitality (special ratio)
+        if(state.inventory.douleur>=CAPS.douleur){showDialogue("Tu ne peux pas porter plus que ça.");return}
+        const actual=Math.min(2,CAPS.douleur-state.inventory.douleur);
+        state.inventory.douleur+=actual;loseVitality(1);flashPain();
+        floatText(hs.x+hs.w/2+2,hs.y+hs.h/2-5,'+'+actual,RES_COLORS.douleur);
+        updateResourceUI();saveState();
+        const ok=true;
         if(ok){state.narrativeFlags['inspected-couteau-01c']=true;state.narrativeFlags['entite-inspectee']=true;flashPain();saveState();updateRecipeUI();
           // Redraw with blood
           if(currentZoom){const z=ZOOM_SCENES[currentZoom];if(z.drawCanvas){const c=document.createElement('canvas');c.width=960;c.height=720;z.drawCanvas(c.getContext('2d'),960,720);addGrain(c.getContext('2d'),960,720);sceneSprite.texture=PIXI.Texture.from(c)}}
@@ -809,6 +815,14 @@ function enterZoom(zoomId){
       }
       if(hs.action==='inspect-coeur'){
         state.narrativeFlags['coeur-inspecte']=true;saveState();updateRecipeUI();
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
+      }
+      if(hs.action==='collect-crane-souffle'){
+        const key='scene-02:hs-crane-souffle';
+        if(state.souffleCollected[key]){showDialogue("Il ne reste plus rien ici.");return}
+        const ok=collectResource('souffle',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.souffleCollected[key]=true;saveState()}
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
         el.style.display='none';return;
       }
@@ -985,8 +999,8 @@ function craftRecipe(r){
   // Set flag
   if(r.flag)state.narrativeFlags[r.flag]=true;
   // Track craft-specific flags for recipe unlocks
+  if(r.id==='armure-peau'){state.narrativeFlags['armure-craftee']=true;if(state.narrativeFlags['plume-noire-collectee'])state.narrativeFlags['armure-peau-plume']=true}
   if(r.id==='lien-nerfs')state.narrativeFlags['lien-nerfs-crafted']=true;
-  if(r.id==='armure-peau'&&state.narrativeFlags['plume-noire-collectee'])state.narrativeFlags['armure-peau-plume']=true;
   // Vitality max bonus
   if(r.vitalityMaxBonus){state.vitalityMax+=r.vitalityMaxBonus;updateVitalityUI()}
   // Dissolution for divines
