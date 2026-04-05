@@ -670,8 +670,8 @@ function startDecayTimer(){
       if(!state.narrativeFlags['decay-warning']){
         showDialogue("Ça se décompose. La chair ne tient pas longtemps hors du corps. Tu aurais dû t'en douter.");
         state.narrativeFlags['decay-warning']=true;
-      }else if(Math.random()<0.3){
-        showDialogue("Ça pourrit. Utilise-le ou perds-le.");
+      }else{
+        showDialogue("Quelque chose de putréfié se détache de toi. Tu as perdu quelque chose.");
       }
       decayStart=Date.now();
       updateResourceUI();saveState();
