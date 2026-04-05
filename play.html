@@ -484,7 +484,7 @@ const DEFAULT_STATE = {
 let state = loadState();
 function loadState(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&s.inventory)return s}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_STATE))}
 function saveState(){localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
-function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...state.narrativeFlags}};state=JSON.parse(JSON.stringify(DEFAULT_STATE));state.painLevel=k.painLevel;state.narrativeFlags=k.narrativeFlags;saveState()}
+function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...state.narrativeFlags}};state=JSON.parse(JSON.stringify(DEFAULT_STATE));state.painLevel=k.painLevel;state.narrativeFlags=k.narrativeFlags;state.narrativeFlags['last-recipe-count']=99;saveState()}
 
 // ══════════════════════════════════════
 // RECIPES
@@ -607,7 +607,9 @@ const SCENES = {
 // ══════════════════════════════════════
 // ZOOM SCENES — real images
 // ══════════════════════════════════════
-let rocherHits = 0; // 0=clean, 1=sang, 2=sang-2
+let rocherHits = 0;
+// Restore from state after death (persists)
+if(state.narrativeFlags['rocherHits'])rocherHits=state.narrativeFlags['rocherHits'];
 let currentZoom = null;
 
 const ROCHER_IMAGES = ['rocher-saillant.png', 'rocher-saillant-sang.png', 'rocher-saillant-sang-2.png'];
@@ -894,31 +896,35 @@ function enterZoom(zoomId){
         return;
       }
       if(hs.action==='smash-head'){
-        // Cooldown after 3 hits
-        const lastSmash=state.narrativeFlags['rocher-last-smash']||0;
-        if(rocherHits>=2&&Date.now()-lastSmash<60000){showDialogue("Tu ne ressens plus rien. Reviens plus tard.");return}
-        // Always smash — collect D if possible, lose vitality regardless
+        // Cooldown: 3 hits then 60s wait
+        const smashCount=state.narrativeFlags['rocher-smash-count']||0;
+        const lastSmashTime=state.narrativeFlags['rocher-last-smash']||0;
+        // Reset count if cooldown elapsed
+        const cooldownDone=Date.now()-lastSmashTime>=60000;
+        const currentCount=cooldownDone?0:smashCount;
+        if(currentCount>=3){showDialogue("Tu ne ressens plus rien. Reviens plus tard.");return}
+        // Smash — collect D if possible, lose vitality regardless
         const gotD=collectResource('douleur',1,hs.x+hs.w/2,hs.y+hs.h/2);
-        if(!gotD){loseVitality(1);flashPain()} // D full but still hurts
-        {
-          rocherHits=Math.min(rocherHits+1,2);
-          state.narrativeFlags['rocher-last-smash']=Date.now();saveState();
-          flashPain();
-          // Screen shake
-          const container=document.getElementById('pixi-container');
-          const intensity=rocherHits===1?6:10;
-          let shakeCount=0;
-          const shakeInterval=setInterval(()=>{
-            const dx=(Math.random()-0.5)*intensity;
-            const dy=(Math.random()-0.5)*intensity;
-            container.style.transform=`translate(${dx}px,${dy}px)`;
-            shakeCount++;
-            if(shakeCount>8){clearInterval(shakeInterval);container.style.transform=''}
-          },30);
-          // Swap to bloodier image
-          const newTex=PIXI.Texture.from(ROCHER_IMAGES[rocherHits]);
-          sceneSprite.texture=newTex;
-        }
+        if(!gotD){loseVitality(1);flashPain()}
+        // Update image (max 2 blood levels)
+        rocherHits=Math.min(rocherHits+1,2);
+        state.narrativeFlags['rocherHits']=rocherHits;
+        state.narrativeFlags['rocher-smash-count']=currentCount+1;
+        state.narrativeFlags['rocher-last-smash']=Date.now();saveState();
+        // Screen shake
+        const container=document.getElementById('pixi-container');
+        const intensity=4+currentCount*3;
+        let shakeCount=0;
+        const shakeInterval=setInterval(()=>{
+          const dx=(Math.random()-0.5)*intensity;
+          const dy=(Math.random()-0.5)*intensity;
+          container.style.transform=`translate(${dx}px,${dy}px)`;
+          shakeCount++;
+          if(shakeCount>8){clearInterval(shakeInterval);container.style.transform=''}
+        },30);
+        // Swap to bloodier image
+        const newTex=PIXI.Texture.from(ROCHER_IMAGES[rocherHits]);
+        sceneSprite.texture=newTex;
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
       }
     });
@@ -1212,7 +1218,7 @@ function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(
   const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
 // RESET
-$('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));loadScene('scene-01a')});
+$('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));rocherHits=0;loadScene('scene-01a')});
 
 // VOIR
 $('btn-voir').addEventListener('click',()=>{hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='rgba(140,28,28,0.15)';el.style.borderColor='rgba(190,55,45,0.5)'});setTimeout(()=>hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='';el.style.borderColor=''}),3000)});
