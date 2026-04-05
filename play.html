@@ -512,7 +512,9 @@ const SCENES = {
       {id:'hs-rocher',type:'zoom',zoomScene:'rocher-zoom',x:0,y:18,w:30,h:52,cursor:'hand',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-trace',type:'zoom',zoomScene:'trace-zoom',x:60,y:55,w:35,h:35,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-horizon',type:'inspect',x:30,y:25,w:55,h:12,cursor:'eye',resource:null,collectMode:'click',texts:[],collectible:false,visible:true,unlockedBy:null,action:'goto-01b'},
-    ],exits:[]},
+    ],exits:[
+      {id:'exit-01a-hint',targetScene:null,x:88,y:15,w:12,h:80,locked:true,lockedText:"Tu ne peux pas partir comme ça. Il fait trop froid.",unlockedBy:null},
+    ]},
 
   // ══════ 01b — Les Dunes (profondeur) ══════
   'scene-01b':{id:'scene-01b',label:'Les Dunes — profondeur',intro:null,bg:'01b.png',
