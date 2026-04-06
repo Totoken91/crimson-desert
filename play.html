@@ -1243,7 +1243,7 @@ function handleHotspotClick(hs,el,sceneId){
   if(hs.flag){state.narrativeFlags[hs.flag]=true;saveState()}
   if(hs.action==='goto-01b'){transitionToScene('scene-01b');return}
   if(hs.action==='goto-01c'){
-    if(!state.narrativeFlags['poumons']){showDialogue("L'horizon t'appelle. Mais l'air ne rentre pas. Il te manque de quoi respirer.");return}
+    if(!state.narrativeFlags['poumons']){showDialogue("Trop loin. Quelque chose manque à l'intérieur.");return}
     transitionToScene('scene-01c');return;
   }
   if(hs.action==='open-alchemy'){updateRecipeUI();return}if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);if(hs.resource){const ok=collectResource(hs.resource.type,hs.resource.amount,hs.x+hs.w/2,hs.y+hs.h/2);if(!ok)return;if(hs.flashOnCollect)flashPain();const key=sceneId+':'+hs.id;if(hs.collectible){state.inspected[key]=true;if(hs.souffleUnique)state.souffleCollected[key]=true;if(hs.type==='organique')state.organicRespawn[key]=Date.now();gsap.to(el,{opacity:0,scale:hs.type==='souffle'?1:0.6,duration:0.4,ease:'expo.out',onComplete:()=>el.remove()})}saveState()}if(!hs.resource&&hs.type==='inspect'){state.inspected[sceneId+':'+hs.id]=true;saveState()}}
