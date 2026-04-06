@@ -484,7 +484,14 @@ const DEFAULT_STATE = {
 let state = loadState();
 function loadState(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY));if(s&&s.inventory)return s}catch(e){}return JSON.parse(JSON.stringify(DEFAULT_STATE))}
 function saveState(){localStorage.setItem(SAVE_KEY,JSON.stringify(state))}
-function resetState(){const k={painLevel:state.painLevel,narrativeFlags:{...state.narrativeFlags}};state=JSON.parse(JSON.stringify(DEFAULT_STATE));state.painLevel=k.painLevel;state.narrativeFlags=k.narrativeFlags;state.narrativeFlags['last-recipe-count']=99;saveState()}
+function resetState(){
+  // Keep only painLevel and rocherHits across death
+  const keep={painLevel:state.painLevel,rocherHits:state.narrativeFlags['rocherHits']||0};
+  state=JSON.parse(JSON.stringify(DEFAULT_STATE));
+  state.painLevel=keep.painLevel;
+  state.narrativeFlags['rocherHits']=keep.rocherHits;
+  saveState();
+}
 
 // ══════════════════════════════════════
 // RECIPES
