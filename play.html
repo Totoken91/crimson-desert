@@ -1012,10 +1012,19 @@ function updateRecipeUI(){
 // DIALOGUE (scrambled typewriter)
 // ══════════════════════════════════════
 let typingTimer=null,dialogueFinished=false,dialogueFullText='';
+let dialogueOverlay=null;
+
 function showDialogue(text){
   clearTyping();dialogueFullText=text;dialogueFinished=false;dialogueText.textContent='';
   dialogueArrow.classList.remove('visible');
   dialogueEl.classList.add('visible');
+  // Blocking overlay
+  if(!dialogueOverlay){
+    dialogueOverlay=document.createElement('div');
+    dialogueOverlay.style.cssText='position:absolute;inset:0;z-index:35;cursor:none';
+    dialogueOverlay.addEventListener('click',()=>closeDialogue());
+    document.getElementById('game').appendChild(dialogueOverlay);
+  }
   const chars=text.split('');let i=0;
   function typeNext(){if(i>=chars.length){dialogueFinished=true;dialogueArrow.classList.add('visible');return}
     let ch=chars[i];if(state.vitality<=1&&Math.random()<0.125){const sp=document.createElement('span');sp.className='corrupt';sp.textContent=GLITCHS[Math.floor(Math.random()*GLITCHS.length)];dialogueText.appendChild(sp)}
@@ -1024,8 +1033,11 @@ function showDialogue(text){
   typeNext();
 }
 function clearTyping(){if(typingTimer){clearTimeout(typingTimer);typingTimer=null}}
-function closeDialogue(){if(!dialogueFinished){clearTyping();dialogueText.textContent=dialogueFullText;dialogueFinished=true;dialogueArrow.classList.add('visible');return}dialogueEl.classList.remove('visible');dialogueFinished=false}
-dialogueEl.addEventListener('click',e=>{e.stopPropagation();closeDialogue()});
+function closeDialogue(){
+  if(!dialogueFinished){clearTyping();dialogueText.textContent=dialogueFullText;dialogueFinished=true;dialogueArrow.classList.add('visible');return}
+  dialogueEl.classList.remove('visible');dialogueFinished=false;
+  if(dialogueOverlay){dialogueOverlay.remove();dialogueOverlay=null}
+}
 
 // ══════════════════════════════════════
 // FLOAT + FLASH
