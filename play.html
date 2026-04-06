@@ -1089,7 +1089,7 @@ function craftRecipe(r){
   if(r.id==='armure-peau'){state.narrativeFlags['armure-craftee']=true;if(state.narrativeFlags['plume-noire-collectee'])state.narrativeFlags['armure-peau-plume']=true}
   if(r.id==='lien-nerfs')state.narrativeFlags['lien-nerfs-crafted']=true;
   // Vitality max bonus
-  if(r.vitalityMaxBonus){state.vitalityMax+=r.vitalityMaxBonus;updateVitalityUI()}
+  if(r.vitalityMaxBonus){state.vitalityMax+=r.vitalityMaxBonus;state.vitality+=r.vitalityMaxBonus;updateVitalityUI()}
   // Dissolution for divines
   if(r.dissolutionDelta){state.painLevel=Math.min(1,state.painLevel+(r.dissolutionDelta||0))}
   // Mechanic
