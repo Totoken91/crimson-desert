@@ -1230,7 +1230,10 @@ function renderExits(scene){hotspotLayer.querySelectorAll('.exit-zone').forEach(
   const el=document.createElement('button');el.className='exit-zone';el.style.cssText=`left:${exit.x/100*SCENE_W}px;top:${exit.y/100*SCENE_H}px;width:${exit.w/100*SCENE_W}px;height:${exit.h/100*SCENE_H}px`;const isLocked=exit.locked&&!state.exits[exit.id]&&!(exit.unlockedBy&&state.crafted.includes(exit.unlockedBy));if(isLocked){el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}else if(exit.targetScene){el.addEventListener('mouseenter',()=>setCursor('exit'));el.addEventListener('click',()=>transitionToScene(exit.targetScene))}else{el.classList.add('locked');el.addEventListener('mouseenter',()=>setCursor('locked'));el.addEventListener('click',()=>showDialogue(exit.lockedText))}el.addEventListener('mouseleave',()=>setCursor('default'));hotspotLayer.appendChild(el)})}
 
 // RESET
-$('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));rocherHits=0;loadScene('scene-01a')});
+$('btn-reset').addEventListener('click',()=>{localStorage.removeItem(SAVE_KEY);state=JSON.parse(JSON.stringify(DEFAULT_STATE));rocherHits=0;
+  // Clear PIXI texture cache to force fresh images
+  PIXI.utils.clearTextureCache();
+  loadScene('scene-01a')});
 
 // VOIR
 $('btn-voir').addEventListener('click',()=>{hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='rgba(140,28,28,0.15)';el.style.borderColor='rgba(190,55,45,0.5)'});setTimeout(()=>hotspotLayer.querySelectorAll('.hotspot').forEach(el=>{el.style.background='';el.style.borderColor=''}),3000)});
