@@ -560,8 +560,8 @@ const SCENES = {
       {id:'hs-os-tranchants',type:'douleur',x:8,y:35,w:12,h:50,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"L'os est tranchant. Tu le savais."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. L'os ne s'émousse pas."},{ms:3000,resource:{type:'douleur',amount:1},text:"Trois secondes. Tu as compté.",painDelta:0.05}],collectible:false,visible:true,unlockedBy:null},
       {id:'hs-fissure-pulsante',type:'inspect',x:80,y:65,w:8,h:10,cursor:'eye',resource:null,collectMode:'click',texts:["Elle bat. Comme si elle t'attendait. Comme si elle savait que tu reviendrais."],collectible:false,visible:true,unlockedBy:null},
     ],exits:[
-      {id:'exit-cimetiere-01a',targetScene:'scene-01a',x:0,y:80,w:100,h:20,locked:false,lockedText:null,unlockedBy:null},
-      {id:'exit-cimetiere-maison',targetScene:'scene-03',x:88,y:15,w:12,h:40,locked:true,lockedText:"Quelque chose bloque ce passage. Il te manque des connexions.",unlockedBy:'lien-nerfs'},
+      {id:'exit-cimetiere-01a',targetScene:'scene-01a',x:0,y:15,w:8,h:80,locked:false,lockedText:null,unlockedBy:null},
+      {id:'exit-cimetiere-maison',targetScene:'scene-03',x:88,y:15,w:12,h:80,locked:true,lockedText:"Quelque chose bloque ce passage. Il te manque des connexions.",unlockedBy:'lien-nerfs'},
       {id:'exit-cimetiere-grotte',targetScene:'scene-04',x:88,y:55,w:12,h:40,locked:true,lockedText:"Tu ne vois rien. Il fait trop sombre.",unlockedBy:'has-lanterne',visibleAfter:'oeil-crafted'},
     ]},
 
