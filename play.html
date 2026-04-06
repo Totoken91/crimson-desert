@@ -473,7 +473,7 @@ function drawPortrait() {
 const SAVE_KEY = 'desert-cramoisi-state';
 const CAPS = { douleur:5, souffle:4, organique:6 };
 const ORGANIQUE_SAFE = 5;
-const ORGANIQUE_DECAY_MS = 120000;
+const ORGANIQUE_DECAY_MS = 180000;
 const ORGANIQUE_RESPAWN_MS = 480000;
 const DEFAULT_STATE = {
   currentScene:'scene-01a', inventory:{douleur:0,souffle:0,organique:0},
@@ -558,7 +558,7 @@ const SCENES = {
       {id:'hs-machoire-sep',type:'zoom',zoomScene:'machoire-zoom',x:55,y:55,w:18,h:18,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-fissure-organique',type:'zoom',zoomScene:'fissure-org-zoom',x:20,y:68,w:20,h:16,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-os-tranchants',type:'douleur',x:8,y:35,w:12,h:50,cursor:'hand',collectMode:'hold',holdMax:3000,holdTiers:[{ms:1000,resource:{type:'douleur',amount:1},text:"L'os est tranchant. Tu le savais."},{ms:2000,resource:{type:'douleur',amount:1},text:"Tu continues. L'os ne s'émousse pas."},{ms:3000,resource:{type:'douleur',amount:1},text:"Trois secondes. Tu as compté.",painDelta:0.05}],collectible:false,visible:true,unlockedBy:null},
-      {id:'hs-fissure-pulsante',type:'inspect',x:80,y:65,w:8,h:10,cursor:'eye',resource:null,collectMode:'click',texts:["Elle bat. Comme si elle t'attendait. Comme si elle savait que tu reviendrais."],collectible:false,visible:true,unlockedBy:null},
+      {id:'hs-fissure-pulsante',type:'souffle',x:80,y:65,w:8,h:10,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Elle bat. Comme si elle t'attendait. Quelque chose s'en échappe."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
     ],exits:[
       {id:'exit-cimetiere-01a',targetScene:'scene-01a',x:0,y:15,w:8,h:80,locked:false,lockedText:null,unlockedBy:null},
       {id:'exit-cimetiere-maison',targetScene:'scene-03',x:88,y:15,w:12,h:80,locked:true,lockedText:"Quelque chose bloque ce passage. Il te manque des connexions.",unlockedBy:'lien-nerfs'},
@@ -574,7 +574,7 @@ const SCENES = {
       {id:'hs-cheminee',type:'zoom',zoomScene:'cheminee-zoom',x:25,y:2,w:15,h:20,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-oeil-mur',type:'zoom',zoomScene:'oeil-mur-zoom',x:62,y:32,w:12,h:14,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-jardin',type:'organique',x:10,y:60,w:15,h:20,cursor:'hand',resource:{type:'organique',amount:1},collectMode:'click',texts:["Le jardin a poussé dans le mauvais sens."],collectible:true,visible:true,unlockedBy:null},
-      {id:'hs-sol-empreintes',type:'souffle',x:50,y:75,w:20,h:12,cursor:'eye',resource:{type:'souffle',amount:1},collectMode:'click',texts:["Une paire s'arrête au seuil et ne repart pas."],collectible:true,souffleUnique:true,visible:true,unlockedBy:null},
+      {id:'hs-sol-empreintes',type:'zoom',zoomScene:'sol-empreintes-zoom',x:50,y:75,w:20,h:12,cursor:'eye',collectMode:'click',visible:true,unlockedBy:null},
       {id:'hs-grenier',type:'inspect',x:45,y:5,w:15,h:15,cursor:'eye',resource:null,collectMode:'click',texts:["Quelqu'un vivait ici. Pas toi. Quelqu'un que tu connaissais. Les photos sont brûlées du mauvais côté — de l'intérieur."],collectible:false,visible:false,unlockedBy:'has-ailes'},
     ],exits:[
       {id:'exit-maison-cimetiere',targetScene:'scene-02',x:0,y:15,w:10,h:80,locked:false,lockedText:null,unlockedBy:null},
@@ -713,6 +713,16 @@ const ZOOM_SCENES = {
     },introText:"Il bat encore. Pas vite. Pas régulièrement. Mais il bat.",
     hotspots:[{id:'hs-coeur-inspect',x:25,y:20,w:50,h:50,cursor:'eye',action:'inspect-coeur',texts:["Il bat encore. Comme s'il attendait que tu reviennes le chercher."]}],
   },
+  'sol-empreintes-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#100808';ctx.fillRect(0,0,w,h);
+    // Sandy ground with footprints
+    ctx.fillStyle='#2A0A08';ctx.fillRect(0,h*0.3,w,h*0.7);
+    // Footprint pairs — going both ways
+    ctx.fillStyle='#080506';
+    for(let i=0;i<4;i++){const fx=w*0.2+i*w*0.18;ctx.beginPath();ctx.ellipse(fx,h*0.5,8,18,0.1*i,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(fx+20,h*0.52,8,18,0.1*i,0,Math.PI*2);ctx.fill()}
+    // One pair stops at threshold
+    ctx.fillStyle='#4A1010';ctx.beginPath();ctx.ellipse(w*0.8,h*0.55,10,22,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(w*0.82,h*0.57,10,22,0,0,Math.PI*2);ctx.fill();
+  },introText:"Des empreintes. Elles vont dans les deux sens. Toutes les mêmes.",
+  hotspots:[{id:'hs-sol-collect',x:60,y:35,w:35,h:40,cursor:'eye',action:'collect-sol-souffle',texts:["Une paire s'arrête au seuil et ne repart pas."]}]},
   // ── 04 close-ups ──
   'feu-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#2A0A08';ctx.beginPath();ctx.ellipse(w*0.5,h*0.6,80,30,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#C6B29B';ctx.beginPath();ctx.ellipse(w*0.45,h*0.55,12,6,0.3,0,Math.PI*2);ctx.fill();ctx.fillStyle='#8A7A6A';for(let i=0;i<5;i++){ctx.beginPath();ctx.arc(w*0.35+Math.random()*w*0.3,h*0.55+Math.random()*h*0.1,2+Math.random()*4,0,Math.PI*2);ctx.fill()}},introText:"Le feu est récent. Quelqu'un était là. Peut-être toi.",hotspots:[]},
   'outils-zoom':{drawCanvas:(ctx,w,h)=>{ctx.fillStyle='#080506';ctx.fillRect(0,0,w,h);ctx.fillStyle='#100808';ctx.fillRect(0,h*0.5,w,h*0.5);ctx.strokeStyle='#C6B29B';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w*0.3,h*0.4);ctx.lineTo(w*0.32,h*0.7);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.5,h*0.35);ctx.lineTo(w*0.48,h*0.68);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.65,h*0.42);ctx.lineTo(w*0.67,h*0.72);ctx.stroke();ctx.fillStyle='#4A1010';ctx.beginPath();ctx.arc(w*0.32,h*0.4,6,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(w*0.48,h*0.35,8,0,Math.PI*2);ctx.fill()},introText:"Ils ont la forme de mains qui reviennent toujours aux mêmes gestes.",hotspots:[]},
@@ -844,12 +854,20 @@ function enterZoom(zoomId){
         state.narrativeFlags['coeur-inspecte']=true;
         // O×1 with 30s cooldown
         const lastPull=state.narrativeFlags['coeur-last-pull']||0;
-        if(Date.now()-lastPull<30000){showDialogue("La matière pulse encore. Mais elle n'est pas prête.");return}
+        if(Date.now()-lastPull<20000){showDialogue("La matière pulse encore. Mais elle n'est pas prête.");return}
         const ok=collectResource('organique',1,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){state.narrativeFlags['coeur-last-pull']=Date.now()}
         saveState();updateRecipeUI();
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
         return;
+      }
+      if(hs.action==='collect-sol-souffle'){
+        const key='scene-03:hs-sol-souffle';
+        if(state.souffleCollected[key]){showDialogue("Il ne reste plus rien ici.");return}
+        const ok=collectResource('souffle',1,hs.x+hs.w/2,hs.y+hs.h/2);
+        if(ok){state.souffleCollected[key]=true;saveState()}
+        if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
+        el.style.display='none';return;
       }
       if(hs.action==='collect-entite-souffle'){
         state.narrativeFlags['entite-inspectee']=true;
@@ -880,7 +898,7 @@ function enterZoom(zoomId){
       if(hs.action==='collect-organique'){
         // Cooldown 60s between hair pulls
         const lastPull=state.narrativeFlags['hair-last-pull']||0;
-        if(Date.now()-lastPull<60000){showDialogue("Ça repousse. Reviens plus tard.");return}
+        if(Date.now()-lastPull<30000){showDialogue("Ça repousse. Reviens plus tard.");return}
         const ok=collectResource('organique',1,hs.x+hs.w/2,hs.y+hs.h/2);
         if(ok){state.narrativeFlags['hair-last-pull']=Date.now();saveState()}
         if(hs.texts&&hs.texts.length)showDialogue(hs.texts[Math.floor(Math.random()*hs.texts.length)]);
@@ -900,7 +918,7 @@ function enterZoom(zoomId){
         const smashCount=state.narrativeFlags['rocher-smash-count']||0;
         const lastSmashTime=state.narrativeFlags['rocher-last-smash']||0;
         // Reset count if cooldown elapsed
-        const cooldownDone=Date.now()-lastSmashTime>=60000;
+        const cooldownDone=Date.now()-lastSmashTime>=30000;
         const currentCount=cooldownDone?0:smashCount;
         if(currentCount>=3){showDialogue("Tu ne ressens plus rien. Reviens plus tard.");return}
         // Smash — collect D if possible, lose vitality regardless
@@ -1002,6 +1020,11 @@ function updateRecipeUI(){
     const catLabel=r.category==='divine'?'[DIV] ':r.category==='lore'?'[LORE] ':r.category==='neutre'?'[OPT] ':'';
     div.innerHTML=`<div class="recipe-name">${done?'* ':''}${catLabel}${r.name}</div><div class="recipe-cost">Cout: ${costs.join(' ')}</div><button class="recipe-btn btn-dos" ${can?'':'disabled'}>${done?'[ accompli ]':'[ accomplir ]'}</button>`;
     if(can)div.querySelector('.recipe-btn').addEventListener('click',()=>craftRecipe(r));
+    else if(!done)div.querySelector('.recipe-btn').addEventListener('click',()=>{
+      if(!onAlch){showDialogue("— retourne aux dunes");return}
+      const missing=[];if(r.cost.douleur>state.inventory.douleur)missing.push('Douleur');if(r.cost.souffle>state.inventory.souffle)missing.push('Souffle');if(r.cost.organique>state.inventory.organique)missing.push('Organique');
+      if(missing.length)showDialogue("Il te manque : "+missing.join(', ')+".");
+    });
     recipeListEl.appendChild(div);
     const sep=document.createElement('div');sep.className='recipe-sep';sep.textContent='──────────────';recipeListEl.appendChild(sep)});
   const lastSep=recipeListEl.querySelector('.recipe-sep:last-child');if(lastSep)lastSep.remove();
